@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Load Balancing · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html" aria-current="page">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.2vi4j9fk20lm">Load Balancing</h1></div></header>
+<main class="wrap content">
+<h2 id="h.puimm5wy6i6s">Problem Description</h2>
+<div class="embed">
+<p>
+The Load Balancing (LB) problem, also known as Work Apportionment (WA), aims to assign a set of tasks to a set of machines in a way that is robust to any one machine's failure. The problem is formulated as follows. Let \(M\) and 
+\(N\) denote the set of tasks and the set of machines, respectively. For task \(i \in M\), only a subset of machines, denoted by \(N^i \subseteq N\), are accessible. Let binary variables \(y_j\) be 1 if machine \(j\) is used and 0 otherwise. Let variables \(x_{i j}\) denote the amount of workload from task \(i\) to machine \(j\). \( b_j \) enforces the capacity requirement for each machine. \( a_i \) is the workload of task i. \(M_{i j}\) is the maximum of the workload of task i and capacity of machine j. The apportionment is required to be robust to any one machine's failure. The objective is to minimize the total cost for processing all workloads.
+$$
+\begin{array}{llr}
+\min _{x, y} &amp; \sum_{j \in N} y_j &amp; \\
+\text { s.t. } &amp; x_{i j} \leq M_{i j} y_j &amp; \forall i \in M, \forall j \in N^i \\
+&amp; \sum_{i \in M: j \in N^i} x_{i j} \leq b_j &amp; \forall j \in N \\
+&amp; \sum_{j \in N^i \backslash\left\{j^{\prime}\right\}} x_{i j} \geq a_i &amp; \forall i \in M, \forall j^{\prime} \in N^i \\
+&amp; y_j \in\{0,1\} &amp; \forall j \in N \\
+&amp; 0 \leq x_{i j} \leq b_j &amp; \forall i \in M, \forall j \in N^i
+\end{array}
+$$
+
+</p>
+</div>
+<h2 id="h.s9exdhb3wl41">Instance distributions</h2>
+<p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Dist Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th># Machines</th>
+<th># Tasks</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1vhoEN9jb8sxgjOxEa3Wvnfe_fq0SzxCJ/view?usp=drive_link">Hard</a></td>
+<td>[Gasse22]</td>
+<td>1000</td>
+<td>0</td>
+<td>60000</td>
+<td>64307.17</td>
+<td>1000</td>
+<td>60</td>
+<td>ML4CO [Gasse22], PAS [Han2023]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.dr6ymtqdusjy">Generator</h2>
+<p>The instance generator can be found in the hidden repository of the ML4CO competition <a href="https://github.com/ds4dm/ml4co-competition-hidden/tree/main">ML4CO-hidden</a> .</p>
+<h2 id="h.5ki24697nicz">License</h2>
+<p>The LB instances <a href="https://drive.google.com/file/d/1BBIYkAhTf7-Nxd7BOrhejS8X692honCT/view?usp=drive_link">LB instances (hard)</a>  in Distributional MIPLIB were downloaded from the Github repository of <a href="https://github.com/ds4dm/ml4co-competition/tree/main">ML4CO</a>. Both the <a href="https://github.com/ds4dm/ml4co-competition/tree/main">ML4CO</a>  (data) and <a href="https://github.com/ds4dm/ml4co-competition-hidden/tree/main">ML4CO-hidden</a> (generator) repositories are under the BSD-3-Clause license. See <a href="https://github.com/ds4dm/ml4co-competition/tree/main?tab=BSD-3-Clause-1-ov-file">ML4CO License</a> and <a href="https://github.com/ds4dm/ml4co-competition-hidden/tree/main?tab=BSD-3-Clause-1-ov-file">ML4CO-hidden License</a>  for details about the license and the copyright notice from CERC Data Science For Decision Making.</p>
+<h2 id="h.flmux0l7kvxo">Related Literature</h2>
+<p>LB has been used as a benchmark in the Machine Learning for Combinatorial Optimization Competition (ML4CO) [Gasse22]. We adhered to the train, validation, and test split established in ML4CO when compiling the distribution.</p>
+<h2 id="h.dpi5j37dwk1b">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.9vf774wro9ny">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h3 id="h.b71xohmm8kt2">ML4CO</h3>
+<div class="embed"><pre><code>@inproceedings{gasse2022machine,
+  title={The machine learning for combinatorial optimization competition (ml4co): Results and insights},
+  author={Gasse, Maxime and Bowly, Simon and Cappart, Quentin and Charfreitag, Jonas and Charlin, Laurent and Ch{\'e}telat, Didier and Chmiela, Antonia and Dumouchelle, Justin and Gleixner, Ambros and Kazachkov, Aleksandr M and others},
+  booktitle={NeurIPS 2021 competitions and demonstrations track},
+  pages={220--231},
+  year={2022},
+  organization={PMLR}
+}
+}
+</code></pre>
+</div>
+<h2 id="h.lsr5csmpe20e">Reference</h2>
+<p>[Gasse22] Gasse, M., Bowly, S., Cappart, Q., Charfreitag, J., Charlin, L., Ch.telat, D., Chmiela, A., Dumouchelle, J., Gleixner, A., Kazachkov, A. M., et al. (2022). The machine learning for combinatorial optimization competition (ml4co): Results and insights. In NeurIPS 2021 competitions and demonstrations track, pages 220–231. PMLR. [<a href="https://proceedings.mlr.press/v176/gasse22a/gasse22a.pdf">paper</a>]</p>
+<p>[Han23] Han, Q., Yang, L., Chen, Q., Zhou, X., Zhang, D., Wang, A., ... &amp; Luo, X. (2023). A gnn-guided predict-and-search framework for mixed-integer linear programming. In International Conference on Learning Representations. [<a href="https://arxiv.org/pdf/2302.05636">paper</a>]</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

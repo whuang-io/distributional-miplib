@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Middle-Mile Consolidation Network Design · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html" aria-current="page">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.jxgiojkeu4jx">Middle-Mile Consolidation Network Design</h1></div></header>
+<main class="wrap content">
+<h2 id="h.yoll5luuqpls">Problem Description</h2>
+<div class="embed">
+<p>
+  The Middle-Mile Consolidation Network (MMCN) design problem [Greening23] considers a shipper that needs to transport a set of commodities \( \mathcal{K}\) from known origins to known destinations. Let \((\mathcal{N}, \mathcal{A})\) define the shipper's service network. The node set \(\mathcal{N}\) denotes the set of facilities in the network, which include vendors, fulfillment centers (FCs), and last-mile delivery (LMDs) centers. In this problem, both vendors and FCs act as origins and LMDs are the destinations; FCs also act as cross-docks for consolidation. The directed arc set \(\mathcal{A}\) consists of the set of potential freight transportation arcs connecting pairs of locations. The set is composed of vendor-to-LMD (or ''directs''), vendor-to-FC, FC-to-FC, and FC-to-LMD arcs.
+<br/><br/>
+The MMCN design problem determines a minimum-cost allocation of transportation capacity on network arcs to ensure that a shipment consolidation plan is feasible. This includes the decision as to whether to send demand via the middle-mile consolidation network (i.e., use FCs as cross-docks for consolidation) or send demand directly from vendor to LMD centers.
+<br/> <br/>
+The proposed MILP model uses a path-based, flat (not time-expanded) network representation of capacity allocation to arcs and an associated representation of shipment consolidation into load dispatches. Freight transportation capacity decisions are modeled as frequencies of load dispatches on arcs per time (e.g., per week). The demand inputs then are also expressed as constant rates per time (e.g., pounds per week).
+<br/><br/>
+
+Although many shipments may be sent over time for an origin-destination pair, or commodity \(k \in \mathcal{K}\), the model assumes that each such shipment follows the same sequence of arcs (or path) defined by the chosen consolidation plan.
+
+The full formulation for this problem can be found at <a href="“https://drive.google.com/file/d/1iLzjUDdFTNwm_tFqoURNajq6xjFHhnkg/view?usp=sharing”">formulation</a>, which was kindly provided by Lacy Greening.
+
+</p>
+</div>
+<h2 id="h.rg0gn27va80q">Instances Distribution</h2>
+<p>The hardness level of the MMCN problems depends on the network size. We include instances created from different network size groups specified by [Greening23].  We include distributions containing binary and integer variables (denoted as BI) and distributions containing binary and continuous variables (denoted as BC). BI and BC distributions correspond to 2 variants of MMCN. BI distributions correspond to the Single-Mode (SM) variant, where all arcs in the network have the same single transit mode. BC distributions correspond to the Multi-Mode (MM) variant, where multiple transit modes are allowed. For each variant, we provide instances of different difficulty levels.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Distribution Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th>Transit mode</th>
+<th>Network group size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1aUb94ktRlmSQJC52P78r_X0nKKBCnXko/view?usp=drive_link">Very easy-BI</a></td>
+<td>New</td>
+<td>523.91</td>
+<td>173.06</td>
+<td>0</td>
+<td>255.02</td>
+<td>SM</td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1_x6iv-UktTviZHBAJ_JbAV5BKkRlrr7f/view?usp=drive_link">Medium-BI</a></td>
+<td>New</td>
+<td>1156.94</td>
+<td>263.23</td>
+<td>0</td>
+<td>437.81</td>
+<td>SM</td>
+<td>1h</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1nJXj1ZVojRgKMAL64SJMJahl5iCeSVTP/view?usp=drive_link">Medium-BC</a></td>
+<td>New</td>
+<td>4271.59</td>
+<td>0</td>
+<td>324.04</td>
+<td>3171.23</td>
+<td>MM</td>
+<td>1</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1O24b_3p3Tw_v2Gjcg2kiqqI5nsnMZMEC/view?usp=drive_link">Medium-BC2</a></td>
+<td>New</td>
+<td>2075.3</td>
+<td>0</td>
+<td>164.74</td>
+<td>1521.99</td>
+<td>MM</td>
+<td>0</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1yeHo3tm14GZMB7tZX3NcGEO9FI6tzNfq/view?usp=drive_link">Hard-BI</a></td>
+<td>New</td>
+<td>2074.76</td>
+<td>346.39</td>
+<td>0</td>
+<td>642.57</td>
+<td>SM</td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1ii6GTR7jDXdNZmpMd0PX8aigetN61FfP/view?usp=drive_link">Very hard-BI</a></td>
+<td>New</td>
+<td>21596.72</td>
+<td>1127.29</td>
+<td>0</td>
+<td>3944.01</td>
+<td>SM</td>
+<td>4</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1hS8wRFLKw2WrTqqcEmuNl9dt38cXj5qN/view?usp=drive_link">Very hard-BC</a></td>
+<td>New</td>
+<td>68345.21</td>
+<td>0</td>
+<td>2425.87</td>
+<td>96272.6</td>
+<td>MM</td>
+<td>4</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1JuMvN0SXj6PrHO4IYWSc2uYw0Mxid3Pl/view?usp=drive_link">Very hard-BC2</a></td>
+<td>New</td>
+<td>7441.34</td>
+<td>0</td>
+<td>529.37</td>
+<td>6385.27</td>
+<td>MM</td>
+<td>1h</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1Z1K_dfj--DrpqD6muBPhAL7GHcuZ5o_W/view?usp=drive_link">Very hard-BC3</a></td>
+<td>New</td>
+<td>11145.05</td>
+<td>0</td>
+<td>730.64</td>
+<td>10771.61</td>
+<td>MM</td>
+<td>2</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1LvRm4GurrvSKH01b1bcMuEIyA2MB8P13/view?usp=drive_link">Very hard-BC4</a></td>
+<td>New</td>
+<td>28079.73</td>
+<td>0</td>
+<td>1450.98</td>
+<td>33604.47</td>
+<td>MM</td>
+<td>3</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1o1_6dKXCqJfhG3f6M2aJm5E4KR9Rnp8M/view?usp=drive_link">Very hard-BI2</a></td>
+<td>New</td>
+<td>7106.4</td>
+<td>640.82</td>
+<td>0</td>
+<td>1619.97</td>
+<td>SM</td>
+<td>3</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.v0fqi054iywa">License</h2>
+<p>The MMCN instances data in Distributional MIPLIB is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</a> .</p>
+<h2 id="h.78rnn4uv68to">Acknowledgment</h2>
+<p>The instances of this problem were generated using data and code kindly provided by Lacy Greening and Prof. Alan Erera from Georgia Tech, who also provided the text for the problem description on this webpage.</p>
+<h2 id="h.6xwmk4qgga2e">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.5dh6jor7uhd">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024dmiplib,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={<a href="https://www.arxiv.org/abs/2406.06954">https://www.arxiv.org/abs/2406.06954</a>}
+}
+</code></pre>
+</div>
+<h3 id="h.8plcsthm2vwn">Original Formulation</h3>
+<div class="embed"><pre><code>@article{greening2023lead,
+  title={Lead-time-constrained middle-mile consolidation network design with fixed origins and destinations},
+  author={Greening, Lacy M and Dahan, Mathieu and Erera, Alan L},
+  journal={Transportation Research Part B: Methodological},
+  volume={174},
+  pages={102782},
+  year={2023},
+  publisher={Elsevier}
+}
+</code></pre>
+</div>
+<h2 id="h.7c89r5joiapn">Reference</h2>
+<p>[Greening23] <a href="https://optimization-online.org/2021/11/8688/">Greening, Lacy M., Mathieu Dahan, and Alan L. Erera. "Lead-time-constrained middle-mile consolidation network design with fixed origins and destinations." <em>Transportation Research Part B: Methodological</em> 174 (2023): 102782.</a></p>
+<p>APA</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

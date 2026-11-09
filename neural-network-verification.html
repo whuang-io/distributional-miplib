@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neural Network Verification · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html" aria-current="page">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.ubb44d7oa4et">Neural Network Verification</h1></div></header>
+<main class="wrap content">
+<h2 id="h.ggde0lt955mf">Problem Description</h2>
+<p>Neural Network Verification (NNV) via MILP is proposed in [Cheng17,Tjeng19] as a problem of verifying the robustness of a fixed neural network on a given input example. The goal is to determine what is the minimum perturbation of an input example required to switch the network's output from the correct class to an incorrect class. If this minimum perturbation exceeds a specified threshold, then the neural network is considered robust on that input example.</p>
+<h3 id="h.9x7wn5m6r01e">Inputs</h3>
+<ul><li>Pre-trained neural network</li><li>Example input and label</li><li>Norm measuring example distance</li><li>Robustness threshold</li></ul>
+<p>The MILP formulation for NNV can be found in [Cheng17,Tjeng19] (Appendix A in [Tjeng19]).</p>
+<h2 id="h.w17kfuk3rj4d">Instance distributions</h2>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Distribution Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th>Neural Network</th>
+<th>Examples</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1ZKRGmhoH9Q_OerWFvwbgNlQFsJM7FUVS/view?usp=drive_link">Easy</a></td>
+<td>[Nair20]</td>
+<td>171.49</td>
+<td>0</td>
+<td>6972.6</td>
+<td>6533.7</td>
+<td>Small<br/> Conv Net</td>
+<td>MNIST</td>
+<td>Diving [Nair20], Branching [Nair20],<br/> LNS [Sonnerat21], Cuts [Paulus22], <br/>Backdoors [Ferber22]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.cwqjyrl61v6y">License</h2>
+<p>The NNV instances in Distributional MIPLIB was downloaded from this <a href="https://github.com/deepmind/deepmind-research/tree/master/neural_mip_solving">Github repository</a> developed by DeepMind Research [Nair20]. The original dataset was made available under a CC BY 4.0 license (license details and disclaimer at <a href="https://creativecommons.org/licenses/by/4.0/legalcode">https://creativecommons.org/licenses/by/4.0/legalcode</a>). We did not modify the licensed materials.</p>
+<h2 id="h.glxi74fts805">Related Literature</h2>
+<p>The NNVerify benchmark has been used in several papers on learning for diving [Nair20], branching [Nair20], large neighborhood search [Sonnerat21], cuts [Paulus22], and backdoors [Ferber22]. It was originally generated and proposed in [Nair20] with that dataset being available online (<a href="https://github.com/deepmind/deepmind-research/tree/master/neural_mip_solving">Github repository</a> ). The instances come from verifying a small convolutional network on all of the MNIST instances.  A description of generator was given in [Tjeng19] (<a href="https://github.com/vtjeng/MIPVerify.jl">Github repository</a>) but there is no "ready-to-run" script.</p>
+<h2 id="h.l7v7o9wdtcxu">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.mfd59bw3jypq">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h3 id="h.hxt3ldd7cvw5">Original Formulation</h3>
+<div class="embed"><pre><code>
+@inproceedings{cheng2017maximum,
+  title={Maximum resilience of artificial neural networks},
+  author={Cheng, Chih-Hong and N{\"u}hrenberg, Georg and Ruess, Harald},
+  booktitle={Automated Technology for Verification and Analysis: 15th International Symposium, ATVA 2017, Pune, India, October 3--6, 2017, Proceedings 15},
+  pages={251--268},
+  year={2017},
+  organization={Springer}
+}
+</code></pre>
+<pre><code>
+@article{tjeng2017evaluating,
+  title={Evaluating Robustness of Neural Networks with Mixed Integer Programming},
+  author={Tjeng, Vincent and Xiao, Kai and Tedrake, Russ},
+  journal={arXiv preprint arXiv:1711.07356},
+  year={2017}
+}
+</code></pre>
+</div>
+<h3 id="h.agrjrpgz3etu">NNVerify Instances</h3>
+<div class="embed"><pre><code>@article{nair2020solving,
+  title={Solving mixed integer programs using neural networks},
+  author={Nair, Vinod and Bartunov, Sergey and Gimeno, Felix and Von Glehn, Ingrid and Lichocki, Pawel and Lobov, Ivan and O'Donoghue, Brendan and Sonnerat, Nicolas and Tjandraatmadja, Christian and Wang, Pengming and others},
+  journal={arXiv preprint arXiv:2012.13349},
+  year={2020}
+}
+</code></pre>
+</div>
+<h2 id="h.1dya6i38j3jg">Reference</h2>
+<p>[Cheng17] Cheng, Chih-Hong, Georg Nührenberg, and Harald Ruess. "Maximum resilience of artificial neural networks." In <em>Automated Technology for Verification and Analysis</em> (2017). [<a href="https://arxiv.org/abs/1705.01040">paper</a>]</p>
+<p>[Tjeng19] Tjeng, Vincent, Kai Y. Xiao, and Russ Tedrake. "Evaluating Robustness of Neural Networks with Mixed Integer Programming." In <em>International Conference on Learning Representations (2019)</em>. [<a href="https://openreview.net/pdf?id=HyGIdiRqtm">paper</a>, <a href="https://github.com/vtjeng/MIPVerify.jl">code</a>]</p>
+<p>[Nair20] Nair, Vinod, Sergey Bartunov, Felix Gimeno, Ingrid Von Glehn, Pawel Lichocki, Ivan Lobov, Brendan O'Donoghue et al. "Solving mixed integer programs using neural networks." <em>arXiv preprint arXiv</em>:2012.13349 (2020).</p>
+<p>[Sonnerat21] Sonnerat, Nicolas, Pengming Wang, Ira Ktena, Sergey Bartunov, and Vinod Nair. "Learning a large neighborhood search algorithm for mixed integer programs." <em>arXiv preprint arXiv</em>:2107.10201 (2021).</p>
+<p>[Paulus22] Paulus, Max B., Giulia Zarpellon, Andreas Krause, Laurent Charlin, and Chris Maddison. "Learning to cut by looking ahead: Cutting plane selection via imitation learning." In <em>International conference on machine learning</em> (2022). [<a href="https://proceedings.mlr.press/v162/paulus22a/paulus22a.pdf">paper</a>]</p>
+<p>[Ferber22] Ferber, Aaron, Jialin Song, Bistra Dilkina, and Yisong Yue. "Learning Pseudo-Backdoors for Mixed Integer Programs." In <em>Integration of Constraint Programming, Artificial Intelligence, and Operations Research</em> (2022). [<a href="https://link.springer.com/chapter/10.1007/978-3-031-08011-1_8">paper</a>]</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maritime Inventory Routing · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html" aria-current="page">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.6dmsgrftg8j4">Maritime Inventory Routing</h1></div></header>
+<main class="wrap content">
+<h2 id="h.x72el2ve0awn">Problem Description</h2>
+<p>The Maritime Inventory Routing Problem (MIRP) arises from global bulk shipping and involves both ship routing and inventory management. The problem not only determines routes from production ports to consumption ports to minimize transportation costs but also manages the inventory at these ports [Papageorgiou14].  [Papageorgiou14] introduced a mixed-integer programming model of this problem class and developed a library of publicly available test instances (MIRPLib).</p>
+<h2 id="h.em082qwol1rq">Instance distributions</h2>
+<p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Distribution Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1aC-ADvSIIWnJJEODX28_6CaBWTrEVF7B/view?usp=drive_link">Medium</a></td>
+<td>[Gasse22]</td>
+<td>0</td>
+<td>15080.57</td>
+<td>19576.15</td>
+<td>44429.7</td>
+<td>ML4CO [Gasse22]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.vfxzdi3uqnxy">License</h2>
+<p>The MIRP in Distributional MIPLIB was downloaded from the Github repository of <a href="https://github.com/ds4dm/ml4co-competition/tree/main">ML4CO</a>. ML4CO is licensed under the BSD-3-Clause license. See <a href="https://github.com/ds4dm/ml4co-competition/tree/main?tab=BSD-3-Clause-1-ov-file">ML4CO License</a> for details about the license and the copyright notice from CERC Data Science For Decision Making.</p>
+<h2 id="h.ypff2kvr39zt">Related Literature</h2>
+<p>A curated set of MIRP instances have been used as a hidden test set in the Machine Learning for Combinatorial Optimization Competition (ML4CO) [Gasse22].   We included this benchmark in Distributional MIPLIB and provide the statistics. We adhered to the train, validation, and test split established in ML4CO.  A larger set of MIRP instances is also available at the MIRPLIB [Papageorgiou14] (<a href="https://mirplib.scl.gatech.edu/">link</a>).</p>
+<h2 id="h.tk5jojnt8y26">Citations</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.inxxkc2htn4e">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h3 id="h.p1wnjg107pdt">Original Formulation &amp; Generator</h3>
+<div class="embed"><pre><code>@article{papageorgiou2014mirplib,
+  title={MIRPLib--A library of maritime inventory routing problem instances: Survey, core model, and benchmark results},
+  author={Papageorgiou, Dimitri J and Nemhauser, George L and Sokol, Joel and Cheon, Myun-Seok and Keha, Ahmet B},
+  journal={European Journal of Operational Research},
+  volume={235},
+  number={2},
+  pages={350--366},
+  year={2014},
+  publisher={Elsevier}
+}
+</code></pre>
+</div>
+<h3 id="h.38mi2gopf547">ML4CO</h3>
+<div class="embed"><pre><code>@inproceedings{gasse2022machine,
+  title={The machine learning for combinatorial optimization competition (ml4co): Results and insights},
+  author={Gasse, Maxime and Bowly, Simon and Cappart, Quentin and Charfreitag, Jonas and Charlin, Laurent and Ch{\'e}telat, Didier and Chmiela, Antonia and Dumouchelle, Justin and Gleixner, Ambros and Kazachkov, Aleksandr M and others},
+  booktitle={NeurIPS 2021 competitions and demonstrations track},
+  pages={220--231},
+  year={2022},
+  organization={PMLR}
+}
+</code></pre>
+</div>
+<h2 id="h.tav1fd4w50o7">Reference</h2>
+<p>[Gasse22] Gasse, M., Bowly, S., Cappart, Q., Charfreitag, J., Charlin, L., Ch.telat, D., Chmiela, A., Dumouchelle, J., Gleixner, A., Kazachkov, A. M., et al. (2022). The machine learning for combinatorial optimization competition (ml4co): Results and insights. In NeurIPS 2021 competitions and demonstrations track, pages 220–231. PMLR. [<a href="https://proceedings.mlr.press/v176/gasse22a/gasse22a.pdf">paper</a>]</p>
+<p>[Papageorgiou14] Papageorgiou, D. J., Nemhauser, G. L., Sokol, J., Cheon, M.-S., and Keha, A. B. (2014). Mirplib–a library of maritime inventory routing problem instances: Survey, core model, and benchmark results. European Journal of Operational Research, 235(2):350–366. [<a href="https://www.sciencedirect.com/science/article/abs/pii/S0377221713009880">paper</a>]</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

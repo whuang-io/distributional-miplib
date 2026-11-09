@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Item Placement · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html" aria-current="page">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.vx4a4adtm6uv">Item Placement</h1></div></header>
+<main class="wrap content">
+<h2 id="h.8779gd30xmur">Problem Description</h2>
+<div class="embed">
+<p>
+Item Placement (IP) involves spreading items, e.g., files or processes, across containers, e.g., disks or machines, utilizing them evenly. Each item has a fixed resource requirement, and each bin has a fixed capacity. The number of items that can be moved is constrained, modeling the real-life situation of a live system for which some placement already exists [Gasse22]. The goal of the problem is to place all items in bins while minimizing the imbalance of the resources used across all bins. The problem is formulated as follows. Let \(I\) denote the set of items and \(J\) denote the set of containers. Let a binary variable \(x_{i j}\) be 1 if item \(i\) is placed in container \(j\) and 0 otherwise. Each item will be placed in exactly a single container. Let \(K\) represent the set of dimensions. \(y_{jk}\) is a variable that specifies the deficit of the utilization of container j in dimension k. 
+$$
+\begin{array}{ll}
+\min _{x, y, z} &amp; \sum_{j \in J} \sum_{k \in K} \alpha_k y_{j k}+\sum_{k \in K} \beta_k z_k \\
+\text { s.t. } &amp; \sum_{j \in J} x_{i j}=1 &amp; \forall i \in I \\
+&amp; \sum_{i \in I} a_{i k} x_{i j} \leq b_k &amp;  \forall j \in J, \forall k \in K\\
+&amp; \sum_{i \in I} d_{i k} x_{i j}+y_{j k} \geq 1 &amp; \forall j \in J, \forall k \in K \\
+&amp; y_{j k} \leq z_k  &amp; \forall j \in J, \forall k \in K\\
+&amp; x_{i j} \in\{0,1\} &amp; \forall i \in I, \forall j \in J \\
+&amp; y_{j k} \geq 0 &amp; \forall j \in J, \forall k \in K
+\end{array}
+$$
+$$
+
+$$
+
+</p>
+</div>
+<h2 id="h.rw6cp89fs0gx">Instance distributions</h2>
+<p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Dist Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th># Items</th>
+<th># Containers</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/18Qg0_b7aEfKF3Q-vErxu4skIODAmGP6j/view?usp=drive_link">Very hard</a></td>
+<td>[Gasse22]</td>
+<td>1050</td>
+<td>0</td>
+<td>33</td>
+<td>195</td>
+<td>105</td>
+<td>10</td>
+<td>ML4CO [Gasse22]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.qb04xtvb886l">Generator</h2>
+<p>The instance generator can be found in the hidden repository of the ML4CO competition <a href="https://github.com/ds4dm/ml4co-competition-hidden/tree/main">ML4CO-hidden</a> .</p>
+<h2 id="h.8c0eefhsam7k">License</h2>
+<p>The IP instances in Distributional MIPLIB were downloaded from the Github repository of <a href="https://github.com/ds4dm/ml4co-competition/tree/main">ML4CO</a>. Both the <a href="https://github.com/ds4dm/ml4co-competition/tree/main">ML4CO</a>  (data) and <a href="https://github.com/ds4dm/ml4co-competition-hidden/tree/main">ML4CO-hidden</a> (generator) repositories are under the BSD-3-Clause license. See <a href="https://github.com/ds4dm/ml4co-competition/tree/main?tab=BSD-3-Clause-1-ov-file">ML4CO License</a> and <a href="https://github.com/ds4dm/ml4co-competition-hidden/tree/main?tab=BSD-3-Clause-1-ov-file">ML4CO-hidden License</a>  for details about the license and the copyright notice from CERC Data Science For Decision Making.</p>
+<h2 id="h.f5brms70vnxy">Related Literature</h2>
+<p>IP has been used as a benchmark in the Machine Learning for Combinatorial Optimization Competition (ML4CO) [Gasse22]. We adhered to the train, validation, and test split established in ML4CO when compiling the distribution.</p>
+<h2 id="h.y8o5j5mxne8j">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.rpo5jqpjdj0u">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h3 id="h.3oe2hcusbdhy">ML4CO</h3>
+<div class="embed"><pre><code>@inproceedings{gasse2022machine,
+  title={The machine learning for combinatorial optimization competition (ml4co): Results and insights},
+  author={Gasse, Maxime and Bowly, Simon and Cappart, Quentin and Charfreitag, Jonas and Charlin, Laurent and Ch{\'e}telat, Didier and Chmiela, Antonia and Dumouchelle, Justin and Gleixner, Ambros and Kazachkov, Aleksandr M and others},
+  booktitle={NeurIPS 2021 competitions and demonstrations track},
+  pages={220--231},
+  year={2022},
+  organization={PMLR}
+}
+}
+</code></pre>
+</div>
+<h2 id="h.u66wdu1xb3du">Reference</h2>
+<p>[Gasse22] Gasse, M., Bowly, S., Cappart, Q., Charfreitag, J., Charlin, L., Ch.telat, D., Chmiela, A., Dumouchelle, J., Gleixner, A., Kazachkov, A. M., et al. (2022). The machine learning for combinatorial optimization competition (ml4co): Results and insights. In NeurIPS 2021 competitions and demonstrations track, pages 220–231. PMLR. [<a href="https://proceedings.mlr.press/v176/gasse22a/gasse22a.pdf">paper</a>]</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

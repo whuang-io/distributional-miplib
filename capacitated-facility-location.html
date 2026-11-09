@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capacitated Facility Location · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html" aria-current="page">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.7xw1ir6f7zbi">Capacitated Facility Location</h1></div></header>
+<main class="wrap content">
+<h2 id="h.ngjg823wcfj0">Problem Description</h2>
+<p>Capacitated Facility Location Problem (CFLP) considers satisfying customer demands from several facilities. The facilities have startup costs and can satisfy customer demand by incurring transportation costs. Once opened, a facility can satisfy customer demand by deciding how much capacity is routed to each customer. For distributions, often problems are randomly generated according to [Cornuéjols91].</p>
+<h3 id="h.bx3fphww6zfz">Inputs</h3>
+<div class="embed">
+<ul>
+<li>\(C\): The set of customers.</li>
+<li>\(F\): The set of facilities.</li>
+<li>\(d_c\): Customer demand required defined for each customer \(c\).</li>
+<li>\(c^s_{c,f}\): Startup cost defined for each facility \(f\) .</li>
+<li>\(c^t_{c,f}\): The cost of transporting one unit from facility \(f\) to customer \(c\).</li>
+<li>\(b_{f}\): Capacity budget defined for each facility \(f\).</li>
+</ul>
+</div>
+<h3 id="h.otxx24rvol9x">MIP Formulation</h3>
+<div class="embed">
+<p>
+
+\begin{equation}
+\begin{split}
+\text{Minimize}_{x,y} \quad &amp; \sum_{f \in F} c^s_{f}x_f + \sum_{c \in C}\sum_{f \in F} c^t_{c,f}y_{c,f} \quad &amp; \text{(Objective: minimize total costs)} \\
+\text{subject to} \quad &amp; \sum_{f \in F} y_{c,f} = d_c, \quad \forall c \in C \quad &amp; \text{(Constraint 1: satisfy all demand)} \\
+&amp; \sum_{c \in C} y_{c,f} \leq b_f x_f, \quad \forall f \in F \quad &amp; \text{(Constraint 2: respect facility capacity)} \\
+&amp; y_{c,f} \geq 0, \quad \forall c \in C, f \in F \quad &amp; \text{(Constraint 3: non-negative shipments)} \\
+&amp; x_f \in \{0, 1\}, \quad \forall f \in F \quad &amp; \text{(Constraint 4: binary decision of opening facility)}
+\end{split}
+\end{equation}
+
+</p>
+</div>
+<h2 id="h.4a5c9p2gu9tq">Instance distributions</h2>
+<p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness level</th>
+<th>Dist Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th># Facilities</th>
+<th># Customers</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1KtuyjOsZST-feEEyOZQUf6iufNrKSyfR/view?usp=drive_link">Easy</a></td>
+<td>[Gasse19]</td>
+<td>100</td>
+<td>0</td>
+<td>10000</td>
+<td>10201</td>
+<td>100</td>
+<td>100</td>
+<td>Branching <br/> [Gasse19,Gupta20]</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1YnODxol4L6EL9AQMvO38cZejOrUHiycI/view?usp=drive_link">Medium</a></td>
+<td>[Gasse19]</td>
+<td>200</td>
+<td>0</td>
+<td>20000</td>
+<td>20301</td>
+<td>100</td>
+<td>200</td>
+<td>Branching, Backdoor<br/> [Gasse19,Gupta20,Ferber22]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.j5vfnrhb5jrn">Generator</h2>
+<p>Generators are available at <a href="https://github.com/ds4dm/learn2branch/tree/master">Learn2Branch</a> , <a href="https://github.com/ds4dm/ecole">Ecole</a> and <a href="https://github.com/CharJon/GeCO">GeC0</a>.</p>
+<h2 id="h.2njmtanv2yg5">License</h2>
+<p>The CFLP instances data in Distributional MIPLIB is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</a> .</p>
+<p>Instances for CFLP in Distributional MIPLIB were generated with code from [Gasse19] (code publicly available at <a href="https://github.com/ds4dm/learn2branch/tree/master">https://github.com/ds4dm/learn2branch/tree/master</a>; under the MIT License <a href="https://github.com/ds4dm/learn2branch?tab=MIT-1-ov-file">Learn2Branch License</a> ).</p>
+<h2 id="h.at0onwgjf418">Related literature</h2>
+<h3 id="h.gahhz2r3da0x">Branching and Variable Selection</h3>
+<p>Randomly sampled facility location problems have been studied in a variety of settings:</p>
+<ul><li>Learning branching variable selection: [Gasse19, Gupta20]</li><li>Learning backdoors in MIP: [Ferber22]</li></ul>
+<h2 id="h.fv35f7x72rz">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.dy15wqnfg8kk">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h3 id="h.218m1hw62pje">Original Formulation &amp; Generator</h3>
+<div class="embed"><pre><code>@article{cornuejols1991comparison,
+  title={A comparison of heuristics and relaxations for the capacitated plant location problem},
+  author={Cornu{\'e}jols, G{\'e}rard and Sridharan, Ranjani and Thizy, Jean-Michel},
+  journal={European journal of operational research},
+  volume={50},
+  number={3},
+  pages={280--297},
+  year={1991},
+  publisher={Elsevier}
+}
+</code></pre>
+</div>
+<h2 id="h.a2t9f0cb6mxp">Reference</h2>
+<p>[Cornuéjols91] Cornuéjols, Gérard, Ranjani Sridharan, and Jean-Michel Thizy. "A comparison of heuristics and relaxations for the capacitated plant location problem." <em>European journal of operational research</em> 50, no. 3 (1991): 280-297. [<a href="https://www.sciencedirect.com/science/article/abs/pii/037722179190261S">paper</a>]</p>
+<p>[Gasse19] Gasse, Maxime, Didier Chételat, Nicola Ferroni, Laurent Charlin, and Andrea Lodi. "Exact combinatorial optimization with graph convolutional neural networks." <em>Advances in neural information processing systems</em> (2019). [<a href="https://proceedings.neurips.cc/paper/2019/hash/d14c2267d848abeb81fd590f371d39bd-Abstract.html">paper</a>]</p>
+<p>[Gupta20] Gupta, Prateek, Maxime Gasse, Elias Khalil, Pawan Mudigonda, Andrea Lodi, and Yoshua Bengio. "Hybrid models for learning to branch." <em>Advances in neural information processing systems</em> (2020). [<a href="https://proceedings.neurips.cc/paper/2020/hash/d1e946f4e67db4b362ad23818a6fb78a-Abstract.html">paper</a>]</p>
+<p>[Ferber22] Ferber, Aaron, Jialin Song, Bistra Dilkina, and Yisong Yue. "Learning Pseudo-Backdoors for Mixed Integer Programs." In <em>Integration of Constraint Programming, Artificial Intelligence, and Operations Research</em> (2022). [<a href="https://link.springer.com/chapter/10.1007/978-3-031-08011-1_8">paper</a>]</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

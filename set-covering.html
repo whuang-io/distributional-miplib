@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set Covering · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html" aria-current="page">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.zda9hqoi5z91">Set Covering</h1></div></header>
+<main class="wrap content">
+<h2 id="h.8gzsb181fmr">Problem Description</h2>
+<div class="embed">
+<p>
+  In an set covering (SC) instance, we are given \(m\) elements and a collection \(S\) of \(n\) sets whose union is the set of all elements. The goal is to select a minimum number of sets from \(S\) such that the union of the selected set is still the set of all elements:
+
+  \[\min \sum_{s\in S} x_s  \]
+
+\[\textrm{s.t.} \sum_{s\in S: i\in s} x_s \geq 1, \,\forall i\in[m],\]
+
+\[  x_s\in\{0,1\}, \, \forall s\in S.\]
+
+</p>
+</div>
+<h2 id="h.f5nyix1v6ue9">Instance distributions</h2>
+<p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Dist Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th>#Element</th>
+<th>#Set</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/11LfYqqcFAdliC41y20fJ5gtRV8gZ09jV/view?usp=drive_link">Easy</a></td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>500</td>
+<td>500</td>
+<td>1,000</td>
+<td>Branching [Gasse19, Gupta20]</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/184btiB_kKYFyEiJr38Y0TsNUgaGSy0Is/view?usp=drive_link">Medium</a></td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>1000</td>
+<td>1000</td>
+<td>1,000</td>
+<td>Branching    [Gasse19,Gupta20]</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/15lZxBNMfHTibX_FHzyNu77j1XznbprSx/view?usp=drive_link">Hard</a></td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>2000</td>
+<td>2,000</td>
+<td>1,000</td>
+<td>Branching    [Gasse19, Gupta20]</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/12DYvVvHBVfv_M3w-VxJOl5Ln_1w9_WnI/view?usp=drive_link">Very hard</a></td>
+<td>[Huang23]</td>
+<td>4000</td>
+<td>0</td>
+<td>0</td>
+<td>5000</td>
+<td>5,000</td>
+<td>4,000</td>
+<td>LNS     [Wu21,Huang23,Huang23b]</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1Bg4JFeQFUkNu8he9B790-OoyjXrPkzwd/view?usp=drive_link">Very hard 2</a></td>
+<td>[Huang23]</td>
+<td>8000</td>
+<td>0</td>
+<td>0</td>
+<td>5000</td>
+<td>5,000</td>
+<td>8,000</td>
+<td>LNS    [Huang23]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.5c7v6k4n5z8v">Generator</h2>
+<p>Generators are available at <a href="https://github.com/ds4dm/learn2branch/tree/master">Learn2Branch</a>.</p>
+<h2 id="h.8mro9ikufxu9">License</h2>
+<p>The SC instances data in Distributional MIPLIB is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</a> .</p>
+<p>Instances for SC in Distributional MIPLIB were generated with code from [Gupta20] (code publicly available at <a href="https://github.com/ds4dm/learn2branch/tree/master">https://github.com/ds4dm/learn2branch/tree/master</a>; under the MIT License <a href="https://github.com/ds4dm/learn2branch?tab=MIT-1-ov-file">Learn2Branch License</a> ).</p>
+<h2 id="h.bpifgk8o9a54">Related Literature</h2>
+<h3 id="h.q1nvxq835cpr">Learning to Branch</h3>
+<p>For learning to branch, SC has been used as a benchmark in [Gasse19, Gupta20] where their generator could be found <a href="https://github.com/ds4dm/learn2branch">here</a>. In addition, <a href="https://doc.ecole.ai/py/en/stable/howto/instances.html">Ecole</a> has a generator for SC instances that allows customized problem parameters. For 1-hour runtime limit with SCIP, the typical problem sizes that have been used range from 500 to 2,000 sets with 1,000 elements.</p>
+<h3 id="h.o6zhoxhysf1i">Large Neighborhood Search (LNS)</h3>
+<p>For large neighborhood search, CA has been used in [Wu21, Huang23, Huang23b]. For 1-hour runtime limit,  the typical problem sizes that have been used range from 1,000 to 8,000 sets with 5,000 elements.</p>
+<h2 id="h.tigfuzgox0qj">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.j1fe8211oixq">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h2 id="h.lmte1p9rpfpv">Reference</h2>
+<p>[Gasse19] <a href="https://proceedings.neurips.cc/paper/2019/file/d14c2267d848abeb81fd590f371d39bd-Paper.pdf">Gasse, Maxime, et al. "Exact combinatorial optimization with graph convolutional neural networks." <em>Advances in neural information processing systems</em> 32 (2019).</a></p>
+<p>[Gupta20] <a href="https://proceedings.neurips.cc/paper/2020/file/d1e946f4e67db4b362ad23818a6fb78a-Paper.pdf">Gupta, Prateek, et al. "Hybrid models for learning to branch." <em>Advances in neural information processing systems</em> 33 (2020): 18087-18097.</a></p>
+<p>[Wu21] <a href="https://proceedings.neurips.cc/paper/2021/file/fc9e62695def29ccdb9eb3fed5b4c8c8-Paper.pdf">Wu, Yaoxin, et al. "Learning large neighborhood search policy for integer programming." <em>Advances in Neural Information Processing Systems</em> 34 (2021): 30075-30087.</a></p>
+<p>[Huang23] <a href="https://arxiv.org/pdf/2302.01578.pdf">Huang, Taoan, et al. "Searching Large Neighborhoods for Integer Linear Programs with Contrastive Learning." <em>International conference on machine learning</em>. PMLR, 2023</a></p>
+<p>[Huang23b] <a href="https://link.springer.com/chapter/10.1007/978-3-031-33271-5_7">Huang, Taoan, et al. "Local Branching Relaxation Heuristics for Integer Linear Programs." <em>International Conference on Integration of Constraint Programming, Artificial Intelligence, and Operations Research</em>. Cham: Springer Nature Switzerland, 2023.</a></p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

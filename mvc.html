@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minimum Vertex Cover · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html" aria-current="page">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.xbfiu41z4yvw">Minimum Vertex Cover</h1></div></header>
+<main class="wrap content">
+<h2 id="h.spktyz7qyzhu">Problem Description</h2>
+<div class="embed">
+<p>
+  In a minimum vertex cover (MVC) problem, an undirected graph \(G=(V,E)\) in given.  The goal is to select the smallest subset of nodes such that at least one end point of every edge in the graph is selected::
+\[\min \sum_{v\in V} x_v \]
+
+\[\textrm{s.t.} x_u+x_v\geq 1, \,\forall (u,v)\in E, \]
+
+ \[ x_v\in\{0,1\}, \, \forall v\in V.\]
+The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph. 
+</p>
+</div>
+<h2 id="h.qeswid6dx4fd">Instance distributions</h2>
+<p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Dist Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th>#Node</th>
+<th>Node Degree</th>
+<th>Graph Type</th>
+<th>Related Literature</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1wChTTIyXGCGFhJwskHuzdlBXTxMoE6rD/view?usp=drive_link">Easy</a></td>
+<td>New</td>
+<td>1200</td>
+<td>0</td>
+<td>0</td>
+<td>5975</td>
+<td>1,200</td>
+<td>5</td>
+<td>Barabasi-Albert</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1WQWdkG7RgeKl7FA9SIEnLDRbD7T3wa-G/view?usp=drive_link">Medium</a></td>
+<td>New</td>
+<td>2000</td>
+<td>0</td>
+<td>0</td>
+<td>9975</td>
+<td>2,000</td>
+<td>5</td>
+<td>Barabasi-Albert</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1OfDyhpk2P2w6padrwKdupZnxst_Jvmre/view?usp=drive_link">Hard</a></td>
+<td>New</td>
+<td>500</td>
+<td>0</td>
+<td>0</td>
+<td>30100</td>
+<td>500</td>
+<td>70</td>
+<td>Barabasi-Albert</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1P5w8295x6d7crQCfJ8sWBhnZmgGgN92J/view?usp=drive_link">Very hard</a></td>
+<td>[Huang23]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>65100</td>
+<td>1,000</td>
+<td>70</td>
+<td>Barabasi-Albert</td>
+<td>LNS    [Huang23]</td>
+</tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1DaeD-MfLFq6Dq3w0G_L1908YAGGcv4eK/view?usp=drive_link">Very hard 2</a></td>
+<td>[Huang23]</td>
+<td>2000</td>
+<td>0</td>
+<td>0</td>
+<td>135100</td>
+<td>2,000</td>
+<td>70</td>
+<td>Barabasi-Albert</td>
+<td>LNS    [Huang23]</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.na5amu4fxzmq">Generator</h2>
+<p>We provide a generator for MVC at <a href="https://github.com/amf272/Distributional-MIPLIB-Generators/tree/main/MVC">https://github.com/amf272/Distributional-MIPLIB-Generators/tree/main/MVC</a> .</p>
+<h2 id="h.22byrzqxk7tj">License</h2>
+<p>The MVC instances data in Distributional MIPLIB is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</a> .</p>
+<h2 id="h.mh9ubcze0usj">Related literature</h2>
+<h3 id="h.dr64jjwlhdqh">Large Neighborhood Search</h3>
+<p>For large neighborhood search, Huang et al. [Huang23] use Barabasi-Albert graphs with 1,000 and 2,000 nodes and affinity set to 70. The set of instances with 1000 nodes was used for training. The set of instances with 2000 nodes was used as an out-of-distribution test set. MVC has been used in [Song20, Huang23, Huang23b].  In addition to the distributions complied in Distributional MIPLIB shown in the table above, Song et al. [Song20] use both Erdos-Renyi and Barabasi-Albert graphs with 1,000 nodes and affinity set to 4.  Huang et al. [Huang23b] use Barabasi-Albert graphs with 9,000 nodes and affinity set to 5 to test a heuristic.</p>
+<h2 id="h.upctdfwi135x">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.si88gbraciy6">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h2 id="h.6rkh0yqwp2z8">Reference</h2>
+<p>[Song20] <a href="https://proceedings.neurips.cc/paper/2020/file/e769e03a9d329b2e864b4bf4ff54ff39-Paper.pdf">Song, Jialin, et al. "A general large neighborhood search framework for solving integer linear programs." <em>Advances in Neural Information Processing Systems</em> 33 (2020): 20012-20023.</a></p>
+<p>[Huang23] <a href="https://arxiv.org/pdf/2302.01578.pdf">Huang, Taoan, et al. "Searching Large Neighborhoods for Integer Linear Programs with Contrastive Learning." <em>International conference on machine learning</em>. PMLR, 2023</a></p>
+<p>[Huang23b] <a href="https://link.springer.com/chapter/10.1007/978-3-031-33271-5_7">Huang, Taoan, et al. "Local Branching Relaxation Heuristics for Integer Linear Programs." <em>International Conference on Integration of Constraint Programming, Artificial Intelligence, and Operations Research</em>. Cham: Springer Nature Switzerland, 2023.</a></p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

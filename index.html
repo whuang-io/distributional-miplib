@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html" aria-current="page">Home</a>
+    <details class="dd"><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="hero"><div class="wrap"><h1 id="h.9co9bilvafos">Distributional MIPLIB</h1><p class="tagline">The first comprehensive standardized dataset for evaluating ML-guided MILP methods</p></div></header>
+<main class="wrap content">
+<h2 id="h.bm6aze3nrfwb">NEW: Distributional MIPLIB is now on Hugging Face <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">[link]</a> !</h2>
+<h2 id="h.k1y9jjd709pa">About</h2>
+<p>Distributional MIPLIB <a href="https://www.arxiv.org/abs/2406.06954">[arXiv Preprint]</a> is the <strong>first</strong> comprehensive standardized dataset for evaluating ML-guided Mixed Integer Linear Programming (MILP) solving. It contains MILP distributions from 13 domains, classified into different hardness levels.</p>
+<h2 id="h.3mxbmscnekwe">Background</h2>
+<p>MILP is a fundamental tool for modeling combinatorial optimization problems. Recently, a growing body of research has used ML to accelerate MILP solving. Despite the increasing popularity of this approach, there is a lack of a common repository that provides distributions of similar MILP instances across different domains, at different hardness levels, with standardized test sets. We curate MILP distributions from existing work in this area as well as real-world problems that have not been used.</p>
+<h2 id="h.1zwwx2um29bl">Dataset Overview</h2>
+<div class="embed"><p>The table below provides a summary of problem distributions. The links for downloading the distributions are provided in the webpage of each domain.</p>
+<ul>
+<li>
+<p>Instance Statistics</p>
+<ul>
+<li>Average number of binary variables (# Var B)</li>
+<li>Average number of integer variables (# Var I)</li>
+<li>Average number of continuous variables (# Var C)</li>
+<li>Average number of constraints (# Constr)</li>
+</ul>
+</li>
+<li>
+<p>Performance metrics</p>
+<ul>
+<li>Number of instances in the test set that are solved to optimality in 1 hour (# Opt). The number of test instances is 100, unless otherwise specified.</li>
+<li>Average solving time in seconds for instances solved to optimality (Opt Time)</li>
+<li>Average primal-dual gap after 1 hour for instances not solved to optimality  (NonOpt Gap)</li>
+<li>Primal-dual integral (Integral)</li>
+</ul>
+</li>
+</ul>
+<p>We use <a href="https://www.gurobi.com/downloads/gurobi-optimizer-readme-v10-0-3/">Gurobi (v10.0.3)</a> with 1 hour time limit, on a cluster with Intel
+Xeon Silver 4116 CPUs @ 2.10GHz, with a RAM allocation of 5G (For SRPN-Hard, MMCN-Very
+Hard, and OTS-Hard instances, we increased the RAM to 15G, due to memory errors at 5GB.)</p></div>
+<div class="embed"><h2>Synthetic</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Hardness Level</th>
+<th>Dist Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+<th># Opt</th>
+<th>Opt<br/> Time (s)</th>
+<th>NonOpt <br/>Gap</th>
+<th>Integral</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="combinatorial-auctions.html">Combinatorial <br/>Auctions</a></td>
+<td>Very easy</td>
+<td>[Gasse19]</td>
+<td>500</td>
+<td>0</td>
+<td>0</td>
+<td>192.2</td>
+<td>100</td>
+<td>4.21</td>
+<td></td>
+<td>0.77</td>
+</tr>
+<tr>
+<td></td>
+<td>Easy</td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>385.04</td>
+<td>100</td>
+<td>47.14</td>
+<td></td>
+<td>2.3</td>
+</tr>
+<tr>
+<td></td>
+<td>medium</td>
+<td>[Gasse19]</td>
+<td>1500</td>
+<td>0</td>
+<td>0</td>
+<td>578.07</td>
+<td>100</td>
+<td>358.14</td>
+<td></td>
+<td>7.29</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard</td>
+<td>[Huang23]</td>
+<td>4000</td>
+<td>0</td>
+<td>0</td>
+<td>2676.32</td>
+<td>0</td>
+<td></td>
+<td>0.1</td>
+<td>400.28</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard2</td>
+<td>[Huang23]</td>
+<td>8000</td>
+<td>0</td>
+<td>0</td>
+<td>5354.08</td>
+<td>0</td>
+<td></td>
+<td>0.12</td>
+<td>508.47</td>
+</tr>
+<tr>
+<td><a href="set-covering.html">Set Covering</a></td>
+<td>Easy</td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>500</td>
+<td>100</td>
+<td>18.05</td>
+<td></td>
+<td>0.99</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium</td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>1000</td>
+<td>100</td>
+<td>214.11</td>
+<td></td>
+<td>15.78</td>
+</tr>
+<tr>
+<td></td>
+<td>hard</td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>2000</td>
+<td>56</td>
+<td>1603.66</td>
+<td>0.04</td>
+<td>180.25</td>
+</tr>
+<tr>
+<td></td>
+<td>very hard</td>
+<td>[Huang23]</td>
+<td>4000</td>
+<td>0</td>
+<td>0</td>
+<td>5000</td>
+<td>0</td>
+<td></td>
+<td>0.2</td>
+<td>847.11</td>
+</tr>
+<tr>
+<td></td>
+<td>very hard2</td>
+<td>[Huang23]</td>
+<td>8000</td>
+<td>0</td>
+<td>0</td>
+<td>5000</td>
+<td>0</td>
+<td></td>
+<td>0.28</td>
+<td>1119.02</td>
+</tr>
+<tr>
+<td><a href="maximum-independent-set.html">Maximum <br/>Independent Set</a></td>
+<td>Easy</td>
+<td>[Gasse19]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>3946.25</td>
+<td>100</td>
+<td>50.52</td>
+<td></td>
+<td>0.86</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium</td>
+<td>[Gasse19]</td>
+<td>1500</td>
+<td>0</td>
+<td>0</td>
+<td>5941.14</td>
+<td>88</td>
+<td>470.44</td>
+<td>0.01</td>
+<td>11.28</td>
+</tr>
+<tr>
+<td></td>
+<td>very hard</td>
+<td>[Huang23]</td>
+<td>6000</td>
+<td>0</td>
+<td>0</td>
+<td>23994.82</td>
+<td>0</td>
+<td></td>
+<td>0.3</td>
+<td>1132.69</td>
+</tr>
+<tr>
+<td></td>
+<td>very hard2</td>
+<td>[Huang23]</td>
+<td>12000</td>
+<td>0</td>
+<td>0</td>
+<td>48009.62</td>
+<td>0</td>
+<td></td>
+<td>0.36</td>
+<td>1312.14</td>
+</tr>
+<tr>
+<td><a href="mvc.html">Minimum <br/>Vertex Cover</a></td>
+<td>Easy</td>
+<td>New</td>
+<td>1200</td>
+<td>0</td>
+<td>0</td>
+<td>5975</td>
+<td>100</td>
+<td>27.26</td>
+<td></td>
+<td>0.27</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium</td>
+<td>New</td>
+<td>2000</td>
+<td>0</td>
+<td>0</td>
+<td>9975</td>
+<td>97</td>
+<td>244.11</td>
+<td>0.01</td>
+<td>2.28</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard</td>
+<td>New</td>
+<td>500</td>
+<td>0</td>
+<td>0</td>
+<td>30100</td>
+<td>55</td>
+<td>1821.04</td>
+<td>0.02</td>
+<td>102.74</td>
+</tr>
+<tr>
+<td></td>
+<td>very hard</td>
+<td>[Huang23]</td>
+<td>1000</td>
+<td>0</td>
+<td>0</td>
+<td>65100</td>
+<td>0</td>
+<td></td>
+<td>0.12</td>
+<td>454.02</td>
+</tr>
+<tr>
+<td></td>
+<td>very hard2</td>
+<td>[Huang23]</td>
+<td>2000</td>
+<td>0</td>
+<td>0</td>
+<td>135100</td>
+<td>0</td>
+<td></td>
+<td>0.16</td>
+<td>596.84</td>
+</tr>
+<tr>
+<td><a href="generalized-independent-set.html">Generalized Independent <br/>Set Problem</a></td>
+<td>Easy</td>
+<td>New</td>
+<td>605.81</td>
+<td>0</td>
+<td>0</td>
+<td>1967.05</td>
+<td>100</td>
+<td>43.09</td>
+<td></td>
+<td>15.59</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium</td>
+<td>[Ferber22]</td>
+<td>988.81</td>
+<td>0</td>
+<td>0</td>
+<td>3353.03</td>
+<td>100</td>
+<td>671.89</td>
+<td></td>
+<td>204.83</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard</td>
+<td>[Ferber22]</td>
+<td>1317.03</td>
+<td>0</td>
+<td>0</td>
+<td>4567.83</td>
+<td>85</td>
+<td>2623.16</td>
+<td>0.08</td>
+<td>866.16</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard</td>
+<td>[Cai24]</td>
+<td>6017</td>
+<td>0</td>
+<td>0</td>
+<td>7821.87</td>
+<td>0</td>
+<td></td>
+<td>0.44</td>
+<td>2104.04</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard2</td>
+<td>[Cai24]</td>
+<td>8168.35</td>
+<td>0</td>
+<td>0</td>
+<td>10656.52</td>
+<td>0</td>
+<td></td>
+<td>0.59</td>
+<td>2638.9</td>
+</tr>
+<tr>
+<td></td>
+<td>Ext hard</td>
+<td>[Khalil17]</td>
+<td>12675.83</td>
+<td>0</td>
+<td>0</td>
+<td>16515.44</td>
+<td>0</td>
+<td></td>
+<td>2.01</td>
+<td>8139.33</td>
+</tr>
+<tr>
+<td><a href="capacitated-facility-location.html">Capacitated Facility <br/>Location Problem</a></td>
+<td>Easy</td>
+<td>[Gasse19]</td>
+<td>100</td>
+<td>0</td>
+<td>10000</td>
+<td>10201</td>
+<td>100</td>
+<td>44.44</td>
+<td></td>
+<td>0.57</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium</td>
+<td>[Gasse19]</td>
+<td>200</td>
+<td>0</td>
+<td>20000</td>
+<td>20301</td>
+<td>100</td>
+<td>103.51</td>
+<td></td>
+<td>0.88</td>
+</tr>
+<tr>
+<td><a href="load-balancing.html">Load Balancing</a></td>
+<td>Hard</td>
+<td>[Gasse22]</td>
+<td>1000</td>
+<td>0</td>
+<td>60000</td>
+<td>64307.17</td>
+<td>9</td>
+<td>2665.11</td>
+<td>0</td>
+<td>33.48</td>
+</tr>
+<tr>
+<td><a href="item-placement.html">Item Placement</a></td>
+<td>Very hard</td>
+<td>[Gasse22]</td>
+<td>1050</td>
+<td>0</td>
+<td>33</td>
+<td>195</td>
+<td>0</td>
+<td></td>
+<td>0.44</td>
+<td>1770.42</td>
+</tr>
+<tr>
+<td>## Real-world</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Domain</td>
+<td>Hardness Level</td>
+<td>Distribution Source <br/>(ML4MILPs)</td>
+<td># Var B</td>
+<td># Var I</td>
+<td># Var C</td>
+<td># Constr</td>
+<td># Opt</td>
+<td>Opt<br/> Time (s)</td>
+<td>NonOpt <br/>Gap</td>
+<td>Integral</td>
+</tr>
+<tr>
+<td>-------------------------------------------------------------------------------------------------------------------------------------------------------------------</td>
+<td>----------------</td>
+<td>-----</td>
+<td>----------</td>
+<td>----------</td>
+<td>----------</td>
+<td>----------</td>
+<td>-------</td>
+<td>--------------</td>
+<td>------------</td>
+<td>----------</td>
+</tr>
+<tr>
+<td><a href="maritime-inventory-routing.html">Maritime Inventory Routing Problem</a></td>
+<td>Medium</td>
+<td>[Gasse22]</td>
+<td>0</td>
+<td>15080.57</td>
+<td>19576.15</td>
+<td>44429.7</td>
+<td>10</td>
+<td>697.24</td>
+<td>0.23</td>
+<td>728.75</td>
+</tr>
+<tr>
+<td><a href="neural-network-verification.html">Neural Network Verification</a></td>
+<td>Easy</td>
+<td>[Nair20]</td>
+<td>171.49</td>
+<td>0</td>
+<td>6972.6</td>
+<td>6533.7</td>
+<td>588</td>
+<td>37.98</td>
+<td></td>
+<td>21.81</td>
+</tr>
+<tr>
+<td>Wildfire-Aware Optimal Transmission Switching</td>
+<td>Medium</td>
+<td>[Huang27]</td>
+<td>7928.94</td>
+<td>0</td>
+<td>32456</td>
+<td>73531.81</td>
+<td>2</td>
+<td>945.35</td>
+<td>1.28</td>
+<td>9500.5</td>
+</tr>
+<tr>
+<td>Wildfire-Aware Optimal Transmission Switching with Undergrounding</td>
+<td>Easy</td>
+<td>New</td>
+<td>4181</td>
+<td>0</td>
+<td>17137</td>
+<td>48582</td>
+<td>100</td>
+<td>45.86</td>
+<td></td>
+<td>3.72</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium</td>
+<td>New</td>
+<td>7525</td>
+<td>0</td>
+<td>33202</td>
+<td>92992</td>
+<td>100</td>
+<td>419.55</td>
+<td></td>
+<td>25.8</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard</td>
+<td>New</td>
+<td>3982</td>
+<td>0</td>
+<td>23212</td>
+<td>55539</td>
+<td>99</td>
+<td>1158.08</td>
+<td>0</td>
+<td>749.06</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard2</td>
+<td>New</td>
+<td>6546</td>
+<td>0</td>
+<td>46423</td>
+<td>111804</td>
+<td>52</td>
+<td>2564</td>
+<td>0.2</td>
+<td>1926.19</td>
+</tr>
+<tr>
+<td><a href="middle-mile-consolidation-network-design.html">Middle-Mile <br/>Consolidation<br/> Network</a></td>
+<td>Very easy</td>
+<td>New</td>
+<td>523.91</td>
+<td>173.06</td>
+<td>0</td>
+<td>255.02</td>
+<td>100</td>
+<td>5.96</td>
+<td></td>
+<td>0.17</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium-BI</td>
+<td>New</td>
+<td>1156.94</td>
+<td>263.23</td>
+<td>0</td>
+<td>437.81</td>
+<td>100</td>
+<td>114.93</td>
+<td></td>
+<td>3.01</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium-BC</td>
+<td>New</td>
+<td>4271.59</td>
+<td>0</td>
+<td>324.04</td>
+<td>3171.23</td>
+<td>100</td>
+<td>468.17</td>
+<td></td>
+<td>37.3</td>
+</tr>
+<tr>
+<td></td>
+<td>Medium-BC2</td>
+<td>New</td>
+<td>2075.3</td>
+<td>0</td>
+<td>164.74</td>
+<td>1521.99</td>
+<td>100</td>
+<td>735.01</td>
+<td></td>
+<td>74.09</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard-BI</td>
+<td>New</td>
+<td>2074.76</td>
+<td>346.39</td>
+<td>0</td>
+<td>642.57</td>
+<td>34</td>
+<td>1998.57</td>
+<td>0.01</td>
+<td>79.79</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard-BI</td>
+<td>New</td>
+<td>21596.72</td>
+<td>1127.29</td>
+<td>0</td>
+<td>3944.01</td>
+<td>0</td>
+<td></td>
+<td>0.1</td>
+<td>369.15</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard-BC</td>
+<td>New</td>
+<td>68345.21</td>
+<td>0</td>
+<td>2425.87</td>
+<td>96272.6</td>
+<td>0</td>
+<td></td>
+<td>0.61</td>
+<td>2761.52</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard-BC2</td>
+<td>New</td>
+<td>7441.34</td>
+<td>0</td>
+<td>529.37</td>
+<td>6385.27</td>
+<td>0</td>
+<td></td>
+<td>0.16</td>
+<td>751.84</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard-BC3</td>
+<td>New</td>
+<td>11145.05</td>
+<td>0</td>
+<td>730.64</td>
+<td>10771.61</td>
+<td>0</td>
+<td></td>
+<td>0.32</td>
+<td>1294.95</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard-BC4</td>
+<td>New</td>
+<td>28079.73</td>
+<td>0</td>
+<td>1450.98</td>
+<td>33604.47</td>
+<td>0</td>
+<td></td>
+<td>0.4</td>
+<td>1674.67</td>
+</tr>
+<tr>
+<td></td>
+<td>Very hard-BI2</td>
+<td>New</td>
+<td>7106.4</td>
+<td>640.82</td>
+<td>0</td>
+<td>1619.97</td>
+<td>0</td>
+<td></td>
+<td>0.08</td>
+<td>320.23</td>
+</tr>
+<tr>
+<td><a href="water-pipe-network-planning.html">Seismic-Resilient Pipe Network Planning</a></td>
+<td>Easy</td>
+<td>New</td>
+<td>3016.42</td>
+<td>0</td>
+<td>3016.42</td>
+<td>5917.27</td>
+<td>21</td>
+<td>77.91</td>
+<td>0.02</td>
+<td>10</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard</td>
+<td>New</td>
+<td>11485.33</td>
+<td>0</td>
+<td>11485.33</td>
+<td>22430.84</td>
+<td>9</td>
+<td>1321.43</td>
+<td>0.03</td>
+<td>134.12</td>
+</tr>
+<tr>
+<td><a href="course-exam-scheduling.html">Course Exam Scheduling</a></td>
+<td>Hard</td>
+<td>[Cai26]</td>
+<td>43488</td>
+<td>173</td>
+<td>0</td>
+<td>30173</td>
+<td>2</td>
+<td>1847.96</td>
+<td>0.06</td>
+<td>249.88</td>
+</tr>
+<tr>
+<td></td>
+<td>Hard2</td>
+<td>[Cai26]</td>
+<td>79968</td>
+<td>229</td>
+<td>0</td>
+<td>53205</td>
+<td>6</td>
+<td>2816.67</td>
+<td>0.06</td>
+<td>268.64</td>
+</tr>
+</tbody>
+</table></div></div>
+<p>Note (*): NNV contains 588 test instances. MIRP contains 20 test instances. SRPN contains 22 and 20 test instances in the Easy and Hard group, respectively. WF-OTS contains 54 test instances.</p>
+<h2 id="h.v6i0tblvg0ko">Reference: ML for Opt Pointers</h2>
+<p>[Gasse19] Gasse, M., Ch.telat, D., Ferroni, N., Charlin, L., and Lodi, A. (2019). Exact combinatorial optimization with graph convolutional neural networks. Advances in neural information processing systems, 32.</p>
+<p>[Huang23] Huang, T., Ferber, A. M., Tian, Y., Dilkina, B., and Steiner, B. (2023). Searching large neighborhoods for integer linear programs with contrastive learning. In International Conference on Machine Learning, pages 13869–13890. PMLR.</p>
+<p>[Ferber22] Ferber, A., Song, J., Dilkina, B., and Yue, Y. (2022). Learning pseudo-backdoors for mixed in integer programs. In Integration of Constraint Programming, Artificial Intelligence, and Operations Research, pages 91–102. Springer.</p>
+<p>[Cai24] Cai, J., Huang, T., and Dilkina, B. (2024). Learning backdoors for mixed integer programs with contrastive learning. arXiv preprint arXiv:2401.10467.</p>
+<p>[Khalil17] Khalil, E. B., Dilkina, B., Nemhauser, G. L., Ahmed, S., and Shao, Y. (2017). Learning to run heuristics in tree search. In Proceedings of the 26th International Joint Conference on Artificial Intelligence, pages 659–666.</p>
+<p>[Gasse22] Gasse, M., Bowly, S., Cappart, Q., Charfreitag, J., Charlin, L., Ch.telat, D., Chmiela, A., Dumouchelle, J., Gleixner, A., Kazachkov, A. M., et al. (2022). The machine learning for combinatorial optimization competition (ml4co): Results and insights. In NeurIPS 2021 competitions and demonstrations track, pages 220–231. PMLR.</p>
+<p>[Nair20] Nair, V., Bartunov, S., Gimeno, F., Von Glehn, I., Lichocki, P., Lobov, I., O’Donoghue, B., Sonnerat, N., Tjandraatmadja, C., Wang, P., et al. (2020). Solving mixed integer programs using neural networks. arXiv preprint arXiv:2012.13349.</p>
+<p>[Huang27] Huang, W., Piansky, R., Dilkina, B., &amp; Molzahn, D. K. (2027). Machine learning guided optimal transmission switching to mitigate wildfire ignition risk. <em>Electric Power Systems Research</em>, <em>262</em>, 113687.</p>
+<p>[Cai26] Cai, J., Van Hentenryck, P., &amp; Dilkina, B. (2026, August). ID-PaS+: Identity-Aware Predict-and-Search for Solving General Mixed-Integer Linear Programs. In <em>Proceedings of the International Symposium on Combinatorial Search</em> (Vol. 19, No. 1, pp. 20-28).</p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
