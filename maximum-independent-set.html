@@ -116,6 +116,8 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <p>For learning to branch, IS has been used as a benchmark in [Gasse19, Gupta20]. Their generator could be found at <a href="https://github.com/ds4dm/learn2branch">Learn2Branch</a>. For 1-hour runtime limit with SCIP, it is tested on IS instances on Barabasi-Albert random graphs with 500, 1,000 and 1,500 nodes and affinity set to 4. (Note that in [Gasse19, Gupta20, Wu21], the papers state the graphs are Erdos-Renyi random graphs. However, the source code indicates they are Barabasi-Albert graphs.)</p>
 <h3 id="h.u28zd7vomn7x">Large Neighborhood Search</h3>
 <p>For large neighborhood search, IS has been used in [Wu21, Huang23, Huang23b]. Huang et al. [Huang23] use Erdos-Renyi graphs with 6,000 and 12,000 nodes and affinity set to 4.  Huang et al. In addition to the distributions complied in Distributional MIPLIB shown in the table above,  Wu et al. [Wu21] use Barabasi-Albert graphs with 1,500, 3,000 and 6,000 nodes and affinity set to 4.  [Huang23b] use Barabasi-Albert graphs with 9,000 nodes and affinity set to 5 to test a heuristic.</p>
+<h3 id="backdoor">Backdoor</h3>
+<p>For learning backdoors, IS has been used as a benchmark in [Cai25], which trains on Barabasi-Albert graphs with 1,250 nodes and affinity set to 4, and tests on graphs of the same size as well as on larger graphs with 1,500 nodes and affinity set to 4 (the Medium distribution in Distributional MIPLIB).</p>
 <h2 id="h.ah3qwyvdsml4">Citation</h2>
 <p>Any work that uses any of the above instances should cite the papers below:</p>
 <h3 id="h.4xwui09ho9yf">Distributional MIPLIB</h3>

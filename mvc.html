@@ -125,6 +125,8 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <h2 id="h.mh9ubcze0usj">Related literature</h2>
 <h3 id="h.dr64jjwlhdqh">Large Neighborhood Search</h3>
 <p>For large neighborhood search, Huang et al. [Huang23] use Barabasi-Albert graphs with 1,000 and 2,000 nodes and affinity set to 70. The set of instances with 1000 nodes was used for training. The set of instances with 2000 nodes was used as an out-of-distribution test set. MVC has been used in [Song20, Huang23, Huang23b].  In addition to the distributions complied in Distributional MIPLIB shown in the table above, Song et al. [Song20] use both Erdos-Renyi and Barabasi-Albert graphs with 1,000 nodes and affinity set to 4.  Huang et al. [Huang23b] use Barabasi-Albert graphs with 9,000 nodes and affinity set to 5 to test a heuristic.</p>
+<h3 id="backdoor">Backdoor</h3>
+<p>For learning backdoors, MVC has been used as a benchmark in [Cai25], which trains on Barabasi-Albert graphs with 1,500 nodes and affinity set to 5, and tests on graphs of the same size as well as on larger graphs with 2,000 nodes and affinity set to 5 (the Medium distribution in Distributional MIPLIB).</p>
 <h2 id="h.upctdfwi135x">Citation</h2>
 <p>Any work that uses any of the above instances should cite the papers below:</p>
 <h3 id="h.si88gbraciy6">Distributional MIPLIB</h3>
