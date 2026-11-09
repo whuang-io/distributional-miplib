@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wildfire-Aware Optimal Transmission Switching · Distributional MIPLIB</title>
+<meta name="description" content="Distributional MIPLIB: a multi-domain library of MILP distributions for advancing ML-guided MILP methods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+<nav class="site-nav" aria-label="Main">
+  <a class="brand" href="index.html">Distributional MIPLIB</a>
+  <input type="checkbox" id="nav-toggle" hidden><label for="nav-toggle" class="nav-toggle" aria-label="Menu">&#9776;</label>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <details class="dd" data-active><summary>Domains</summary>
+      <div class="dd-menu"><div class="dd-group"><span>Synthetic</span><ul><li><a href="combinatorial-auctions.html">Combinatorial Auctions</a></li><li><a href="set-covering.html">Set Covering</a></li><li><a href="maximum-independent-set.html">Maximum Independent Set</a></li><li><a href="mvc.html">Minimum Vertex Cover</a></li><li><a href="generalized-independent-set.html">Generalized Independent Set</a></li><li><a href="capacitated-facility-location.html">Capacitated Facility Location</a></li><li><a href="load-balancing.html">Load Balancing</a></li><li><a href="item-placement.html">Item Placement</a></li></ul></div><div class="dd-group"><span>Real-world</span><ul><li><a href="maritime-inventory-routing.html">Maritime Inventory Routing</a></li><li><a href="neural-network-verification.html">Neural Network Verification</a></li><li><a href="WF_OTS.html" aria-current="page">Wildfire-Aware Optimal Transmission Switching</a></li><li><a href="WF_OTS_UG.html">Wildfire-Aware Optimal Transmission Switching with Undergrounding</a></li><li><a href="middle-mile-consolidation-network-design.html">Middle-Mile Consolidation Network Design</a></li><li><a href="water-pipe-network-planning.html">Water Pipe Network Planning</a></li><li><a href="course-exam-scheduling.html">Course Exam Scheduling</a></li></ul></div></div>
+    </details>
+    <a href="submit-distribution.html">Submit Distribution</a>
+    <a href="license.html">License</a>
+  </div>
+</nav>
+<header class="page-head"><div class="wrap"><h1 id="h.17586dmisue4">Wildfire-Aware Optimal Transmission Switching</h1></div></header>
+<main class="wrap content">
+<h2 id="h.ri8n83tktza5">Problem Description</h2>
+<p>The <em>Wildfire-Aware Optimal Transmission Switching</em> (WF_OTS) problem models the operational decisions underlying Public Safety Power Shutoffs (PSPS), in which utilities de-energize transmission lines in high-risk areas to mitigate wildfire ignition risk. Given the wildfire risk associated with each line, WF-OTS determines which lines to de-energize to minimize total load shedding across the network, with a small penalty on the number of de-energized lines. The aggregate wildfire risk of energized lines is constrained by a system-wide threshold. WF_OTS is formulated as a mixed-integer linear program (MILP) under a DC power flow approximation, with binary variables representing line energization decisions and continuous variables for generation dispatch, power flows, and load shedding. Big-M constraints enforce the DC power flow equations for energized lines while allowing de-energized lines to carry no power, alongside generator capacity limits and nodal power balance constraints. Each instance represents a single operating period with fixed wildfire risk levels, reflecting the short-term operational setting of PSPS decisions.</p>
+<p>The MILP formulation for the WF_OTS instances in this library is a single-period version of the Optimal Power Shutoff (OPS) problem [Rhodes21, Piansky25], derived from [Piansky25] and used in [Huang27].</p>
+<h2 id="h.a77jt48pvo9x">Instances Distribution</h2>
+<p>The table below summarizes the distributions that have been used in previous works, along with download links.  Instances from [Huang27] are generated using the California Test System (CATS) and daily USGS Wildland Fire Potential Index (WFPI) maps from 2020 and 2021, with each transmission line’s wildfire risk defined as the maximum WFPI value along its path. For each day, a representative hour is selected based on the maximum load shedding under a threshold-based shutoff policy. Days with no wildfire risk or load shedding are excluded. Only instances whose thresholded load shed is at least 100 MWh are used in the ML-guided experiments of [Huang27] . These are split randomly into training (80%, 432 instances), validation (10%, 54 instances), and test (10%, 54 instances) sets.</p>
+<div class="embed"><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hardness Level</th>
+<th>Distribution Source <br/>(ML4MILPs)</th>
+<th># Var B</th>
+<th># Var I</th>
+<th># Var C</th>
+<th># Constr</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://drive.google.com/file/d/1R2QH2Nc3nPGujyefZXT2aRmXuXtBmqrg/view?usp=sharing">Medium</a></td>
+<td>[Huang27]</td>
+<td>7928.94</td>
+<td>0</td>
+<td>32456</td>
+<td>73531.81</td>
+</tr>
+</tbody>
+</table></div></div>
+<h2 id="h.d06y94fndj5a">License</h2>
+<p>The WF_OTS instances data in Distributional MIPLIB is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</a> .</p>
+<h2 id="h.7jya5vdd39qv">Related Literature</h2>
+<h3 id="h.sfap9vpzk5qa">Predict-and-Search (PaS)</h3>
+<p>For predict-and-search, WF_OTS has been used as a benchmark in [Huang27].</p>
+<h2 id="h.pp06paylxp24">Acknowledgment</h2>
+<p>The instances of this problem were generated using data and code kindly provided by Ryan Piansky (Georgia Tech) and Prof. Daniel Molzahn (Georgia Tech).</p>
+<h2 id="h.oert2pqox3p8">Citation</h2>
+<p>Any work that uses any of the above instances should cite the papers below:</p>
+<h3 id="h.t3k7ni7ubcdy">Distributional MIPLIB</h3>
+<div class="embed"><pre><code>@misc{huang2024distributional,
+      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, 
+      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},
+      year={2024},
+      eprint={2406.06954},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+</code></pre>
+</div>
+<h3 id="h.5a1o3sjf5m3y">Original Formulation</h3>
+<div class="embed"><pre><code>@article{huang2027machine,
+  title={Machine learning guided optimal transmission switching to mitigate wildfire ignition risk},
+  author={Huang, Weimin and Piansky, Ryan and Dilkina, Bistra and Molzahn, Daniel K},
+  journal={Electric Power Systems Research},
+  volume={262},
+  pages={113687},
+  year={2027},
+  publisher={Elsevier}
+}
+</code></pre>
+</div>
+<h2 id="h.n784zlabgrk8">Reference</h2>
+<p>[Huang27] <a href="https://www.sciencedirect.com/science/article/pii/S0378779626009806">Huang, Weimin, et al. "Machine learning guided optimal transmission switching to mitigate wildfire ignition risk." Electric Power Systems Research 262 (2027): 113687.</a></p>
+<p>[Piansky25] <a href="https://arxiv.org/abs/2409.20511">Piansky, Ryan, et al. "Quantifying metrics for wildfire ignition risk from geographic data in power shutoff decision-making." arXiv preprint arXiv:2409.20511 (2024).</a></p>
+<p>[Rhodes21] <a href="https://arxiv.org/abs/2004.07156">Rhodes, Noah, Lewis Ntaimo, and Line Roald. "Balancing wildfire risk and power outages through optimized power shut-offs." IEEE Transactions on Power Systems 36.4 (2020): 3118-3128.</a></p>
+</main>
+<footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
