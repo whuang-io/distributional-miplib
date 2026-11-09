@@ -126,6 +126,10 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <h3 id="h.ao0885dqfbte">Large Neighborhood Search (LNS)</h3>
 <p>For large neighborhood search, CA has been used in [Song20, Wu21, Huang23]. For 1-hour runtime limit,  the typical problem sizes that have been used range from 2,000 items and 4,000 bids to 8,000 items and 16,000 bids. In addition to the distributions complied in Distributional MIPLIB shown in the table above, [Wu21] used CA instances with 8000 items and 16000 bids.</p>
 <p>The table above summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB. All these instances follow the arbitrary distribution.</p>
+<h3 id="backdoor">Backdoor</h3>
+<p>For learning backdoors, CA has been used as a benchmark in [Cai25], which trains on instances with 175 items and 850 bids, and tests on instances of the same size as well as on larger instances with 200 items and 1,000 bids (the Easy distribution in Distributional MIPLIB).</p>
+<h3 id="configuration">Solver Configuration</h3>
+<p>For solver configuration, CA has been used as a benchmark in [Cai25], which trains on instances with 2,000 items and 4,000 bids (the Very hard distribution in Distributional MIPLIB), and tests on instances of the same size as well as on larger instances with 3,000 items and 6,000 bids.</p>
 <h2 id="h.87muxoedegiy">Citation</h2>
 <p>Any work that uses any of the above instances should cite the papers below:</p>
 <h3 id="h.mtubrcdd8m8p">Original Formulation</h3>
