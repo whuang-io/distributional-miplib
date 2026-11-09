@@ -28,7 +28,7 @@
 <main class="wrap content">
 <h2 id="h.36dogayur6m8">Problem Description</h2>
 <p>The <em>Wildfire-Aware Optimal Transmission Switching with Undergrounding</em> (WF_OTS_UG) problem extends WF-OTS from operational decision-making to long-term planning. Over a multi-day horizon, it jointly determines which transmission lines to de-energize each day and which lines to underground. Undergrounding is a one-time investment that eliminates a line’s wildfire ignition risk while allowing it to remain in service, subject to an overall investment budget. On each day, lines in high-risk areas must either be de-energized or undergrounded, and the residual wildfire risk must remain below a prescribed threshold. The objective is to minimize total load shedding over the planning horizon. Equity-aware variants instead minimize the maximum proportion of load shed experienced by any demographic group or require that a specified fraction of investment or load-shedding reduction benefits vulnerable communities. Like WF-OTS, WF-OTS-UG is formulated as a mixed-integer linear program (MILP) under a DC power flow approximation, with binary variables representing daily line energization and undergrounding decisions. Because undergrounding decisions are made once and remain effective throughout the planning horizon, they couple the daily switching problems, resulting in a larger and more challenging MILP that balances long-term infrastructure investment against short-term operational shutoffs.</p>
-<p>The MILP formulation for the WF_OTS_UG instances in this library is described in [Pollack24] (Appendix B.6.1).</p>
+<p>The MILP formulation for the WF_OTS_UG instances in this library is described in [Pollack25] (Appendix B.6.1).</p>
 <h2 id="h.m3msfrk5fg3v">Instances Distribution</h2>
 <p>We compile four sets of WF_OTS_UG instances with different difficulty levels, which correspond to instances created from different network sizes and number of days in the simulation. See the table below for details.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -114,7 +114,7 @@
 </code></pre>
 </div>
 <h2 id="h.2i4p8cc62t26">References</h2>
-<p class="ref" id="ref-Pollack24"><span class="ref-key">[Pollack24]</span> Pollack, Madeleine, Ryan Piansky, Swati Gupta, and Daniel Molzahn. "Equitably allocating wildfire resilience investments for power grids: The curse of aggregation and vulnerability indices." <em>Applied Energy</em>, vol. 388, 125511, 2025. [<a href="https://doi.org/10.1016/j.apenergy.2025.125511">paper</a>]</p>
+<p class="ref" id="ref-Pollack25"><span class="ref-key">[Pollack25]</span> Pollack, Madeleine, Ryan Piansky, Swati Gupta, and Daniel Molzahn. "Equitably allocating wildfire resilience investments for power grids: The curse of aggregation and vulnerability indices." <em>Applied Energy</em>, vol. 388, 125511, 2025. [<a href="https://doi.org/10.1016/j.apenergy.2025.125511">paper</a>]</p>
 </main>
 <footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
 <script src="assets/site.js"></script>
