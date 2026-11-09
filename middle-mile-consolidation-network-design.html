@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,21 +28,37 @@
 <header class="page-head"><div class="wrap"><h1 id="h.jxgiojkeu4jx">Middle-Mile Consolidation Network Design</h1></div></header>
 <main class="wrap content">
 <h2 id="h.yoll5luuqpls">Problem Description</h2>
-<div class="embed">
-<p>
-  The Middle-Mile Consolidation Network (MMCN) design problem [Greening23] considers a shipper that needs to transport a set of commodities \( \mathcal{K}\) from known origins to known destinations. Let \((\mathcal{N}, \mathcal{A})\) define the shipper's service network. The node set \(\mathcal{N}\) denotes the set of facilities in the network, which include vendors, fulfillment centers (FCs), and last-mile delivery (LMDs) centers. In this problem, both vendors and FCs act as origins and LMDs are the destinations; FCs also act as cross-docks for consolidation. The directed arc set \(\mathcal{A}\) consists of the set of potential freight transportation arcs connecting pairs of locations. The set is composed of vendor-to-LMD (or ''directs''), vendor-to-FC, FC-to-FC, and FC-to-LMD arcs.
-<br/><br/>
-The MMCN design problem determines a minimum-cost allocation of transportation capacity on network arcs to ensure that a shipment consolidation plan is feasible. This includes the decision as to whether to send demand via the middle-mile consolidation network (i.e., use FCs as cross-docks for consolidation) or send demand directly from vendor to LMD centers.
-<br/> <br/>
-The proposed MILP model uses a path-based, flat (not time-expanded) network representation of capacity allocation to arcs and an associated representation of shipment consolidation into load dispatches. Freight transportation capacity decisions are modeled as frequencies of load dispatches on arcs per time (e.g., per week). The demand inputs then are also expressed as constant rates per time (e.g., pounds per week).
-<br/><br/>
-
-Although many shipments may be sent over time for an origin-destination pair, or commodity \(k \in \mathcal{K}\), the model assumes that each such shipment follows the same sequence of arcs (or path) defined by the chosen consolidation plan.
-
-The full formulation for this problem can be found at <a href="“https://drive.google.com/file/d/1iLzjUDdFTNwm_tFqoURNajq6xjFHhnkg/view?usp=sharing”">formulation</a>, which was kindly provided by Lacy Greening.
-
-</p>
-</div>
+<div class="embed"><p>The Middle-Mile Consolidation Network (MMCN) design problem [Greening23] considers a shipper that must move a set of commodities \(\mathcal{K}\) from known origins to known destinations. Let \((\mathcal{N},\mathcal{L})\) be the shipper's service network. The node set \(\mathcal{N}\) holds the facilities: vendors (VND), fulfillment centers (FCs), and last-mile delivery (LMD) centers. Vendors and FCs are origins and LMDs are destinations. FCs also serve as cross-docks where shipments are transferred and consolidated. The directed leg set \(\mathcal{L}\) holds the potential freight transportation legs between locations: vendor-to-LMD ("directs"), vendor-to-FC, FC-to-FC, and FC-to-LMD.</p>
+<p>The problem finds a minimum-cost allocation of transportation capacity to legs that makes a shipment consolidation plan feasible. This includes deciding whether to ship each commodity through the consolidation network (using FCs as cross-docks) or directly from vendor to LMD. The model is path-based and uses a flat (not time-expanded) network. Capacity is modeled as load dispatch frequencies per week on each leg, and demand is modeled as a constant rate per week (pounds per week). Many shipments of one commodity (origin-destination pair) \(k\in\mathcal{K}\) may move over time, but all of them follow the same route chosen by the plan.</p>
+<p>Notation (shared by both variants):</p>
+<ul>
+<li>\(\mathcal{R}_k\): candidate routes of commodity \(k\). A route is a sequence of 1 to 4 legs from \(o_k\) to \(d_k\) through FCs. \(\mathcal{R}=\cup_k\mathcal{R}_k\), and \(l\in r\) means route \(r\) uses leg \(l\).</li>
+<li>\(V_k\): weekly volume (lbs) of commodity \(k\). \(C_r\): fixed cost of selecting route \(r\) (transfer handling cost plus any costs of pre-processed direct legs).</li>
+<li>Transportation modes \(m\): truckload (TL), with load capacity 12,000 lbs and cost \(A^{TL}_l=750+1.27d_l\) per load for a leg of length \(d_l\) miles, and three less-than-truckload weight buckets LTL1/LTL2/LTL3 for loads in \((0,2000]\), \((2000,2700]\), and \((2700,4000]\) lbs. Each lane \((l,m)\) has a per-load cost \(A_{lm}\), a per-pound cost \(B_{lm}\), and load-size bounds \(Q^{\min}_{lm}\), \(Q^{\max}_{lm}\), as in Table 2 of [Greening23].</li>
+</ul>
+<p>The distributions come in two variants. The variant is shown by the suffix of the hardness level (BI = binary + general integer variables, BC = binary + continuous variables) and by the <em>Model</em> column (SM/MM).</p>
+<p><strong>SM (single-mode) variant, "-BI" levels.</strong> This is the base model MMC of [Greening23] with only the truckload mode. Lead-time requirements are handled by the route sets, which contain only lead-time-feasible routes. Variables: \(x_r\in\{0,1\}\) selects route \(r\), and \(f_l\in\mathbb{Z}_{\geq 0}\) is the number of truckloads dispatched per week on leg \(l\in\mathcal{L}\), where \(\mathcal{L}\) holds the vendor-to-FC, FC-to-FC, and FC-to-LMD legs. The leg volume \(v_l\) is substituted out and the truckload lower bound is 0, so the model is</p>
+\begin{align}
+&\min\;\sum_{r\in\mathcal{R}}C_r x_r+\sum_{l\in\mathcal{L}}A^{TL}_l f_l&\nonumber\\
+&\sum_{r\in\mathcal{R}_k}x_r=1&\forall k\in\mathcal{K}\\
+&\sum_{k\in\mathcal{K}}\sum_{r\in\mathcal{R}_k:\,l\in r}V_k\,x_r\leq 12000\,f_l&\forall l\in\mathcal{L}\\
+&x_r\in\{0,1\}\ \forall r\in\mathcal{R},\qquad f_l\in\mathbb{Z}_{\geq 0}\ \forall l\in\mathcal{L}&
+\end{align}
+<p>In these instances every candidate route uses at least one leg of \(\mathcal{L}\), so there is no direct vendor-to-LMD option. The single-leg FC-to-LMD routes of FC-origin commodities have \(C_r=0\). An instance has \(|\mathcal{R}|\) binaries, \(|\mathcal{L}|\) general integers, and \(|\mathcal{K}|+|\mathcal{L}|\) constraints.</p>
+<p><strong>MM (multi-mode) variant, "-BC" levels.</strong> This is the middle-mile consolidation with waiting times model MMCW of [Greening23]. Vendor-to-FC and FC-to-FC legs use TL only. FC-to-LMD legs may use TL or one of the three LTL buckets (mode set \(\mathcal{M}_l\)). The dispatch frequency of lane \((l,m)\) is chosen from \(\mathcal{F}_{lm}=\{1,\dots,14\}\) for TL and \(\{1,\dots,5\}\) for LTL. Lead times include the waiting delay between dispatches and must be met in expectation (conservatism level \(\rho_r\)). Direct vendor-to-LMD routes are pre-processed: their cost is included in \(C_r\) and they use no leg of \(\mathcal{L}\). Every other physical path appears as two route variables, one shipping its final FC-to-LMD leg by TL and one by LTL. \(\bar{\mathcal{R}}\) denotes the non-direct routes, \(l_r\) the final FC-to-LMD leg of \(r\), and \(\mathcal{M}_r\) the modes allowed on \(l_r\) for route \(r\) (\(\{TL\}\) with \(\omega\in\{1,\dots,14\}\), or \(\{LTL1,LTL2,LTL3\}\) with \(\omega\in\{1,\dots,4\}\)). Each non-direct route has a lead-time parameter \(\tau_r=\hat W_r/\rho_r\), where \(\hat W_r\) is the allowable waiting delay (in days) and \(|r|\) is the number of legs of \(r\). Variables: \(x_r\in\{0,1\}\) selects route \(r\), \(z_{lm\omega}\in\{0,1\}\) means lane \((l,m)\) dispatches \(\omega\) loads per week, and \(v_{lm}\geq 0\) is the volume on lane \((l,m)\).</p>
+\begin{align}
+&\min\;\sum_{r\in\mathcal{R}}C_r x_r+\sum_{l\in\mathcal{L}}\sum_{m\in\mathcal{M}_l}\Big(A_{lm}\sum_{\omega\in\mathcal{F}_{lm}}\omega\,z_{lm\omega}+B_{lm}v_{lm}\Big)&\nonumber\\
+&\sum_{r\in\mathcal{R}_k}x_r=1&\forall k\in\mathcal{K}\\
+&\sum_{m\in\mathcal{M}_l}v_{lm}=\sum_{k\in\mathcal{K}}\sum_{r\in\mathcal{R}_k:\,l\in r}V_k\,x_r&\forall l\in\mathcal{L}\\
+&v_{lm}\leq Q^{\max}_{lm}\sum_{\omega\in\mathcal{F}_{lm}}\omega\,z_{lm\omega}&\forall l\in\mathcal{L},m\in\mathcal{M}_l\\
+&v_{lm}\geq Q^{\min}_{lm}\sum_{\omega\in\mathcal{F}_{lm}}\omega\,z_{lm\omega}&\forall l\in\mathcal{L},m\in\mathcal{M}_l\\
+&\sum_{m\in\mathcal{M}_l}\sum_{\omega\in\mathcal{F}_{lm}}z_{lm\omega}\leq 1&\forall l\in\mathcal{L}\\
+&\sum_{l\in r}\sum_{m\in\mathcal{M}_l}\sum_{\omega\in\mathcal{F}_{lm}}\frac{1}{\omega}z_{lm\omega}\leq \tau_r\,x_r+|r|(1-x_r)&\forall r\in\bar{\mathcal{R}}\\
+&x_r\leq\sum_{m\in\mathcal{M}_r}\sum_{\omega}z_{l_r m\omega}&\forall r\in\bar{\mathcal{R}}\\
+&x_r\in\{0,1\},\quad z_{lm\omega}\in\{0,1\},\quad v_{lm}\geq 0&
+\end{align}
+<p>Constraint (4) selects one route per commodity. (5) computes the volume on each leg and splits it among its modes. (6) and (7) set the dispatch frequency from the load-size bounds (\(Q^{\max}=12000,2000,2700,4000\) and \(Q^{\min}=0.1,0.1,2000,2700\) lbs for TL, LTL1, LTL2, LTL3). (8) lets each leg use at most one mode and one frequency. (9) is the linearized lead-time chance constraint \(\rho_r\sum_{l\in r}1/f_l\leq\hat W_r\) divided by \(\rho_r\): the waiting delay on a leg with \(\omega\) weekly dispatches is uniform on \([0,1/\omega]\). (10) ties a route variant to the mode used on its final leg. With \(|\mathcal{L}|\) legs, \(\sum_l|\mathcal{M}_l|\) lanes, and \(|\bar{\mathcal{R}}|\) non-direct routes, an instance has \(|\mathcal{R}|+\sum_{l,m}|\mathcal{F}_{lm}|\) binaries, \(\sum_l|\mathcal{M}_l|\) continuous variables, and \(|\mathcal{K}|+2|\mathcal{L}|+2\sum_l|\mathcal{M}_l|+2|\bar{\mathcal{R}}|\) constraints.</p>
+<p>The instances are synthetic and follow the generator of [Greening23], which was based on data from a large U.S. e-commerce retailer. They differ in the number of vendors, FCs, and LMDs (the network size group, see the table) and in the randomly sampled locations, commodities, and lead times.</p></div>
 <h2 id="h.rg0gn27va80q">Instances Distribution</h2>
 <p>The hardness level of the MMCN problems depends on the network size. We include instances created from different network size groups specified by [Greening23].  We include distributions containing binary and integer variables (denoted as BI) and distributions containing binary and continuous variables (denoted as BC). BI and BC distributions correspond to 2 variants of MMCN. BI distributions correspond to the Single-Mode (SM) variant, where all arcs in the network have the same single transit mode. BC distributions correspond to the Multi-Mode (MM) variant, where multiple transit modes are allowed. For each variant, we provide instances of different difficulty levels.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -52,9 +69,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>Transit mode</th>
-<th>Network group size</th>
+<th># Constr</th><th>Model (modes)</th><th>Network size group</th><th># Vendors / FCs / LMDs</th>
+
+
 </tr>
 </thead>
 <tbody>
@@ -64,9 +81,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>523.91</td>
 <td>173.06</td>
 <td>0</td>
-<td>255.02</td>
-<td>SM</td>
-<td>1</td>
+<td>255.02</td><td>SM (truckload only)</td><td>1</td><td>12 / 8 / 7</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1_x6iv-UktTviZHBAJ_JbAV5BKkRlrr7f/view?usp=drive_link">Medium-BI</a></td>
@@ -74,9 +91,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>1156.94</td>
 <td>263.23</td>
 <td>0</td>
-<td>437.81</td>
-<td>SM</td>
-<td>1h</td>
+<td>437.81</td><td>SM (truckload only)</td><td>1.5 (1h)</td><td>17 / 8 / 12</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1nJXj1ZVojRgKMAL64SJMJahl5iCeSVTP/view?usp=drive_link">Medium-BC</a></td>
@@ -84,9 +101,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>4271.59</td>
 <td>0</td>
 <td>324.04</td>
-<td>3171.23</td>
-<td>MM</td>
-<td>1</td>
+<td>3171.23</td><td>MM (truckload + 3 LTL)</td><td>1</td><td>12 / 8 / 7</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1O24b_3p3Tw_v2Gjcg2kiqqI5nsnMZMEC/view?usp=drive_link">Medium-BC2</a></td>
@@ -94,9 +111,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>2075.3</td>
 <td>0</td>
 <td>164.74</td>
-<td>1521.99</td>
-<td>MM</td>
-<td>0</td>
+<td>1521.99</td><td>MM (truckload + 3 LTL)</td><td>0</td><td>12 / 4 / 7</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1yeHo3tm14GZMB7tZX3NcGEO9FI6tzNfq/view?usp=drive_link">Hard-BI</a></td>
@@ -104,9 +121,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>2074.76</td>
 <td>346.39</td>
 <td>0</td>
-<td>642.57</td>
-<td>SM</td>
-<td>2</td>
+<td>642.57</td><td>SM (truckload only)</td><td>2</td><td>22 / 8 / 17</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1ii6GTR7jDXdNZmpMd0PX8aigetN61FfP/view?usp=drive_link">Very hard-BI</a></td>
@@ -114,9 +131,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>21596.72</td>
 <td>1127.29</td>
 <td>0</td>
-<td>3944.01</td>
-<td>SM</td>
-<td>4</td>
+<td>3944.01</td><td>SM (truckload only)</td><td>4</td><td>80 / 8 / 55</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1hS8wRFLKw2WrTqqcEmuNl9dt38cXj5qN/view?usp=drive_link">Very hard-BC</a></td>
@@ -124,9 +141,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>68345.21</td>
 <td>0</td>
 <td>2425.87</td>
-<td>96272.6</td>
-<td>MM</td>
-<td>4</td>
+<td>96272.6</td><td>MM (truckload + 3 LTL)</td><td>4</td><td>80 / 8 / 55</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1JuMvN0SXj6PrHO4IYWSc2uYw0Mxid3Pl/view?usp=drive_link">Very hard-BC2</a></td>
@@ -134,9 +151,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>7441.34</td>
 <td>0</td>
 <td>529.37</td>
-<td>6385.27</td>
-<td>MM</td>
-<td>1h</td>
+<td>6385.27</td><td>MM (truckload + 3 LTL)</td><td>1.5 (1h)</td><td>17 / 8 / 12</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1Z1K_dfj--DrpqD6muBPhAL7GHcuZ5o_W/view?usp=drive_link">Very hard-BC3</a></td>
@@ -144,9 +161,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>11145.05</td>
 <td>0</td>
 <td>730.64</td>
-<td>10771.61</td>
-<td>MM</td>
-<td>2</td>
+<td>10771.61</td><td>MM (truckload + 3 LTL)</td><td>2</td><td>22 / 8 / 17</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1LvRm4GurrvSKH01b1bcMuEIyA2MB8P13/view?usp=drive_link">Very hard-BC4</a></td>
@@ -154,9 +171,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>28079.73</td>
 <td>0</td>
 <td>1450.98</td>
-<td>33604.47</td>
-<td>MM</td>
-<td>3</td>
+<td>33604.47</td><td>MM (truckload + 3 LTL)</td><td>3</td><td>40 / 8 / 35</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1o1_6dKXCqJfhG3f6M2aJm5E4KR9Rnp8M/view?usp=drive_link">Very hard-BI2</a></td>
@@ -164,9 +181,9 @@ The full formulation for this problem can be found at <a href="“https://drive.
 <td>7106.4</td>
 <td>640.82</td>
 <td>0</td>
-<td>1619.97</td>
-<td>SM</td>
-<td>3</td>
+<td>1619.97</td><td>SM (truckload only)</td><td>3</td><td>40 / 8 / 35</td>
+
+
 </tr>
 </tbody>
 </table></div></div>

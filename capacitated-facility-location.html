@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,34 +28,28 @@
 <header class="page-head"><div class="wrap"><h1 id="h.7xw1ir6f7zbi">Capacitated Facility Location</h1></div></header>
 <main class="wrap content">
 <h2 id="h.ngjg823wcfj0">Problem Description</h2>
-<p>Capacitated Facility Location Problem (CFLP) considers satisfying customer demands from several facilities. The facilities have startup costs and can satisfy customer demand by incurring transportation costs. Once opened, a facility can satisfy customer demand by deciding how much capacity is routed to each customer. For distributions, often problems are randomly generated according to [Cornuéjols91].</p>
-<h3 id="h.bx3fphww6zfz">Inputs</h3>
-<div class="embed">
+<div class="embed"><p>The Capacitated Facility Location Problem (CFLP) considers satisfying customer demands from a set of candidate facilities. Each facility has a fixed opening cost and a capacity; once opened, it can serve customers, incurring a transportation cost that depends on the customer's demand and the distance between them. The goal is to decide which facilities to open and how to split every customer's demand among the open facilities so that the total opening and transportation cost is minimized. The instances follow the generator of [Gasse19], which in turn follows [Cornuéjols91].</p>
+<p><strong>Notation</strong></p>
 <ul>
-<li>\(C\): The set of customers.</li>
-<li>\(F\): The set of facilities.</li>
-<li>\(d_c\): Customer demand required defined for each customer \(c\).</li>
-<li>\(c^s_{c,f}\): Startup cost defined for each facility \(f\) .</li>
-<li>\(c^t_{c,f}\): The cost of transporting one unit from facility \(f\) to customer \(c\).</li>
-<li>\(b_{f}\): Capacity budget defined for each facility \(f\).</li>
+<li>\(C\): the set of customers, indexed by \(i\); \(F\): the set of candidate facilities, indexed by \(j\).</li>
+<li>\(d_i\): demand of customer \(i\) (integer, uniform in \(\{5,\dots,35\}\)).</li>
+<li>\(s_j\): capacity of facility \(j\). Raw capacities are drawn uniformly from \(\{10,\dots,160\}\) and rescaled so that the total capacity is \(\rho = 5\) times the total demand (rounded down to integers).</li>
+<li>\(f_j\): fixed cost of opening facility \(j\), \(f_j = \lfloor u_j\sqrt{\tilde s_j} + v_j \rfloor\) with \(u_j\) uniform in \(\{100,\dots,110\}\), \(v_j\) uniform in \(\{0,\dots,90\}\), and \(\tilde s_j\) the raw (unscaled) capacity.</li>
+<li>\(c_{ij}\): cost of serving all of customer \(i\)'s demand from facility \(j\), \(c_{ij} = 10\, d_i\, \lVert p_i - q_j \rVert_2\), where customer locations \(p_i\) and facility locations \(q_j\) are uniform in the unit square.</li>
+<li>\(y_j \in \{0,1\}\): 1 if facility \(j\) is opened.</li>
+<li>\(x_{ij} \in [0,1]\): fraction of customer \(i\)'s demand served by facility \(j\).</li>
 </ul>
-</div>
-<h3 id="h.otxx24rvol9x">MIP Formulation</h3>
-<div class="embed">
-<p>
-
-\begin{equation}
-\begin{split}
-\text{Minimize}_{x,y} \quad &amp; \sum_{f \in F} c^s_{f}x_f + \sum_{c \in C}\sum_{f \in F} c^t_{c,f}y_{c,f} \quad &amp; \text{(Objective: minimize total costs)} \\
-\text{subject to} \quad &amp; \sum_{f \in F} y_{c,f} = d_c, \quad \forall c \in C \quad &amp; \text{(Constraint 1: satisfy all demand)} \\
-&amp; \sum_{c \in C} y_{c,f} \leq b_f x_f, \quad \forall f \in F \quad &amp; \text{(Constraint 2: respect facility capacity)} \\
-&amp; y_{c,f} \geq 0, \quad \forall c \in C, f \in F \quad &amp; \text{(Constraint 3: non-negative shipments)} \\
-&amp; x_f \in \{0, 1\}, \quad \forall f \in F \quad &amp; \text{(Constraint 4: binary decision of opening facility)}
-\end{split}
-\end{equation}
-
-</p>
-</div>
+<p><strong>MILP formulation</strong></p>
+\begin{align}
+\min_{x,y} \quad & \sum_{i \in C}\sum_{j \in F} c_{ij}\, x_{ij} + \sum_{j \in F} f_j\, y_j \\
+\text{s.t.} \quad & \sum_{j \in F} x_{ij} \geq 1 && \forall i \in C \quad \text{(demand)} \\
+& \sum_{i \in C} d_i\, x_{ij} \leq s_j\, y_j && \forall j \in F \quad \text{(capacity)} \\
+& \sum_{j \in F} s_j\, y_j \geq \sum_{i \in C} d_i && \text{(total capacity)} \\
+& x_{ij} \leq y_j && \forall i \in C,\ \forall j \in F \quad \text{(only open facilities serve)} \\
+& 0 \leq x_{ij} \leq 1 && \forall i \in C,\ \forall j \in F \\
+& y_j \in \{0,1\} && \forall j \in F
+\end{align}
+<p>The total-capacity constraint and the \(x_{ij} \leq y_j\) constraints are implied by the others for integer \(y\), but they are included in the instances to tighten the LP relaxation [Gasse19]. An instance therefore has \(|F|\) binary variables, \(|C||F|\) continuous variables, and \(|C| + |F| + 1 + |C||F|\) constraints.</p></div>
 <h2 id="h.4a5c9p2gu9tq">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -65,9 +60,9 @@
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th># Facilities</th>
-<th># Customers</th>
+<th># Constr</th><th># Facilities</th><th># Customers</th><th>Capacity / Demand Ratio</th>
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -78,9 +73,9 @@
 <td>100</td>
 <td>0</td>
 <td>10000</td>
-<td>10201</td>
-<td>100</td>
-<td>100</td>
+<td>10201</td><td>100</td><td>100</td><td>5</td>
+
+
 <td>Branching <br/> [Gasse19,Gupta20]</td>
 </tr>
 <tr>
@@ -89,9 +84,9 @@
 <td>200</td>
 <td>0</td>
 <td>20000</td>
-<td>20301</td>
-<td>100</td>
-<td>200</td>
+<td>20301</td><td>200</td><td>100</td><td>5</td>
+
+
 <td>Branching, Backdoor<br/> [Gasse19,Gupta20,Ferber22]</td>
 </tr>
 </tbody>

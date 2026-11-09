@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,35 +28,35 @@
 <header class="page-head"><div class="wrap"><h1 id="h.4txqnz5ez2s2">Seismic-Resilient Pipe Network Planning</h1></div></header>
 <main class="wrap content">
 <h2 id="h.u64qrmfuynjm">Problem Description</h2>
-<div class="embed">
-<p>
-Seismic-Resilient Pipe Network (SRPN) Planning is a network design problem, where the goal is to select and upgrade water pipes of a water network to earthquake-resilient ones to create a water network that will resist most earthquake risks and ensure water delivery to critical customers such as evacuation centers, hospitals, and police stations under earthquake risks. The network should also guarantee water service coverage within certain distances away from residential areas.
-<br/><br/>
-Formally, we are given:
-an undirected graph \(G=(V,E)\), a set of Steiner nodes \(C\) representing critical customers, water sources \(T\), coverage constraints \(R\) and \(\{S(r):r\in R\}\), the cost function on the edges \(c: E \rightarrow \mathbb{R}^{\geq 0}.\)<br/><br/>
-
-We want to find a set of edges \(E'\subseteq E\) with minimum cost \(\sum_{e\in E'}c(e)\), such that all \(u\in C\) and \(r\in R\) are satisfied. We say that a Steiner node \(u\in C\) is satisfied if in the induced subgraph of \(E'\), \(u\) is connected to a source in \(T\) and \(r\) is satisfied if there exists \(e\in E'\cap S(r)\) connected to a source in \(T\).
-<br/><br/>
-W.l.o.g., it is assumed that \(T\cap C=\emptyset\) and \(T\cap \{u: \exists (u,v)\in S(r)\}=\emptyset,\, \forall r\in R\).
-<br/><br/>
-Below is a Flow-based MILP formulation introduced by [Huang20].
-
+<div class="embed"><p>Seismic-Resilient Pipe Network (SRPN) Planning [Huang20] is a network design problem. The goal is to choose water pipes to upgrade to earthquake-resilient ones so that the network survives most earthquake risks and still delivers water to critical customers such as evacuation centers, hospitals, and police stations. The network must also guarantee water service within a certain distance of residential areas. [Huang20] models this as the edge-weighted Steiner Network Problem with Coverage Constraints (SNP-CC). The instances are built from the water pipe networks of combinations of Los Angeles water service zones. Following [Huang20], only threatened pipes (pipes that touch a liquefaction area or lie within 500 feet of a fault zone) need replacement. Each threatened pipe costs its length, and the rest of the network is assumed safe.</p>
+<p>Formally, we are given:</p>
+<ul>
+<li>an undirected graph \(G=(V,E)\), where the edges \(E\) are the (threatened) pipes and the nodes \(V\) are pipe junctions;</li>
+<li>a replacement cost \(c_{ij}\gt 0\) for every pipe \(\{i,j\}\in E\);</li>
+<li>a set of water sources \(T\subseteq V\) (e.g., pumps, storages, trunk pipes);</li>
+<li>a set of critical customers (Steiner nodes) \(C\subseteq V\setminus T\), each mapped to its closest junction;</li>
+<li>a set of housing areas \(R\), and for each \(r\in R\) the set \(S(r)\subseteq E\) of pipes close enough to serve \(r\).</li>
+</ul>
+<p>We want to find a set of pipes \(E'\subseteq E\) with minimum cost \(\sum_{e\in E'}c_e\) such that every critical customer \(u\in C\) is connected to some source in \(T\) in the subgraph induced by \(E'\), and every housing area \(r\in R\) is covered, i.e., some pipe of \(E'\cap S(r)\) is connected to a source in \(T\). W.l.o.g., \(T\cap C=\emptyset\) and no endpoint of a pipe in any \(S(r)\) is a source.</p>
+<p>The flow-based MILP (FB-MILP) of [Huang20] works on a directed graph \(\hat G=(V\cup\{0\},\hat E\cup\{(0,t):t\in T\})\). Each undirected pipe \(\{i,j\}\in E\) becomes two arcs \((i,j),(j,i)\in\hat E\), and an artificial super source \(0\) is linked to every source \(t\in T\). \(\delta^+(v)\) and \(\delta^-(v)\) denote the outgoing and incoming arcs of \(v\) in \(\hat G\), and \(M=|\hat E|+|V|\) is the total amount of flow available. Variables:</p>
+<ul>
+<li>\(x_{ij}\in\{0,1\}\) for each arc \((i,j)\in\hat E\): 1 if pipe \(\{i,j\}\) is upgraded and used in direction \(i\to j\);</li>
+<li>\(y_{e}\geq 0\) for each arc \(e\in\hat E\): continuous flow on arc \(e\);</li>
+<li>\(y_{0t}\geq 0\) for each \(t\in T\): flow injected by the super source into source \(t\).</li>
+</ul>
+<p>Flow leaves the sources. Every critical customer absorbs one unit of flow, and every selected arc consumes one unit of flow at its tail, so a node can only receive flow through selected arcs that are connected to a source.</p>
 \begin{align}
-&amp;\min_{x,y,z}\sum_{(i,j)\in E}c(i,j)(x_{i,j}+x_{j,i})&amp;\nonumber\\
-    &amp;\sum_{e\in \delta^{-}(v)}y_e=\mathbf{1}_{[v\in C]}+\sum_{e\in \delta^{+}(v)}(y_e+x_e)&amp;\forall v\in V\label{Con0}\\
-    &amp;x_{i,j}+x_{j,i}\leq 1&amp; \forall (i,j)\in E\label{Con1}\\
-    &amp;\sum_{(i,j)\in S(r)}x_{i,j}+x_{j,i}\geq 1&amp;\forall r\in R\label{Con2}\\
-    &amp;0\leq y_e\leq (|\hat{E}|+|V|)x_e&amp;\forall e\in \hat{E}\label{Con3}\\
-   % &amp;0\leq y_{i,j}\leq (|\hat{E}|+|V|)z_j&amp;\forall (i,j)\in \hat{E}\\
-    %&amp;z_v=1&amp;\forall v\in C\\
-    %&amp;z_v\in\{0,1\} &amp;\forall v\in V\\
-    &amp;z+\sum_{t\in T}y_{0,t}=|\hat{E}|+|V|&amp;\label{Con4}\\
-    &amp;\sum_{t\in T}y_{0,t}=|C|+\sum_{e\in \hat{E}}x_{e}&amp;\label{Con5}\\
-    &amp;x_e\in\{0,1\}&amp;\forall e\in \hat{E}\label{Con6}
+&\min\;\sum_{\{i,j\}\in E}c_{ij}\,(x_{ij}+x_{ji})&\nonumber\\
+&\sum_{e\in\delta^-(v)}y_e=\mathbf{1}_{[v\in C]}+\sum_{e\in\delta^+(v)}(y_e+x_e)&\forall v\in V\\
+&x_{ij}+x_{ji}\leq 1&\forall \{i,j\}\in E\\
+&\sum_{\{i,j\}\in S(r)}(x_{ij}+x_{ji})\geq 1&\forall r\in R\\
+&y_e\leq M\,x_e&\forall e\in\hat E\\
+&\sum_{t\in T}y_{0t}=|C|+\sum_{e\in\hat E}x_e&\\
+&0\leq y_e\leq M&\forall e\in\hat E\cup\{(0,t):t\in T\}\\
+&x_e\in\{0,1\}&\forall e\in\hat E
 \end{align}
-
-</p>
-</div>
+<p>Constraint (1) is flow conservation at every junction. A critical customer keeps one unit of flow, and every selected outgoing arc uses up one unit (for a source \(t\), \(\delta^-(t)\) contains the arc \((0,t)\)). Constraint (2) uses each pipe in at most one direction. Constraint (3) covers every housing area. Constraint (4) allows flow only on selected arcs. Constraint (5) makes the flow injected at the sources equal to the flow consumed by customers and selected arcs. [Huang20] also has a residual-flow variable \(z\) with \(z+\sum_{t\in T}y_{0t}=M\). It does not appear in the instances because it is implied by (5) and the bounds (6).</p>
+<p><em>Instance encoding.</em> The instance files also contain a reverse arc \((t,0)\) for every source and a binary variable for each arc \((0,t)\) and \((t,0)\). These \(2|T|\) zero-cost binaries are fixed to 0 by equality constraints, and the flow on \((t,0)\) is linked to its fixed binary through (4), so it is also 0. Hence an instance has \(2|E|+2|T|\) binary and \(2|E|+2|T|\) continuous variables (# Var B = # Var C) and \(|V|+|E|+|R|+2|E|+|T|+2|T|+1\) constraints, all with \(M=|\hat E|+|V|=2|E|+|V|\).</p></div>
 <h2 id="h.rp19t552tgdh">Instances Distributions</h2>
 <p>There are two sets of instances for SRPN in Distributional MIPLIB, summarized in the table below, with download links. SRPN distributions are characterized by the average number of critical customers and the average number of pipes in earthquake hazard zones (pipes with costs &gt; 0).</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -66,9 +67,9 @@ Below is a Flow-based MILP formulation introduced by [Huang20].
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>#Critical Customers</th>
-<th>#Pipes in Earthquake Hazard</th>
+<th># Constr</th><th>Avg. # Critical Customers \(|C|\)</th><th>Avg. # Threatened Pipes \(|E|\)</th><th>Avg. # Water Sources \(|T|\)</th><th>Avg. # Coverage Areas \(|R|\)</th>
+
+
 </tr>
 </thead>
 <tbody>
@@ -78,9 +79,9 @@ Below is a Flow-based MILP formulation introduced by [Huang20].
 <td>3016.42</td>
 <td>0</td>
 <td>3016.42</td>
-<td>5917.27</td>
-<td>6.8</td>
-<td>1593</td>
+<td>5917.27</td><td>19.6</td><td>1503.0</td><td>5.2</td><td>15.5</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1yLAxGYdCG7El2V4sZVZyR36IxwVyN75d/view?usp=drive_link">Hard</a></td>
@@ -88,9 +89,9 @@ Below is a Flow-based MILP formulation introduced by [Huang20].
 <td>11485.33</td>
 <td>0</td>
 <td>11485.33</td>
-<td>22430.84</td>
-<td>38.7</td>
-<td>6430</td>
+<td>22430.84</td><td>71.0</td><td>5328.4</td><td>13.8</td><td>38.5</td>
+
+
 </tr>
 </tbody>
 </table></div></div>

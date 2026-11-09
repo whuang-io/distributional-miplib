@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,18 +28,21 @@
 <header class="page-head"><div class="wrap"><h1 id="h.zda9hqoi5z91">Set Covering</h1></div></header>
 <main class="wrap content">
 <h2 id="h.8gzsb181fmr">Problem Description</h2>
-<div class="embed">
-<p>
-  In an set covering (SC) instance, we are given \(m\) elements and a collection \(S\) of \(n\) sets whose union is the set of all elements. The goal is to select a minimum number of sets from \(S\) such that the union of the selected set is still the set of all elements:
-
-  \[\min \sum_{s\in S} x_s  \]
-
-\[\textrm{s.t.} \sum_{s\in S: i\in s} x_s \geq 1, \,\forall i\in[m],\]
-
-\[  x_s\in\{0,1\}, \, \forall s\in S.\]
-
-</p>
-</div>
+<div class="embed"><p>In a set covering (SC) instance, we are given \(m\) elements and a collection \(S\) of \(n\) sets whose union is the set of all elements, each set having a cost. The goal is to select a minimum-cost subcollection of \(S\) whose union is still the set of all elements.</p>
+<p>All levels are generated with the generator of [Gasse19] (the very hard levels of [Huang23], which follow [Wu21], use the same generator), which follows Balas and Ho (1980): the element-set incidence matrix has a fixed density of 0.05 (exactly \(\lfloor 0.05\,mn\rfloor\) nonzeros), every element belongs to at least one set, every set contains at least 2 elements, and the set costs are integers drawn uniformly from \(\{1,\dots,100\}\).</p>
+<p><strong>Notation.</strong></p>
+<ul>
+<li>\(U=\{1,\dots,m\}\): elements; \(S\): collection of \(n\) sets, each \(s\in S\) a subset of \(U\).</li>
+<li>\(c_s\in\{1,\dots,100\}\): cost of set \(s\in S\).</li>
+<li>\(x_s\in\{0,1\}\): 1 if set \(s\) is selected.</li>
+</ul>
+<p><strong>Formulation.</strong></p>
+\begin{align}
+\min\ & \sum_{s\in S} c_s x_s \\
+\textrm{s.t.}\ & \sum_{s\in S:\, i\in s} x_s \geq 1, && \forall i\in U, \\
+& x_s\in\{0,1\}, && \forall s\in S.
+\end{align}
+<p>There is one covering constraint per element (\(m\) constraints) and one binary variable per set (\(n\) variables).</p></div>
 <h2 id="h.f5nyix1v6ue9">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -49,9 +53,9 @@
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>#Element</th>
-<th>#Set</th>
+<th># Constr</th><th>#Element</th><th>#Set</th><th>Density</th><th>Set Cost</th>
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -62,9 +66,9 @@
 <td>1000</td>
 <td>0</td>
 <td>0</td>
-<td>500</td>
-<td>500</td>
-<td>1,000</td>
+<td>500</td><td>500</td><td>1,000</td><td>0.05</td><td>U{1,...,100}</td>
+
+
 <td>Branching [Gasse19, Gupta20]</td>
 </tr>
 <tr>
@@ -73,9 +77,9 @@
 <td>1000</td>
 <td>0</td>
 <td>0</td>
-<td>1000</td>
-<td>1000</td>
-<td>1,000</td>
+<td>1000</td><td>1,000</td><td>1,000</td><td>0.05</td><td>U{1,...,100}</td>
+
+
 <td>Branching    [Gasse19,Gupta20]</td>
 </tr>
 <tr>
@@ -84,9 +88,9 @@
 <td>1000</td>
 <td>0</td>
 <td>0</td>
-<td>2000</td>
-<td>2,000</td>
-<td>1,000</td>
+<td>2000</td><td>2,000</td><td>1,000</td><td>0.05</td><td>U{1,...,100}</td>
+
+
 <td>Branching    [Gasse19, Gupta20]</td>
 </tr>
 <tr>
@@ -95,9 +99,9 @@
 <td>4000</td>
 <td>0</td>
 <td>0</td>
-<td>5000</td>
-<td>5,000</td>
-<td>4,000</td>
+<td>5000</td><td>5,000</td><td>4,000</td><td>0.05</td><td>U{1,...,100}</td>
+
+
 <td>LNS     [Wu21,Huang23,Huang23b]</td>
 </tr>
 <tr>
@@ -106,9 +110,9 @@
 <td>8000</td>
 <td>0</td>
 <td>0</td>
-<td>5000</td>
-<td>5,000</td>
-<td>8,000</td>
+<td>5000</td><td>5,000</td><td>8,000</td><td>0.05</td><td>U{1,...,100}</td>
+
+
 <td>LNS    [Huang23]</td>
 </tr>
 </tbody>

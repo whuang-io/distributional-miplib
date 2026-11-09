@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 <nav class="site-nav" aria-label="Main">
@@ -27,8 +28,52 @@
 <header class="page-head"><div class="wrap"><h1 id="h.17586dmisue4">Wildfire-Aware Optimal Transmission Switching</h1></div></header>
 <main class="wrap content">
 <h2 id="h.ri8n83tktza5">Problem Description</h2>
-<p>The <em>Wildfire-Aware Optimal Transmission Switching</em> (WF_OTS) problem models the operational decisions underlying Public Safety Power Shutoffs (PSPS), in which utilities de-energize transmission lines in high-risk areas to mitigate wildfire ignition risk. Given the wildfire risk associated with each line, WF-OTS determines which lines to de-energize to minimize total load shedding across the network, with a small penalty on the number of de-energized lines. The aggregate wildfire risk of energized lines is constrained by a system-wide threshold. WF_OTS is formulated as a mixed-integer linear program (MILP) under a DC power flow approximation, with binary variables representing line energization decisions and continuous variables for generation dispatch, power flows, and load shedding. Big-M constraints enforce the DC power flow equations for energized lines while allowing de-energized lines to carry no power, alongside generator capacity limits and nodal power balance constraints. Each instance represents a single operating period with fixed wildfire risk levels, reflecting the short-term operational setting of PSPS decisions.</p>
-<p>The MILP formulation for the WF_OTS instances in this library is a single-period version of the Optimal Power Shutoff (OPS) problem [Rhodes21, Piansky25], derived from [Piansky25] and used in [Huang27].</p>
+<div class="embed"><p>The Wildfire-Aware Optimal Transmission Switching (WF_OTS) problem models the operational decisions behind Public Safety Power Shutoffs (PSPS), in which utilities de-energize transmission lines in high-risk areas to reduce the risk of wildfire ignition. Given a wildfire ignition risk for each line, WF_OTS chooses which lines to de-energize so that total load shedding across the network is as small as possible. A small penalty applies to each de-energized line. The total wildfire risk of the lines that stay energized must not exceed a system-wide budget. WF_OTS is a mixed-integer linear program (MILP) under the DC (B&theta;) power flow approximation. It has one binary energization variable for each switchable line and continuous variables for generation, line flows, bus voltage angles and load shedding. Big-M constraints enforce the DC power flow equations and the angle-difference limits on energized lines, and relax them on de-energized lines, which carry no power. Each instance is a single operating period (one hour) with fixed wildfire risks, reflecting the short-term operational setting of PSPS decisions.</p>
+<p>The MILP formulation for the WF_OTS instances in this library is a single-period version of the Optimal Power Shutoff (OPS) problem [Rhodes21, Piansky25], derived from [Piansky25] and used in [Huang27]. All instances use the California Test System (CATS), a synthetic grid with 8,870 buses, 10,823 branches (661 of them transformers) and 3,892 generators. Line risks come from the daily USGS Wildland Fire Potential Index (WFPI): each line gets the maximum WFPI value of the 1&nbsp;km pixels it crosses, an integer between 0 and 247. Each instance is one day in 2020&ndash;2021, modelled at the hour of that day with the most load shed under threshold-based de-energization. The risk budget equals the risk that remains after de-energizing every line whose risk exceeds the 95th percentile of 2019 risk values, which is 96 in the instances. The instances vary in line risks, bus loads and renewable generator availability [Huang27].</p>
+<p><strong>Notation</strong></p>
+<ul>
+<li>\(\mathcal{N}\): set of buses; \(n^{\mathrm{ref}}\in\mathcal{N}\) is the reference bus.</li>
+<li>\(\mathcal{G}\): set of generators; \(\mathcal{G}_n\subseteq\mathcal{G}\) are the generators at bus \(n\).</li>
+<li>\(\mathcal{L}\): set of branches (lines and transformers). Branch \(\ell\) runs from bus \(n_{\ell}^{fr}\) to bus \(n_{\ell}^{to}\). \(\mathcal{L}_n^{fr}\) and \(\mathcal{L}_n^{to}\) are the branches whose from-bus and to-bus is \(n\), respectively.</li>
+<li>\(\mathcal{L}^{s}\subseteq\mathcal{L}\): switchable lines, i.e., the lines with nonzero wildfire risk on the instance's day. Transformers are never switchable. Its size changes from instance to instance (about 7,900 lines).</li>
+<li>\(\mathcal{L}^{0}\subseteq\mathcal{L}\): branches with near-zero reactance (\(x_\ell&lt;10^{-4}\) p.u.; 233 branches in CATS). For these branches the instances contain no power-flow equation.</li>
+<li>\(d_n\): active power demand at bus \(n\) in the modelled hour (p.u., 100 MVA base).</li>
+<li>\(\overline{p}_i\): available capacity of generator \(i\) in the modelled hour (the hourly renewable availability for renewable units). The generator lower bound is relaxed to 0.</li>
+<li>\(\overline{f}_\ell\): thermal rating of branch \(\ell\) (p.u.).</li>
+<li>\(b_\ell = x_\ell/(r_\ell^2+x_\ell^2)\): magnitude of the series susceptance of branch \(\ell\).</li>
+<li>\(\overline{\delta}=\pi/3\): voltage-angle-difference limit (\(\pm 60^\circ\) on all CATS branches).</li>
+<li>\(M=2\pi\): big-M constant for angle differences.</li>
+<li>\(R_\ell\): wildfire risk of line \(\ell\) (an integer WFPI value).</li>
+<li>\(R^{\mathrm{PSPS}}\): system-wide risk budget, \(R^{\mathrm{PSPS}}=\sum_{\ell\in\mathcal{L}^{s}:\,R_\ell\le 96} R_\ell\).</li>
+<li>\(\epsilon=0.01\): penalty per de-energized line.</li>
+</ul>
+<p><strong>Variables</strong></p>
+<ul>
+<li>\(z_\ell\in\{0,1\}\), \(\ell\in\mathcal{L}^{s}\): 1 if line \(\ell\) stays energized, 0 if it is de-energized.</li>
+<li>\(p_i\): power output of generator \(i\in\mathcal{G}\).</li>
+<li>\(f_\ell\in[-\overline{f}_\ell,\overline{f}_\ell]\): active power flow on branch \(\ell\in\mathcal{L}\).</li>
+<li>\(\theta_n\in[-|\mathcal{N}|\overline{\delta},\,|\mathcal{N}|\overline{\delta}]\): voltage angle at bus \(n\in\mathcal{N}\). These bounds never bind.</li>
+<li>\(s_n\ge 0\): load shed at bus \(n\in\mathcal{N}\).</li>
+</ul>
+<p><strong>MILP formulation</strong></p>
+\begin{align}
+\min\quad & \sum_{n\in\mathcal{N}} s_n \;+\; \epsilon\sum_{\ell\in\mathcal{L}^{s}} (1-z_\ell) \\
+\text{s.t.}\quad & 0\le p_i\le \overline{p}_i, && \forall i\in\mathcal{G}\\
+& 0\le s_n\le d_n, && \forall n\in\mathcal{N}\\
+& -\overline{f}_\ell z_\ell\le f_\ell\le \overline{f}_\ell z_\ell, && \forall \ell\in\mathcal{L}^{s}\\
+& -\overline{f}_\ell\le f_\ell\le \overline{f}_\ell, && \forall \ell\in\mathcal{L}\setminus\mathcal{L}^{s}\\
+& -\overline{\delta}-M(1-z_\ell)\le \theta_{n_\ell^{fr}}-\theta_{n_\ell^{to}}\le \overline{\delta}+M(1-z_\ell), && \forall \ell\in\mathcal{L}^{s}\\
+& -\overline{\delta}\le \theta_{n_\ell^{fr}}-\theta_{n_\ell^{to}}\le \overline{\delta}, && \forall \ell\in\mathcal{L}\setminus(\mathcal{L}^{s}\cup\mathcal{L}^{0})\\
+& -b_\ell M(1-z_\ell)\le f_\ell-b_\ell(\theta_{n_\ell^{fr}}-\theta_{n_\ell^{to}})\le b_\ell M(1-z_\ell), && \forall \ell\in\mathcal{L}^{s}\setminus\mathcal{L}^{0}\\
+& f_\ell=b_\ell(\theta_{n_\ell^{fr}}-\theta_{n_\ell^{to}}), && \forall \ell\in\mathcal{L}\setminus(\mathcal{L}^{s}\cup\mathcal{L}^{0})\\
+& \theta_{n_\ell^{fr}}=\theta_{n_\ell^{to}}, && \forall \ell\in\mathcal{L}^{0}\setminus\mathcal{L}^{s}\\
+& \sum_{\ell\in\mathcal{L}_n^{fr}} f_\ell-\sum_{\ell\in\mathcal{L}_n^{to}} f_\ell=\sum_{i\in\mathcal{G}_n} p_i-d_n+s_n, && \forall n\in\mathcal{N}\\
+& \theta_{n^{\mathrm{ref}}}=0\\
+& \sum_{\ell\in\mathcal{L}^{s}} R_\ell z_\ell\le R^{\mathrm{PSPS}}\\
+& z_\ell\in\{0,1\}, && \forall \ell\in\mathcal{L}^{s}
+\end{align}
+<p>The objective minimizes total load shed plus a penalty of \(\epsilon=0.01\) per de-energized line. In the instance files this penalty appears as coefficient \(-0.01\) on each \(z_\ell\) together with a constant \(0.01|\mathcal{L}^{s}|\). The constraints, in order: generator limits; load-shed limits (on buses without load, \(s_n=0\)); flow limits, which force zero flow on de-energized lines; angle-difference limits, relaxed by \(M\) when a line is de-energized; the big-M DC power flow on switchable lines (the flow big-M is \(b_\ell M=2\pi b_\ell\)); the DC power flow and angle limits on non-switchable branches; nodal power balance with load shedding; the reference angle; and the system-wide wildfire risk budget.</p>
+<p>The instance files use the paper's sign convention: [Huang27] writes the flow as \(-b_\ell(\theta_{fr}-\theta_{to})\) with a negative series susceptance, which equals \(b_\ell(\theta_{fr}-\theta_{to})\) with the positive \(b_\ell\) above. Each instance has \(|\mathcal{L}^{s}|\) binary variables, \(|\mathcal{L}|+2|\mathcal{N}|+|\mathcal{G}|\) continuous variables and \(2+2|\mathcal{N}|+4|\mathcal{L}^{s}|+2|\mathcal{L}^{s}\setminus\mathcal{L}^{0}|+3|\mathcal{L}\setminus(\mathcal{L}^{s}\cup\mathcal{L}^{0})|+|\mathcal{L}^{0}\setminus\mathcal{L}^{s}|\) constraints. The average number of binary variables (7,928.94) is not an integer because \(|\mathcal{L}^{s}|\), the number of lines with nonzero risk, changes from day to day.</p></div>
 <h2 id="h.a77jt48pvo9x">Instances Distribution</h2>
 <p>The table below summarizes the distributions that have been used in previous works, along with download links.  Instances from [Huang27] are generated using the California Test System (CATS) and daily USGS Wildland Fire Potential Index (WFPI) maps from 2020 and 2021, with each transmission line’s wildfire risk defined as the maximum WFPI value along its path. For each day, a representative hour is selected based on the maximum load shedding under a threshold-based shutoff policy. Days with no wildfire risk or load shedding are excluded. Only instances whose thresholded load shed is at least 100 MWh are used in the ML-guided experiments of [Huang27] . These are split randomly into training (80%, 432 instances), validation (10%, 54 instances), and test (10%, 54 instances) sets.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -39,7 +84,7 @@
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
+<th># Constr</th><th>Test system</th><th># Buses</th><th># Branches</th><th># Generators</th><th># Switchable lines</th><th># Time periods</th><th>Risk budget \(R^{\mathrm{PSPS}}\)</th>
 </tr>
 </thead>
 <tbody>
@@ -49,7 +94,7 @@
 <td>7928.94</td>
 <td>0</td>
 <td>32456</td>
-<td>73531.81</td>
+<td>73531.81</td><td>CATS (California Test System)</td><td>8,870</td><td>10,823 (incl. 661 transformers)</td><td>3,892</td><td>~7,900 (lines with nonzero WFPI risk; varies per instance)</td><td>1 (worst-case hour of one day, 2020–2021)</td><td>Risk remaining after de-energizing lines with WFPI risk &gt; 96 (95th percentile of 2019 values)</td>
 </tr>
 </tbody>
 </table></div></div>

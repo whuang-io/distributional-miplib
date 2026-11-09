@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,32 +28,25 @@
 <header class="page-head"><div class="wrap"><h1 id="h.fy8knrn4dqoc">Generalized Independent Set</h1></div></header>
 <main class="wrap content">
 <h2 id="h.yhc0t7dmdzb9">Problem Description</h2>
-<p>The Generalized Independent Set Problem (GISP) is a graph optimization problem proposed for forestry management [Hochbaum97,Colombi17]. The input consists of a graph, a subset of removable edges with deletion cost, and revenues for each vertex upon selection. The goal is to select a set of vertices and remove removable edges that maximize the net profit of total vertex revenues minus total edge costs such that the selected vertices are independent in the modified subgraph.</p>
-<h3 id="h.o3inu478qre">Inputs</h3>
-<div class="embed">
+<div class="embed"><p>The Generalized Independent Set Problem (GISP) is a graph optimization problem proposed for forestry management [Hochbaum97,Colombi17]. The input consists of a graph, a subset of removable edges with a removal cost, and a revenue for each vertex. The goal is to select a set of vertices and remove a subset of the removable edges so as to maximize the total revenue of the selected vertices minus the total cost of the removed edges, such that the selected vertices are independent in the graph after edge removal.</p>
+<p><strong>Notation</strong></p>
 <ul>
-<li>\(G=(V,E)\): The graph where \(V\) is the set of vertices and \(E\) is the set of edges.</li>
-<li>\(E'\subseteq E\): The set of removable edges from the graph.</li>
-<li>\(c^E\): The unit cost of removing an edge.</li>
-<li>\(r^V\): The unit reward for including a node in the solution.</li>
+<li>\(G=(V,E)\): undirected graph with vertex set \(V\) and edge set \(E\).</li>
+<li>\(E' \subseteq E\): the set of removable edges. In the generator, each edge of \(E\) is made removable independently with probability \(\alpha\) (the removal probability).</li>
+<li>\(r_v\): revenue of selecting vertex \(v\) (\(r_v = 100\) for all \(v\) in all distributions).</li>
+<li>\(c_e\): cost of removing edge \(e \in E'\) (\(c_e = 1\) for all \(e\) in all distributions).</li>
+<li>\(x_v \in \{0,1\}\): 1 if vertex \(v\) is selected.</li>
+<li>\(y_e \in \{0,1\}\): 1 if removable edge \(e\) is removed.</li>
 </ul>
-</div>
-<h3 id="h.u27qhbpkgiq">MIP Formulation</h3>
-<div class="embed">
-<p>
-
-\begin{equation}
-\begin{split}
-\text{max}_{x,y} \quad &amp; \sum_{v \in V} r^V x_v - \sum_{e \in E'}c^E y_e\\
-\text{subject to} \quad &amp; x_u + x_v \leq 1, \quad \forall (u, v) \in E\setminus E' \\
-&amp; x_u + x_v \leq 1 + y_{u,v}, \quad \forall (u, v) \in E'\\
-&amp; x_v \in \{0, 1\}, \quad \forall v \in V\\
-&amp; y_e \in \{0, 1\}, \quad \forall e \in E'
-\end{split}
-\end{equation}
-
-</p>
-</div>
+<p><strong>MILP formulation</strong> [Colombi17]</p>
+\begin{align}
+\max_{x,y} \quad & \sum_{v \in V} r_v\, x_v - \sum_{e \in E'} c_e\, y_e \\
+\text{s.t.} \quad & x_u + x_v \leq 1 && \forall \{u,v\} \in E \setminus E' \\
+& x_u + x_v - y_{uv} \leq 1 && \forall \{u,v\} \in E' \\
+& x_v \in \{0,1\} && \forall v \in V \\
+& y_e \in \{0,1\} && \forall e \in E'
+\end{align}
+<p>The instance files state the equivalent minimization problem \(\min \sum_{e \in E'} c_e y_e - \sum_{v \in V} r_v x_v\). An instance has \(|V| + |E'|\) binary variables and \(|E|\) constraints (one per edge). The Erdős–Rényi distributions draw \(G\) from \(G(n,p)\); the Ext hard distribution uses fixed graphs from the DIMACS 1993 clique benchmark, following [Khalil17].</p></div>
 <h2 id="h.xpzyff58v6s3">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -63,11 +57,11 @@
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>Graphs</th>
-<th>Edge Cost</th>
-<th>Node Reward</th>
-<th>Removal <br/>Probability</th>
+<th># Constr</th><th>Graphs</th><th>Edge Cost</th><th>Node Reward</th><th>Removal Probability</th>
+
+
+
+
 <th>Related<br/> Literature</th>
 </tr>
 </thead>
@@ -78,11 +72,11 @@
 <td>605.81</td>
 <td>0</td>
 <td>0</td>
-<td>1967.05</td>
-<td>Erdős–Rényi(n=115,p=0.3)</td>
-<td>1</td>
-<td>100</td>
-<td>0.25</td>
+<td>1967.05</td><td>Erdős–Rényi(n=115, p=0.3)</td><td>1</td><td>100</td><td>0.25</td>
+
+
+
+
 <td>N/A</td>
 </tr>
 <tr>
@@ -91,11 +85,11 @@
 <td>988.81</td>
 <td>0</td>
 <td>0</td>
-<td>3353.03</td>
-<td>Erdős–Rényi(n=150,p=0.3)</td>
-<td>1</td>
-<td>100</td>
-<td>0.75</td>
+<td>3353.03</td><td>Erdős–Rényi(n=150, p=0.3)</td><td>1</td><td>100</td><td>0.25</td>
+
+
+
+
 <td>Backdoors [Ferber22]</td>
 </tr>
 <tr>
@@ -104,11 +98,11 @@
 <td>1317.03</td>
 <td>0</td>
 <td>0</td>
-<td>4567.83</td>
-<td>Erdős–Rényi(n=175,p=0.3)</td>
-<td>1</td>
-<td>100</td>
-<td>0.75</td>
+<td>4567.83</td><td>Erdős–Rényi(n=175, p=0.3)</td><td>1</td><td>100</td><td>0.25</td>
+
+
+
+
 <td>Backdoors [Ferber22]</td>
 </tr>
 <tr>
@@ -117,11 +111,11 @@
 <td>6017</td>
 <td>0</td>
 <td>0</td>
-<td>7821.87</td>
-<td>Erdős–Rényi(n=150,p=0.3)</td>
-<td>1</td>
-<td>100</td>
-<td>0.25</td>
+<td>7821.87</td><td>Erdős–Rényi(n=150, p=0.7)</td><td>1</td><td>100</td><td>0.75</td>
+
+
+
+
 <td>Backdoors [Cai24]</td>
 </tr>
 <tr>
@@ -130,11 +124,11 @@
 <td>8168.35</td>
 <td>0</td>
 <td>0</td>
-<td>10656.52</td>
-<td>Erdős–Rényi(n=175,p=0.3)</td>
-<td>1</td>
-<td>100</td>
-<td>0.25</td>
+<td>10656.52</td><td>Erdős–Rényi(n=175, p=0.7)</td><td>1</td><td>100</td><td>0.75</td>
+
+
+
+
 <td>Backdoors [Cai24]</td>
 </tr>
 <tr>
@@ -143,11 +137,11 @@
 <td>12675.83</td>
 <td>0</td>
 <td>0</td>
-<td>16515.44</td>
-<td>DIMACS 1993</td>
-<td>1</td>
-<td>100</td>
-<td>0.75</td>
+<td>16515.44</td><td>DIMACS 1993 (train: C125.9, brock200_2, gen200_p0.9_55, hamming8-4, keller4, p_hat300-1; test: C250.9, MANN_a27, brock400_2, gen400_p0.9_75, p_hat300-2, p_hat300-3)</td><td>1</td><td>100</td><td>0.75</td>
+
+
+
+
 <td>Primal Heuristics[Khalil17]</td>
 </tr>
 </tbody>

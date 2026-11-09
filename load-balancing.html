@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,23 +28,34 @@
 <header class="page-head"><div class="wrap"><h1 id="h.2vi4j9fk20lm">Load Balancing</h1></div></header>
 <main class="wrap content">
 <h2 id="h.puimm5wy6i6s">Problem Description</h2>
-<div class="embed">
-<p>
-The Load Balancing (LB) problem, also known as Work Apportionment (WA), aims to assign a set of tasks to a set of machines in a way that is robust to any one machine's failure. The problem is formulated as follows. Let \(M\) and 
-\(N\) denote the set of tasks and the set of machines, respectively. For task \(i \in M\), only a subset of machines, denoted by \(N^i \subseteq N\), are accessible. Let binary variables \(y_j\) be 1 if machine \(j\) is used and 0 otherwise. Let variables \(x_{i j}\) denote the amount of workload from task \(i\) to machine \(j\). \( b_j \) enforces the capacity requirement for each machine. \( a_i \) is the workload of task i. \(M_{i j}\) is the maximum of the workload of task i and capacity of machine j. The apportionment is required to be robust to any one machine's failure. The objective is to minimize the total cost for processing all workloads.
-$$
-\begin{array}{llr}
-\min _{x, y} &amp; \sum_{j \in N} y_j &amp; \\
-\text { s.t. } &amp; x_{i j} \leq M_{i j} y_j &amp; \forall i \in M, \forall j \in N^i \\
-&amp; \sum_{i \in M: j \in N^i} x_{i j} \leq b_j &amp; \forall j \in N \\
-&amp; \sum_{j \in N^i \backslash\left\{j^{\prime}\right\}} x_{i j} \geq a_i &amp; \forall i \in M, \forall j^{\prime} \in N^i \\
-&amp; y_j \in\{0,1\} &amp; \forall j \in N \\
-&amp; 0 \leq x_{i j} \leq b_j &amp; \forall i \in M, \forall j \in N^i
-\end{array}
-$$
-
-</p>
-</div>
+<div class="embed"><p>The Load Balancing (LB) problem, called Workload Apportionment in the ML4CO competition [Gasse22], apportions the workloads of a set of tasks (e.g., data streams) across as few machines (workers, e.g., servers) as possible. Each task can only use a subset of the machines, each machine has a limited capacity, and the apportionment must be robust to the failure of any single machine: for every task, the machines other than any one of its accessible machines must still be able to carry the task's full workload. The problem is a bin-packing problem with an apportionment formulation; it was inspired by large-scale systems at Google, and the instances were released for the ML4CO competition (the generator was released after the competition: <a href="https://github.com/ds4dm/ml4co-competition-hidden/blob/main/load_balancing/load_balancing.py">load_balancing/load_balancing.py</a> in the ML4CO-hidden repository).</p>
+<p><strong>Notation</strong></p>
+<ul>
+<li>\(M\): set of tasks (\(|M| = 60\)); \(N\): set of machines (\(|N| = 1000\)).</li>
+<li>\(N^i \subseteq N\): machines accessible to task \(i\).</li>
+<li>\(a_i\): workload of task \(i\).</li>
+<li>\(b_j\): capacity of machine \(j\).</li>
+<li>\(M_{ij} = \max(a_i, b_j)\): big-M constant of the linking constraint. With the parameters below every workload exceeds every capacity, so \(M_{ij} = a_i\) in all instances.</li>
+<li>\(y_j \in \{0,1\}\): 1 if machine \(j\) is used.</li>
+<li>\(x_{ij} \geq 0\): amount of capacity of machine \(j\) reserved for task \(i\). The instances contain \(x_{ij}\) for every pair \((i,j)\); for \(j \notin N^i\) its upper bound is 0.</li>
+</ul>
+<p><strong>MILP formulation</strong> [Gasse22]</p>
+\begin{align}
+\min_{x,y} \quad & \sum_{j \in N} y_j \\
+\text{s.t.} \quad & x_{ij} \leq M_{ij}\, y_j && \forall i \in M,\ \forall j \in N \quad \text{(only used machines carry load)} \\
+& \sum_{i \in M} x_{ij} \leq b_j && \forall j \in N \quad \text{(machine capacity)} \\
+& \sum_{j \in N^i \setminus \{j'\}} x_{ij} \geq a_i && \forall i \in M,\ \forall j' \in N^i \quad \text{(robustness to failure of } j'\text{)} \\
+& 0 \leq x_{ij} \leq b_j && \forall i \in M,\ \forall j \in N^i \\
+& x_{ij} = 0 && \forall i \in M,\ \forall j \in N \setminus N^i \\
+& y_j \in \{0,1\} && \forall j \in N
+\end{align}
+<p>An instance has \(|N|\) binary variables, \(|M||N|\) continuous variables, and \(|M||N| + |N| + \sum_{i \in M} |N^i|\) constraints.</p>
+<p><strong>Generator settings.</strong> The instances were generated with the parameter file <a href="https://github.com/ds4dm/ml4co-competition-hidden/blob/main/load_balancing/params.text_pb2">load_balancing/params.text_pb2</a> of the ML4CO-hidden repository (confirmed on the instances):</p>
+<ul>
+<li>Machines: 500 of class 1 with capacity \(b_j \sim U[0.3, 0.5]\) and 500 of class 2 with \(b_j \sim U[0.1, 0.3]\); every machine has cost 1.</li>
+<li>Tasks: 50 of class 1 with workload \(a_i \sim U[1, 5]\) and 10 of class 2 with \(a_i \sim U[5, 10]\).</li>
+<li>Accessibility: each machine is accessible to a class-1 task independently with probability 0.1 (class-1 machines) or 0.01 (class-2 machines), and to a class-2 task with probability 0.01 or 0.1, so \(|N^i|\) is 55 in expectation (41 to 71 in the instances checked).</li>
+</ul></div>
 <h2 id="h.s9exdhb3wl41">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -54,9 +66,9 @@ $$
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th># Machines</th>
-<th># Tasks</th>
+<th># Constr</th><th># Machines</th><th># Tasks</th><th># Accessible Machines per Task</th>
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -67,9 +79,9 @@ $$
 <td>1000</td>
 <td>0</td>
 <td>60000</td>
-<td>64307.17</td>
-<td>1000</td>
-<td>60</td>
+<td>64307.17</td><td>1000</td><td>60</td><td>55 expected (41–71 observed)</td>
+
+
 <td>ML4CO [Gasse22], PAS [Han2023]</td>
 </tr>
 </tbody>

@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,17 +28,21 @@
 <header class="page-head"><div class="wrap"><h1 id="h.xbfiu41z4yvw">Minimum Vertex Cover</h1></div></header>
 <main class="wrap content">
 <h2 id="h.spktyz7qyzhu">Problem Description</h2>
-<div class="embed">
-<p>
-  In a minimum vertex cover (MVC) problem, an undirected graph \(G=(V,E)\) in given.  The goal is to select the smallest subset of nodes such that at least one end point of every edge in the graph is selected::
-\[\min \sum_{v\in V} x_v \]
-
-\[\textrm{s.t.} x_u+x_v\geq 1, \,\forall (u,v)\in E, \]
-
- \[ x_v\in\{0,1\}, \, \forall v\in V.\]
-The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph. 
-</p>
-</div>
+<div class="embed"><p>In a minimum vertex cover (MVC) problem, an undirected graph \(G=(V,E)\) is given, with a nonnegative weight on each node. The goal is to select a subset of nodes of minimum total weight such that at least one end point of every edge in the graph is selected.</p>
+<p>All levels are generated on Barabási-Albert random graphs with the generator of [Huang23] (based on the generator of [Song20]; the easy, medium and hard levels are new and use the same code with different parameters). A graph with \(|V|\) nodes and affinity \(m_{BA}\) (each new node attaches to \(m_{BA}\) existing nodes) has exactly \(m_{BA}(|V|-m_{BA})\) edges. Node weights are drawn independently and uniformly from \([0,1]\), so the instances are weighted vertex cover problems.</p>
+<p><strong>Notation.</strong></p>
+<ul>
+<li>\(G=(V,E)\): undirected Barabási-Albert graph.</li>
+<li>\(w_v\sim U[0,1]\): weight of node \(v\in V\).</li>
+<li>\(x_v\in\{0,1\}\): 1 if node \(v\) is in the cover.</li>
+</ul>
+<p><strong>Formulation.</strong></p>
+\begin{align}
+\min\ & \sum_{v\in V} w_v x_v \\
+\textrm{s.t.}\ & x_u+x_v\geq 1, && \forall (u,v)\in E, \\
+& x_v\in\{0,1\}, && \forall v\in V.
+\end{align}
+<p>There is one constraint per edge, so the number of constraints is \(|E|=m_{BA}(|V|-m_{BA})\).</p></div>
 <h2 id="h.qeswid6dx4fd">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -48,10 +53,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>#Node</th>
-<th>Node Degree</th>
-<th>Graph Type</th>
+<th># Constr</th><th>#Node</th><th>Graph Type</th><th>Graph Parameter</th><th>Avg. Degree</th>
+
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -62,10 +67,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>1200</td>
 <td>0</td>
 <td>0</td>
-<td>5975</td>
-<td>1,200</td>
-<td>5</td>
-<td>Barabasi-Albert</td>
+<td>5975</td><td>1,200</td><td>Barabasi-Albert</td><td>affinity m = 5</td><td>9.96</td>
+
+
+
 <td>N/A</td>
 </tr>
 <tr>
@@ -74,10 +79,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>2000</td>
 <td>0</td>
 <td>0</td>
-<td>9975</td>
-<td>2,000</td>
-<td>5</td>
-<td>Barabasi-Albert</td>
+<td>9975</td><td>2,000</td><td>Barabasi-Albert</td><td>affinity m = 5</td><td>9.98</td>
+
+
+
 <td>Backdoor [Cai25]</td>
 </tr>
 <tr>
@@ -86,10 +91,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>500</td>
 <td>0</td>
 <td>0</td>
-<td>30100</td>
-<td>500</td>
-<td>70</td>
-<td>Barabasi-Albert</td>
+<td>30100</td><td>500</td><td>Barabasi-Albert</td><td>affinity m = 70</td><td>120.4</td>
+
+
+
 <td>N/A</td>
 </tr>
 <tr>
@@ -98,10 +103,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>1000</td>
 <td>0</td>
 <td>0</td>
-<td>65100</td>
-<td>1,000</td>
-<td>70</td>
-<td>Barabasi-Albert</td>
+<td>65100</td><td>1,000</td><td>Barabasi-Albert</td><td>affinity m = 70</td><td>130.2</td>
+
+
+
 <td>LNS    [Huang23]</td>
 </tr>
 <tr>
@@ -110,10 +115,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>2000</td>
 <td>0</td>
 <td>0</td>
-<td>135100</td>
-<td>2,000</td>
-<td>70</td>
-<td>Barabasi-Albert</td>
+<td>135100</td><td>2,000</td><td>Barabasi-Albert</td><td>affinity m = 70</td><td>135.1</td>
+
+
+
 <td>LNS    [Huang23]</td>
 </tr>
 </tbody>

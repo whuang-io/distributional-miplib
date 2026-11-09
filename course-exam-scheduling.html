@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,46 +28,45 @@
 <header class="page-head"><div class="wrap"><h1 id="h.md5v09bw3se">Course Exam Scheduling</h1></div></header>
 <main class="wrap content">
 <h2 id="h.muupj4vokat2">Problem Description</h2>
-<div class="embed">
-<p>
-Course Exam Scheduling is a timetabling problem where a university assigns its final exams to a fixed set of exam time slots so as to minimize the burden on students, such as having exams back-to-back, three exams within one day, or three exams within 24 hours. We consider the block sequencing stage of the group-then-sequence approach used by Cornell University [Ye26]: exams are first grouped into blocks such that no student has two exams in the same block, and the blocks are then sequenced into time slots to minimize a weighted count of undesirable exam patterns, computed from the pairwise and triplet student co-enrollment between blocks. 
-<br/><br/>
-Formally, we are given:
-a set of blocks \(B=\{1,\dots,n\}\) and an equal number of consecutive exam slots \(S=\{1,\dots,n\}\) with three slots per day (morning, afternoon, evening), where the successor of slot \(s\) is \(\sigma(s)=s+1\) for \(s&lt;n\) and \(\sigma(n)=1\); the pairwise co-enrollment \(p_{ij}\), i.e., the number of students with exams in both blocks \(i\) and \(j\); the triplet co-enrollment \(t_{ijk}\) for blocks \(i,j,k\); and penalty weights \(\alpha,\beta,\gamma,\delta\geq 0\). The slots at which a penalized pattern can start are
+<div class="embed"><p>Course Exam Scheduling is a timetabling problem in which a university assigns its final exams to a fixed set of exam time slots so as to minimize the burden on students, such as back-to-back exams, three exams within one day, or three exams within 24 hours. We consider the block sequencing stage of the group-then-sequence approach used by Cornell University [Ye26]. Exams are first grouped into blocks so that no student has two exams in the same block. The blocks are then sequenced into time slots to minimize a weighted count of undesirable exam patterns, computed from the pairwise and triplet student co-enrollment between blocks.</p>
+<p>Formally, we are given a set of blocks \(B=\{1,\dots,n\}\) and an equal number of consecutive exam slots \(S=\{1,\dots,n\}\), three slots per day (morning, afternoon, evening). The successor of slot \(s\) is \(\sigma(s)=s+1\) for \(s\lt n\) and \(\sigma(n)=1\), so the sequence wraps around cyclically. We are also given the pairwise co-enrollment \(p_{ij}\) (number of students with exams in both blocks \(i\) and \(j\)), the triplet co-enrollment \(t_{ijk}\) for blocks \(i,j,k\), and penalty weights \(\alpha,\beta,\gamma,\delta\geq 0\). A penalized pattern can start at the following slots:
 \(S_{EM}=\{s\leq n-1: s \bmod 3=0\}\) (evening followed by next morning),
 \(S_{BB}=\{s\leq n-1: s \bmod 3\neq 0\}\) (other back-to-back slots),
 \(S_{TD}=\{s\leq n-2: s \bmod 3=1\}\) (three slots in the same day),
-\(S_{T24}=\{s\leq n-2: s \bmod 3\neq 1\}\) (three slots within 24 hours), and \(S_{T}=S_{TD}\cup S_{T24}\).
-<br/><br/>
-We want to find an assignment of every block to exactly one slot, with every slot holding exactly one block, that minimizes the weighted number of students affected by each pattern. The binary variable \(x_{ijks}\) equals 1 if blocks \(i,j,k\) are placed in slots \(s,\sigma(s),\sigma(\sigma(s))\), \(y_{ijk}\) equals 1 if the sequence \(i,j,k\) starts at a slot in \(S_T\), and \(z_{ijkl}\) equals 1 if the four-block sequence \(i,j,k,l\) occurs. The integer variables \(TD, T24, EM, BB, F\) count the students with three exams in one day, three exams within 24 hours, back-to-back exams from evening to the next morning, other back-to-back exams, and three exams within four consecutive slots, respectively. The variables \(b_{is}\) (block \(i\) is in slot \(s\)), \(a_i\) (slot of block \(i\)), \(d_{ij}\) (slot distance between blocks \(i\) and \(j\)), \(L_{ij}\) (blocks \(i\) and \(j\) are at least 16 slots apart), and \(q_s\) (block in slot \(s\)) record the resulting schedule and do not enter the objective.
-<br/><br/>
-Below is the block sequencing MILP formulation introduced by [Ye26], with \(\alpha=10\), \(\beta=5\), \(\gamma=3\), \(\delta=2\).
+\(S_{T24}=\{s\leq n-2: s \bmod 3\neq 1\}\) (three slots within 24 hours), and \(S_{T}=S_{TD}\cup S_{T24}=\{1,\dots,n-2\}\).</p>
+<p>We want to assign every block to exactly one slot, with every slot holding exactly one block, so as to minimize the weighted number of students affected by each pattern. Variables:</p>
+<ul>
+<li>\(x_{ijks}\in\{0,1\}\): blocks \(i,j,k\) are placed in slots \(s,\sigma(s),\sigma(\sigma(s))\);</li>
+<li>\(y_{ijk}\in\{0,1\}\): the sequence \(i,j,k\) starts at a slot in \(S_T\);</li>
+<li>\(z_{ijkl}\in\{0,1\}\): the four-block sequence \(i,j,k,l\) occurs (both \(i,j,k\) and \(j,k,l\) start in \(S_T\));</li>
+<li>integer \(TD, T24, EM, BB, F\geq 0\): the number of students with three exams in one day, three exams within 24 hours, back-to-back exams from evening to the next morning, other back-to-back exams, and three exams within four consecutive slots;</li>
+<li>schedule-recording variables that do not enter the objective: \(b_{is}\in\{0,1\}\) (block \(i\) is in slot \(s\)), integer \(a_i\geq 0\) (slot of block \(i\)), integer \(q_s\geq 0\) (index of the block in slot \(s\)), integer \(d_{ij}\geq 0\) (at least the slot distance between blocks \(i\) and \(j\)), and \(L_{ij}\in\{0,1\}\) (blocks \(i\) and \(j\) are at least 16 slots apart).</li>
+</ul>
+<p>Below is the block sequencing MILP formulation of [Ye26] as used in the instances of [Cai26], with \(\alpha=10\), \(\beta=5\), \(\gamma=3\), \(\delta=2\).</p>
 \begin{align}
-&amp;\min\;\alpha\, TD+\beta\, T24+\gamma\,(EM+BB)+\delta\, F&amp;\nonumber\\
-    &amp;\sum_{j\in B}\sum_{k\in B}\sum_{s\in S}x_{ijks}=1&amp;\forall i\in B\\
-    &amp;\sum_{i\in B}\sum_{k\in B}\sum_{s\in S}x_{ijks}=1&amp;\forall j\in B\\
-    &amp;\sum_{i\in B}\sum_{j\in B}\sum_{s\in S}x_{ijks}=1&amp;\forall k\in B\\
-    &amp;\sum_{i\in B}\sum_{j\in B}\sum_{k\in B}x_{ijks}=1&amp;\forall s\in S\\
-    &amp;x_{iiks}=x_{ijis}=x_{ijjs}=0&amp;\forall i,j,k\in B,\ s\in S\\
-    &amp;\sum_{i\in B}x_{ijks}=\sum_{l\in B}x_{jkl\sigma(s)}&amp;\forall j,k\in B,\ s\in S\\
-    &amp;y_{ijk}=\sum_{s\in S_T}x_{ijks}&amp;\forall i,j,k\in B\\
-    &amp;z_{ijkl}\geq y_{ijk}+y_{jkl}-1&amp;\forall i,j,k,l\in B\\
-    &amp;TD=\sum_{i,j,k\in B}\sum_{s\in S_{TD}}t_{ijk}\,x_{ijks}&amp;\\
-    &amp;T24=\sum_{i,j,k\in B}\sum_{s\in S_{T24}}t_{ijk}\,x_{ijks}&amp;\\
-    &amp;EM=\sum_{i,j,k\in B}\sum_{s\in S_{EM}}p_{ij}\,x_{ijks}&amp;\\
-    &amp;BB=\sum_{i,j,k\in B}\sum_{s\in S_{BB}}p_{ij}\,x_{ijks}&amp;\\
-    &amp;F=\sum_{i,j,k,l\in B}(t_{ijl}+t_{ikl})\,z_{ijkl}&amp;\\
-    &amp;q_s=\sum_{i,j,k\in B}i\,x_{ijks}&amp;\forall s\in S\\
-    &amp;b_{is}=\sum_{j\in B}\sum_{k\in B}x_{ijks}&amp;\forall i\in B,\ s\in S\\
-    &amp;a_i=\sum_{s\in S}s\,b_{is}&amp;\forall i\in B\\
-    &amp;d_{ij}\geq a_i-a_j,\quad d_{ij}\geq a_j-a_i&amp;\forall i,j\in B\\
-    &amp;16\,L_{ij}\leq d_{ij}\leq 15+20\,L_{ij}&amp;\forall i,j\in B\\
-    &amp;x_{ijks},\,y_{ijk},\,z_{ijkl},\,b_{is},\,L_{ij}\in\{0,1\}&amp;\\
-    &amp;q_s,\,a_i,\,d_{ij},\,TD,\,T24,\,EM,\,BB,\,F\in\mathbb{Z}&amp;
+&\min\;\alpha\, TD+\beta\, T24+\gamma\,(EM+BB)+\delta\, F&\nonumber\\
+    &\sum_{j\in B}\sum_{k\in B}\sum_{s\in S}x_{ijks}=1&\forall i\in B\\
+    &\sum_{i\in B}\sum_{k\in B}\sum_{s\in S}x_{ijks}=1&\forall j\in B\\
+    &\sum_{i\in B}\sum_{j\in B}\sum_{s\in S}x_{ijks}=1&\forall k\in B\\
+    &\sum_{i\in B}\sum_{j\in B}\sum_{k\in B}x_{ijks}=1&\forall s\in S\\
+    &x_{iiks}=x_{ijis}=x_{ijjs}=0&\forall i,j,k\in B,\ s\in S\\
+    &\sum_{i\in B}x_{ijks}=\sum_{l\in B}x_{jkl\sigma(s)}&\forall j,k\in B,\ s\in S\\
+    &y_{ijk}=\sum_{s\in S_T}x_{ijks}&\forall i,j,k\in B\\
+    &z_{ijkl}\geq y_{ijk}+y_{jkl}-1&\forall i,j,k,l\in B\\
+    &TD=\sum_{i,j,k\in B}\sum_{s\in S_{TD}}t_{ijk}\,x_{ijks}&\\
+    &T24=\sum_{i,j,k\in B}\sum_{s\in S_{T24}}t_{ijk}\,x_{ijks}&\\
+    &EM=\sum_{i,j,k\in B}\sum_{s\in S_{EM}}p_{ij}\,x_{ijks}&\\
+    &BB=\sum_{i,j,k\in B}\sum_{s\in S_{BB}}p_{ij}\,x_{ijks}&\\
+    &F=\sum_{i,j,k,l\in B}(t_{ijl}+t_{ikl})\,z_{ijkl}&\\
+    &q_s=\sum_{i,j,k\in B}i\,x_{ijks}&\forall s\in S\\
+    &b_{is}=\sum_{j\in B}\sum_{k\in B}x_{ijks}&\forall i\in B,\ s\in S\\
+    &a_i=\sum_{s\in S}s\,b_{is}&\forall i\in B\\
+    &d_{ij}\geq a_i-a_j,\quad d_{ij}\geq a_j-a_i&\forall i,j\in B\\
+    &16\,L_{ij}\leq d_{ij}\leq 15+20\,L_{ij}&\forall i,j\in B\\
+    &x_{ijks},\,y_{ijk},\,z_{ijkl},\,b_{is},\,L_{ij}\in\{0,1\}&\\
+    &q_s,\,a_i,\,d_{ij},\,TD,\,T24,\,EM,\,BB,\,F\in\mathbb{Z}_{\geq 0}&
 \end{align}
-
-</p>
-</div>
+<p>The instances have \(n=12\) (Hard) and \(n=14\) (Hard2) blocks and slots. Then \(d_{ij}\leq n-1\lt 16\) for any schedule, so constraint (18) forces \(L_{ij}=0\) and does not restrict the schedule. An instance has \(2n^4+n^3+2n^2\) binary variables, \(n^2+2n+5\) general integer variables, and \(n^4+5n^3+5n^2+6n+5\) constraints.</p></div>
 <h2 id="h.kdjrycatf3w">Instances Distributions</h2>
 <p>There are two sets of instances for COURSE in Distributional MIPLIB, summarized in the table below, with download links. COURSE distributions are characterized by the number of courses and number of time slots. The instances are built from anonymized Cornell University Spring 2024 exam data, following the settings of [Cai26].</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -77,9 +77,9 @@ Below is the block sequencing MILP formulation introduced by [Ye26], with \(\alp
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th># Courses</th>
-<th># Time Slots</th>
+<th># Constr</th><th># Courses</th><th># Time Slots (= # Blocks)</th>
+
+
 </tr>
 </thead>
 <tbody>
@@ -89,19 +89,19 @@ Below is the block sequencing MILP formulation introduced by [Ye26], with \(\alp
 <td>43488</td>
 <td>173</td>
 <td>0</td>
-<td>30173</td>
-<td>200</td>
-<td>12</td>
+<td>30173</td><td>200</td><td>12</td>
+
+
 </tr>
 <tr>
-<td><a href="https://drive.google.com/file/d/1PWVANayA8S6iZd3evjRJrllMEdLiJB8W/view?usp=sharing">Hard</a></td>
+<td><a href="https://drive.google.com/file/d/1PWVANayA8S6iZd3evjRJrllMEdLiJB8W/view?usp=sharing">Hard2</a></td>
 <td>[Cai26]</td>
 <td>79968</td>
 <td>229</td>
 <td>0</td>
-<td>53205</td>
-<td>400</td>
-<td>14</td>
+<td>53205</td><td>400 (unverified)</td><td>14</td>
+
+
 </tr>
 </tbody>
 </table></div></div>

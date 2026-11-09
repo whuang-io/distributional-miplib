@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,26 +28,32 @@
 <header class="page-head"><div class="wrap"><h1 id="h.vx4a4adtm6uv">Item Placement</h1></div></header>
 <main class="wrap content">
 <h2 id="h.8779gd30xmur">Problem Description</h2>
-<div class="embed">
-<p>
-Item Placement (IP) involves spreading items, e.g., files or processes, across containers, e.g., disks or machines, utilizing them evenly. Each item has a fixed resource requirement, and each bin has a fixed capacity. The number of items that can be moved is constrained, modeling the real-life situation of a live system for which some placement already exists [Gasse22]. The goal of the problem is to place all items in bins while minimizing the imbalance of the resources used across all bins. The problem is formulated as follows. Let \(I\) denote the set of items and \(J\) denote the set of containers. Let a binary variable \(x_{i j}\) be 1 if item \(i\) is placed in container \(j\) and 0 otherwise. Each item will be placed in exactly a single container. Let \(K\) represent the set of dimensions. \(y_{jk}\) is a variable that specifies the deficit of the utilization of container j in dimension k. 
-$$
-\begin{array}{ll}
-\min _{x, y, z} &amp; \sum_{j \in J} \sum_{k \in K} \alpha_k y_{j k}+\sum_{k \in K} \beta_k z_k \\
-\text { s.t. } &amp; \sum_{j \in J} x_{i j}=1 &amp; \forall i \in I \\
-&amp; \sum_{i \in I} a_{i k} x_{i j} \leq b_k &amp;  \forall j \in J, \forall k \in K\\
-&amp; \sum_{i \in I} d_{i k} x_{i j}+y_{j k} \geq 1 &amp; \forall j \in J, \forall k \in K \\
-&amp; y_{j k} \leq z_k  &amp; \forall j \in J, \forall k \in K\\
-&amp; x_{i j} \in\{0,1\} &amp; \forall i \in I, \forall j \in J \\
-&amp; y_{j k} \geq 0 &amp; \forall j \in J, \forall k \in K
-\end{array}
-$$
-$$
-
-$$
-
-</p>
-</div>
+<div class="embed"><p>Item Placement (IP), called Balanced Item Placement in the ML4CO competition [Gasse22], involves spreading items, e.g., files or processes, across containers, e.g., disks or machines, so that the containers are utilized evenly. Each item has a fixed, multi-dimensional resource requirement, and each container has a fixed capacity in every dimension. Every item must be placed in exactly one container. The objective penalizes, in every resource dimension, how far each container's load falls below the average load, with an extra penalty on the worst such shortfall. The problem is a multi-dimensional multiple-knapsack problem; it was inspired by large-scale systems at Google, and the instances were released for the ML4CO competition (the generator was released after the competition: <a href="https://github.com/ds4dm/ml4co-competition-hidden/blob/main/knapsack/knapsack.py">knapsack/knapsack.py</a> in the ML4CO-hidden repository). In the competition description the number of items that can be moved from an existing placement is also limited, but neither the generator nor the released instances contain such a constraint. The generator can require several copies of an item; the instances use a single copy of every item.</p>
+<p><strong>Notation</strong></p>
+<ul>
+<li>\(I\): set of items (\(|I| = 105\)); \(J\): set of containers (\(|J| = 10\)); \(K\): set of resource dimensions (\(|K| = 3\)).</li>
+<li>\(a_{ik} \geq 0\): requirement of item \(i\) in dimension \(k\). The generator draws 100 small items with \(a_{ik} \sim U[0, 0.1]\) and 5 large items with \(a_{ik} \sim U[0.9, 1]\), independently in every dimension.</li>
+<li>\(T_k = \frac{1}{|J|}\sum_{i \in I} a_{ik}\): average (target) load per container in dimension \(k\).</li>
+<li>\(b_k = 2\,T_k\): capacity of every container in dimension \(k\) (the same for all containers).</li>
+<li>\(d_{ik} = a_{ik} / T_k\): requirement of item \(i\) normalized by the target load.</li>
+<li>\(\alpha_k = 1\), \(\beta_k = 10\,|J|\,|K| = 300\): objective weights of the per-container deficits and of the maximum deficit (the generator weights the maximum deficit so that it always dominates).</li>
+<li>\(x_{ij} \in \{0,1\}\): 1 if item \(i\) is placed in container \(j\).</li>
+<li>\(y_{jk} \in [0,1]\): deficit of container \(j\) in dimension \(k\), i.e. the shortfall of its load below the target, as a fraction of \(T_k\).</li>
+<li>\(z_k \in [0,1]\): largest deficit over all containers in dimension \(k\).</li>
+</ul>
+<p><strong>MILP formulation</strong> [Gasse22]</p>
+\begin{align}
+\min_{x,y,z} \quad & \sum_{j \in J}\sum_{k \in K} \alpha_k\, y_{jk} + \sum_{k \in K} \beta_k\, z_k \\
+\text{s.t.} \quad & \sum_{j \in J} x_{ij} = 1 && \forall i \in I \quad \text{(each item placed once)} \\
+& \sum_{i \in I} a_{ik}\, x_{ij} \leq b_k && \forall j \in J,\ \forall k \in K \quad \text{(capacity)} \\
+& \sum_{i \in I} d_{ik}\, x_{ij} + y_{jk} \geq 1 && \forall j \in J,\ \forall k \in K \quad \text{(deficit)} \\
+& y_{jk} \leq z_k && \forall j \in J,\ \forall k \in K \quad \text{(maximum deficit)} \\
+& x_{ij} \in \{0,1\} && \forall i \in I,\ \forall j \in J \\
+& 0 \leq y_{jk} \leq 1 && \forall j \in J,\ \forall k \in K \\
+& 0 \leq z_k \leq 1 && \forall k \in K
+\end{align}
+<p>The deficit constraint says \(y_{jk} \geq 1 - \frac{1}{T_k}\sum_{i} a_{ik} x_{ij}\), so at the optimum \(y_{jk}\) is the relative shortfall of container \(j\)'s load below the average load in dimension \(k\) (zero if the container is at or above average), and \(z_k\) is the largest shortfall in dimension \(k\). An instance has \(|I||J| = 1050\) binary variables, \(|J||K| + |K| = 33\) continuous variables, and \(|I| + 3|J||K| = 195\) constraints.</p>
+<p><strong>Generator settings.</strong> The instances were generated with the parameter file <a href="https://github.com/ds4dm/ml4co-competition-hidden/blob/main/knapsack/params.text_pb2">knapsack/params.text_pb2</a> of the ML4CO-hidden repository (confirmed on the instances): 10 containers, 3 resource dimensions, 100 small and 5 large items with one copy each, and container capacities equal to \(f = 2\) times the average load in every dimension.</p></div>
 <h2 id="h.rw6cp89fs0gx">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -57,9 +64,9 @@ $$
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th># Items</th>
-<th># Containers</th>
+<th># Constr</th><th># Items</th><th># Containers</th><th># Dimensions</th>
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -70,9 +77,9 @@ $$
 <td>1050</td>
 <td>0</td>
 <td>33</td>
-<td>195</td>
-<td>105</td>
-<td>10</td>
+<td>195</td><td>105</td><td>10</td><td>3</td>
+
+
 <td>ML4CO [Gasse22]</td>
 </tr>
 </tbody>

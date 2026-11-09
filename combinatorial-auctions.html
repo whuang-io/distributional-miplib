@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,20 +28,24 @@
 <header class="page-head"><div class="wrap"><h1 id="h.vhks8lzfdv6l">Combinatorial Auctions</h1></div></header>
 <main class="wrap content">
 <h2 id="h.pkokx5ih35c7">Problem Description</h2>
-<div class="embed">
-<p>
-  In the Combinatorial Auction (CA) problem, \(n\) bids \((B_i, p_i)\) for subsets of \(m\) items are given, where \(B_i\) is the subset and \(p_i\) is its associated bidding price. The objective is to allocate items to bids to maximize the total revenue: 
-
-  \[\max \sum_{i\in[n]} p_ix_i \]
-
-\[\textrm{s.t.} \sum_{i: j\in B_i} x_i \leq 1, \,\forall j\in[m], \]
-
-\[  x_i\in\{0,1\}, \, \forall i\in[n].\]
-There are two commonly-used distributions:
-regions and arbitrary, introduced in [Leyton-Brown00].
-
-</p>
-</div>
+<div class="embed"><p>In the Combinatorial Auction (CA) problem, \(n\) bids \((B_i, p_i)\) for subsets of \(m\) items are given, where \(B_i\) is the subset (bundle) of items requested by bid \(i\) and \(p_i\) is its bidding price. The objective is to accept a set of pairwise compatible bids (no item is sold twice) that maximizes the total revenue.</p>
+<p>All instances in this library are generated with the <strong>arbitrary</strong> relationships scheme of [Leyton-Brown00] (Section 4.3), using the generator of [Gasse19] (very easy, easy and medium levels; the very hard levels of [Huang23] use the same generator with 2,000/4,000 items and 4,000/8,000 bids). Each bidder submits an initial bundle (built by adding items one by one with probability 0.7, guided by the bidder's private interests and pairwise item compatibilities) together with up to 5 substitutable bundles that share at least one item with the initial one, i.e. at most 6 bids per bidder. A bundle's price is the sum of the bidder's private item values (common resale value drawn uniformly from \([1,100]\), perturbed by up to \(\pm 50\)) plus a super-additive term \(|B_i|^{1.2}\); prices are real-valued. A bidder's bids are mutually exclusive (XOR bids). When a bidder places 3 or more bids, the generator encodes this exclusivity with a <em>dummy item</em> that is added to all of that bidder's bundles; bidders with exactly 2 bids need no dummy item because a substitutable bundle always shares an item with the initial bundle. The regions distribution of [Leyton-Brown00] is not used here.</p>
+<p><strong>Notation.</strong></p>
+<ul>
+<li>\(N=\{1,\dots,n\}\): bids; \(p_i\gt 0\): price of bid \(i\in N\).</li>
+<li>\(M=\{1,\dots,m\}\): items; \(B_i\subseteq M\): items requested by bid \(i\).</li>
+<li>\(M^+=\{j\in M: \exists i\in N,\ j\in B_i\}\): items requested by at least one bid (items nobody bids on yield no constraint).</li>
+<li>\(K\): bidders that placed at least 3 bids (one dummy item each); \(N_k\subseteq N\): the bids of bidder \(k\in K\) (\(3\le |N_k|\le 6\)).</li>
+<li>\(x_i\in\{0,1\}\): 1 if bid \(i\) is accepted.</li>
+</ul>
+<p><strong>Formulation.</strong></p>
+\begin{align}
+\max\ & \sum_{i\in N} p_i x_i \\
+\textrm{s.t.}\ & \sum_{i\in N:\, j\in B_i} x_i \leq 1, && \forall j\in M^+, \\
+& \sum_{i\in N_k} x_i \leq 1, && \forall k\in K, \\
+& x_i\in\{0,1\}, && \forall i\in N.
+\end{align}
+<p>The second family is the item constraint of the dummy items, so in the files every constraint has the same form \(\sum_{i: j\in B_i} x_i\le 1\) over the extended item set \(M^+\cup K\), and the number of constraints is \(|M^+|+|K|\). This is why the constraint count exceeds the number of items (e.g. about 192 constraints for 100 items: roughly 100 item rows plus about 90 dummy-item rows).</p></div>
 <h2 id="h.2t7hmbkyd29z">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -51,9 +56,9 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>#Item</th>
-<th>#Bid</th>
+<th># Constr</th><th>#Item</th><th>#Bid</th><th>Bid Distribution</th>
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -64,9 +69,9 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <td>500</td>
 <td>0</td>
 <td>0</td>
-<td>192.2</td>
-<td>100</td>
-<td>500</td>
+<td>192.2</td><td>100</td><td>500</td><td>Arbitrary [Leyton-Brown00]</td>
+
+
 <td>Branching [Gasse19,Gupta20]</td>
 </tr>
 <tr>
@@ -75,9 +80,9 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <td>1000</td>
 <td>0</td>
 <td>0</td>
-<td>385.04</td>
-<td>200</td>
-<td>1,000</td>
+<td>385.04</td><td>200</td><td>1,000</td><td>Arbitrary [Leyton-Brown00]</td>
+
+
 <td>Branching    [Gasse19, Gupta20]; Backdoor [Cai25]</td>
 </tr>
 <tr>
@@ -86,9 +91,9 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <td>1500</td>
 <td>0</td>
 <td>0</td>
-<td>578.07</td>
-<td>300</td>
-<td>1,500</td>
+<td>578.07</td><td>300</td><td>1,500</td><td>Arbitrary [Leyton-Brown00]</td>
+
+
 <td>Branching   [Gasse19, Gupta20]</td>
 </tr>
 <tr>
@@ -97,9 +102,9 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <td>4000</td>
 <td>0</td>
 <td>0</td>
-<td>2676.32</td>
-<td>2,000</td>
-<td>4,000</td>
+<td>2676.32</td><td>2,000</td><td>4,000</td><td>Arbitrary [Leyton-Brown00]</td>
+
+
 <td>LNS   [Song20, Wu21, Huang23]; PaS, Configuration [Cai25]</td>
 </tr>
 <tr>
@@ -108,9 +113,9 @@ regions and arbitrary, introduced in [Leyton-Brown00].
 <td>8000</td>
 <td>0</td>
 <td>0</td>
-<td>5354.08</td>
-<td>4,000</td>
-<td>8,000</td>
+<td>5354.08</td><td>4,000</td><td>8,000</td><td>Arbitrary [Leyton-Brown00]</td>
+
+
 <td>LNS   [Song20, Wu21, Huang23]</td>
 </tr>
 </tbody>

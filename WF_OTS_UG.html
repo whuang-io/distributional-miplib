@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 <nav class="site-nav" aria-label="Main">
@@ -27,8 +28,44 @@
 <header class="page-head"><div class="wrap"><h1 id="h.esd5hl2y91t2">Wildfire-Aware Optimal Transmission Switching with Undergrounding</h1></div></header>
 <main class="wrap content">
 <h2 id="h.36dogayur6m8">Problem Description</h2>
-<p>The <em>Wildfire-Aware Optimal Transmission Switching with Undergrounding</em> (WF_OTS_UG) problem extends WF-OTS from operational decision-making to long-term planning. Over a multi-day horizon, it jointly determines which transmission lines to de-energize each day and which lines to underground. Undergrounding is a one-time investment that eliminates a line’s wildfire ignition risk while allowing it to remain in service, subject to an overall investment budget. On each day, lines in high-risk areas must either be de-energized or undergrounded, and the residual wildfire risk must remain below a prescribed threshold. The objective is to minimize total load shedding over the planning horizon. Equity-aware variants instead minimize the maximum proportion of load shed experienced by any demographic group or require that a specified fraction of investment or load-shedding reduction benefits vulnerable communities. Like WF-OTS, WF-OTS-UG is formulated as a mixed-integer linear program (MILP) under a DC power flow approximation, with binary variables representing daily line energization and undergrounding decisions. Because undergrounding decisions are made once and remain effective throughout the planning horizon, they couple the daily switching problems, resulting in a larger and more challenging MILP that balances long-term infrastructure investment against short-term operational shutoffs.</p>
-<p>The MILP formulation for the WF_OTS_UG instances in this library is described in [Pollack25] (Appendix B.6.1).</p>
+<div class="embed"><p>The Wildfire-Aware Optimal Transmission Switching with Undergrounding (WF_OTS_UG) problem extends WF_OTS from operational decisions to long-term planning. Over a horizon of several days, it decides which transmission lines to de-energize on each day and which lines to underground. Undergrounding is a one-time investment, limited by an overall budget, that removes a line's wildfire ignition risk while letting it stay in service. On each day, lines in the highest-risk category must be either de-energized or undergrounded. The remaining (residual) wildfire risk of energized overhead lines must stay below a system-wide threshold. The objective is to minimize total load shedding over the planning horizon. [Pollack25] also studies equity-aware variants, which minimize the maximum share of load shed experienced by any demographic group or require that a specified fraction of the investment or of the load-shed reduction benefits vulnerable communities. The instances in this library use the baseline variant, which minimizes total load shed with no equity objective or policy constraint. Like WF_OTS, WF_OTS_UG is a mixed-integer linear program (MILP) under the DC (B&theta;) power flow approximation, with binary variables for daily line energization and for undergrounding. The undergrounding decisions are made once and apply to every day, so they couple the daily switching problems. The result is a larger and harder MILP that trades long-term infrastructure investment against short-term operational shutoffs.</p>
+<p>The MILP formulation for the WF_OTS_UG instances in this library is the baseline model (BL) of [Pollack25] (Section 3; Appendix B.6.1 in the journal version). Each day is represented by one operating hour. The <em>Small</em> network is the 240-bus reduced WECC model (pglib_opf_case240_pserc: 240 buses, 448 branches, 143 generators). The <em>Large</em> network is the synthetic Texas7k grid (6,717 buses, 9,140 branches, 637 generators in the instances). Line risks are integrated high-risk USGS WFPI values, which appear in the instances scaled by \(10^{-6}\). The instances of one distribution share the network, days and risks. They differ in per-bus loads (by up to about &plusmn;10% between instances) and, for the Small network, in the budget \(B\).</p>
+<p><strong>Notation</strong></p>
+<ul>
+<li>\(\mathcal{D}\): set of days (one operating hour per day); \(\mathcal{N},\mathcal{G},\mathcal{L}\): buses, generators and branches; \(\mathcal{G}_n\), \(\mathcal{L}_n^{fr}\), \(\mathcal{L}_n^{to}\), \(n_\ell^{fr}\), \(n_\ell^{to}\), \(n^{\mathrm{ref}}\): as in WF_OTS.</li>
+<li>\(r_{\ell,d}\ge 0\): wildfire risk of line \(\ell\) on day \(d\).</li>
+<li>\(\mathcal{L}^{high}_d=\{\ell: r_{\ell,d}\ge R^{high}\}\) and \(\mathcal{L}^{med}_d=\{\ell: 0&lt;r_{\ell,d}&lt;R^{high}\}\), with \(R^{high}=1\) in the instances' scaled units. \(\mathcal{L}^{s}_d=\mathcal{L}^{high}_d\cup\mathcal{L}^{med}_d\) are the lines that can be switched on day \(d\).</li>
+<li>\(\mathcal{L}^{H}=\bigcup_{d\in\mathcal{D}}\mathcal{L}^{s}_d\): candidate lines for undergrounding.</li>
+<li>\(d_{n,d}\): demand at bus \(n\) on day \(d\); \(\overline{p}_i\): generator capacity (lower bound 0); \(\overline{f}_\ell\): branch rating; \(b_\ell=x_\ell/(r_\ell^2+x_\ell^2)\): susceptance magnitude.</li>
+<li>\(\overline{\delta}\): angle-difference limit (\(\pi/6\) for the Small network, \(\pi/3\) for the Large network); \(M=2\pi\).</li>
+<li>\(\phi_\ell\): cost of undergrounding line \(\ell\) (USD million, at USD 7 million per mile); \(B\): undergrounding budget.</li>
+<li>\(R^{\mathrm{PSPS}}\): daily risk threshold (\(6\times10^{8}\) unscaled, 600 in the instances).</li>
+</ul>
+<p><strong>Variables</strong></p>
+<ul>
+<li>\(y_\ell\in\{0,1\}\), \(\ell\in\mathcal{L}^{H}\): 1 if line \(\ell\) is undergrounded.</li>
+<li>\(z_{\ell,d}\in\{0,1\}\), \(\ell\in\mathcal{L}^{s}_d\), \(d\in\mathcal{D}\): 1 if line \(\ell\) is energized on day \(d\). For \(\ell\notin\mathcal{L}^{s}_d\), \(z_{\ell,d}\equiv1\).</li>
+<li>\(p_{i,d}\), \(f_{\ell,d}\in[-\overline{f}_\ell,\overline{f}_\ell]\), \(\theta_{n,d}\in[-\pi,\pi]\), \(s_{n,d}\ge0\): generation, flow, voltage angle and load shed on day \(d\).</li>
+</ul>
+<p><strong>MILP formulation</strong></p>
+\begin{align}
+\min\quad & \sum_{d\in\mathcal{D}}\sum_{n\in\mathcal{N}} s_{n,d} \\
+\text{s.t.}\quad & 0\le p_{i,d}\le \overline{p}_i, && \forall i\in\mathcal{G},d\in\mathcal{D}\\
+& 0\le s_{n,d}\le d_{n,d}, && \forall n\in\mathcal{N},d\in\mathcal{D}\\
+& -\overline{f}_\ell z_{\ell,d}\le f_{\ell,d}\le \overline{f}_\ell z_{\ell,d}, && \forall d\in\mathcal{D},\ell\in\mathcal{L}^{s}_d\\
+& -\overline{\delta}-M(1-z_{\ell,d})\le \theta_{n_\ell^{fr},d}-\theta_{n_\ell^{to},d}\le \overline{\delta}+M(1-z_{\ell,d}), && \forall d\in\mathcal{D},\ell\in\mathcal{L}^{s}_d\\
+& -b_\ell M(1-z_{\ell,d})\le f_{\ell,d}-b_\ell(\theta_{n_\ell^{fr},d}-\theta_{n_\ell^{to},d})\le b_\ell M(1-z_{\ell,d}), && \forall d\in\mathcal{D},\ell\in\mathcal{L}^{s}_d\\
+& -\overline{\delta}\le \theta_{n_\ell^{fr},d}-\theta_{n_\ell^{to},d}\le \overline{\delta}, && \forall d\in\mathcal{D},\ell\in\mathcal{L}\setminus\mathcal{L}^{s}_d\\
+& f_{\ell,d}=b_\ell(\theta_{n_\ell^{fr},d}-\theta_{n_\ell^{to},d}), && \forall d\in\mathcal{D},\ell\in\mathcal{L}\setminus\mathcal{L}^{s}_d\\
+& \sum_{\ell\in\mathcal{L}_n^{fr}} f_{\ell,d}-\sum_{\ell\in\mathcal{L}_n^{to}} f_{\ell,d}=\sum_{i\in\mathcal{G}_n} p_{i,d}-d_{n,d}+s_{n,d}, && \forall n\in\mathcal{N},d\in\mathcal{D}\\
+& \theta_{n^{\mathrm{ref}},d}=0, && \forall d\in\mathcal{D}\\
+& z_{\ell,d}=y_\ell, && \forall d\in\mathcal{D},\ell\in\mathcal{L}^{high}_d\\
+& y_\ell\le z_{\ell,d}, && \forall d\in\mathcal{D},\ell\in\mathcal{L}^{med}_d\\
+& \sum_{\ell\in\mathcal{L}} r_{\ell,d}\,(z_{\ell,d}-y_\ell)\le R^{\mathrm{PSPS}}, && \forall d\in\mathcal{D}\\
+& \sum_{\ell\in\mathcal{L}^{H}} \phi_\ell\, y_\ell\le B\\
+& y_\ell\in\{0,1\},\ \forall \ell\in\mathcal{L}^{H};\quad z_{\ell,d}\in\{0,1\},\ \forall d\in\mathcal{D},\ell\in\mathcal{L}^{s}_d
+\end{align}
+<p>Each daily block is the DC optimal transmission switching model of WF_OTS ([Pollack25] Eq. (1)) with its own copy of the operating variables. The undergrounding variables \(y_\ell\) link the days. A high-risk line must be either undergrounded or de-energized (\(z=y\)). A medium-risk line cannot be both undergrounded and de-energized (\(y\le z\), i.e., \((1-z)+y\le1\)). The daily risk budget counts only energized overhead lines (in the sum, \(y_\ell\equiv0\) for \(\ell\notin\mathcal{L}^{H}\), and constant terms are moved to the right-hand side). The undergrounding budget limits total investment. The objective is the total load shed. It is equivalent to the fraction of load shed \(S\) used in [Pollack25], because total demand is a constant. The instance files also contain an unused auxiliary variable <em>aux_max</em> \(\ge0\), left over from the equity (min-max) variants, with objective coefficient 0. Each instance has \(|\mathcal{L}^{H}|+\sum_d|\mathcal{L}^{s}_d|\) binary variables, \(|\mathcal{D}|(2|\mathcal{N}|+|\mathcal{L}|+|\mathcal{G}|)+1\) continuous variables and \(\sum_d\big(3|\mathcal{N}|+3|\mathcal{L}|+4|\mathcal{L}^{s}_d|+2\big)+2\) constraints (the load-shed bounds are written as rows).</p></div>
 <h2 id="h.m3msfrk5fg3v">Instances Distribution</h2>
 <p>We compile four sets of WF_OTS_UG instances with different difficulty levels, which correspond to instances created from different network sizes and number of days in the simulation. See the table below for details.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -39,9 +76,9 @@
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>Network size</th>
-<th>Number of days</th>
+<th># Constr</th><th>Network size</th><th>Test system</th><th># Buses</th><th># Branches</th><th>Number of days</th>
+
+
 </tr>
 </thead>
 <tbody>
@@ -51,9 +88,9 @@
 <td>4181</td>
 <td>0</td>
 <td>17137</td>
-<td>48582</td>
-<td>Small</td>
-<td>16</td>
+<td>48582</td><td>Small</td><td>WECC 240-bus (pglib_opf_case240_pserc)</td><td>240</td><td>448</td><td>16</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1dqDFGHQb3YakqyVcA58Ibj00IQ2Wnf0N/view?usp=sharing">Medium</a></td>
@@ -61,9 +98,9 @@
 <td>7525</td>
 <td>0</td>
 <td>33202</td>
-<td>92992</td>
-<td>Small</td>
-<td>31</td>
+<td>92992</td><td>Small</td><td>WECC 240-bus (pglib_opf_case240_pserc)</td><td>240</td><td>448</td><td>31</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1mvERiCGpiFu5BItdswD6PjajbkyypuC9/view?usp=sharing">Hard</a></td>
@@ -71,9 +108,9 @@
 <td>3982</td>
 <td>0</td>
 <td>23212</td>
-<td>55539</td>
-<td>Large</td>
-<td>1</td>
+<td>55539</td><td>Large</td><td>Texas7k</td><td>6,717</td><td>9,140</td><td>1</td>
+
+
 </tr>
 <tr>
 <td><a href="https://drive.google.com/file/d/1kF3MrVBeO1DvzWseDIPFVVzJn9VzFoCU/view?usp=drive_link">Hard2</a></td>
@@ -81,9 +118,9 @@
 <td>6546</td>
 <td>0</td>
 <td>46423</td>
-<td>111804</td>
-<td>Large</td>
-<td>2</td>
+<td>111804</td><td>Large</td><td>Texas7k</td><td>6,717</td><td>9,140</td><td>2</td>
+
+
 </tr>
 </tbody>
 </table></div></div>

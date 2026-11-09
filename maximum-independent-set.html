@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script>window.MathJax = {tex: {tags: "ams"}};</script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -27,17 +28,20 @@
 <header class="page-head"><div class="wrap"><h1 id="h.2p1ribr359p">Maximum Independent Set</h1></div></header>
 <main class="wrap content">
 <h2 id="h.fo2th0p6rnpd">Problem Description</h2>
-<div class="embed">
-<p>
-  In an independent set (IS) problem, an undirected graph \(G=(V,E)\) in given. The goal is to select the largest subset of nodes such that no two nodes in the subsets are connected by an edge in \(G\):
-\[\max \sum_{v\in V} x_v \]
-
-\[\textrm{s.t.} x_u+x_v\leq 1, \,\forall (u,v)\in E, \]
-
- \[ x_v\in\{0,1\}, \, \forall v\in V.\]
-The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph. 
-</p>
-</div>
+<div class="embed"><p>In a maximum independent set (MIS) problem, an undirected graph \(G=(V,E)\) is given. The goal is to select the largest subset of nodes such that no two selected nodes are connected by an edge in \(G\).</p>
+<p>The easy and medium levels are generated with the generator of [Gasse19] on Barabási-Albert graphs with affinity \(m_{BA}=4\) (each new node attaches to 4 existing nodes, so \(|E|=4(|V|-4)\)). This generator does not write one constraint per edge: it first computes a greedy clique partition of \(V\) and replaces the edges inside each clique by a single clique inequality; all remaining edges keep an edge inequality. The very hard levels of [Huang23] are generated on Erdős-Rényi graphs \(G(|V|,p)\) with \(p=8/(|V|-1)\) (expected average degree 8, i.e. about \(4|V|\) edges) and use one edge inequality per edge. All instances are unweighted.</p>
+<p><strong>Notation.</strong></p>
+<ul>
+<li>\(G=(V,E)\): undirected graph; \(x_v\in\{0,1\}\): 1 if node \(v\in V\) is in the independent set.</li>
+<li>\(\mathcal{Q}\): a collection of cliques of \(G\) (each with at least 2 nodes) such that every edge of \(E\) is contained in exactly one \(Q\in\mathcal{Q}\). For the easy and medium levels, \(\mathcal{Q}\) consists of the cliques of size at least 2 of the greedy clique partition plus every edge not inside one of these cliques; for the very hard levels, \(\mathcal{Q}=E\) (every edge is its own 2-clique).</li>
+</ul>
+<p><strong>Formulation.</strong></p>
+\begin{align}
+\max\ & \sum_{v\in V} x_v \\
+\textrm{s.t.}\ & \sum_{v\in Q} x_v \leq 1, && \forall Q\in\mathcal{Q}, \\
+& x_v\in\{0,1\}, && \forall v\in V.
+\end{align}
+<p>With \(\mathcal{Q}=E\) this is the edge formulation \(x_u+x_v\le 1,\ \forall (u,v)\in E\). Since each edge lies in exactly one \(Q\in\mathcal{Q}\), both forms have the same feasible integer solutions; the clique form has slightly fewer rows (e.g. about 3,950 instead of 3,984 for 1,000 nodes) and a tighter LP relaxation.</p></div>
 <h2 id="h.5t82rm7dr4o9">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works and availability in Distributional MIPLIB, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
@@ -48,10 +52,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <th># Var B</th>
 <th># Var I</th>
 <th># Var C</th>
-<th># Constr</th>
-<th>#Node</th>
-<th>Node Degree</th>
-<th>Graph Type</th>
+<th># Constr</th><th>#Node</th><th>Graph Type</th><th>Graph Parameter</th><th>Avg. Degree</th>
+
+
+
 <th>Related Literature</th>
 </tr>
 </thead>
@@ -62,10 +66,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>1000</td>
 <td>0</td>
 <td>0</td>
-<td>3946.25</td>
-<td>1,000</td>
-<td>4</td>
-<td>Barabasi-Albert</td>
+<td>3946.25</td><td>1,000</td><td>Barabasi-Albert</td><td>affinity m = 4</td><td>7.97</td>
+
+
+
 <td>Branching [Gasse19,Gupta20]</td>
 </tr>
 <tr>
@@ -74,10 +78,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>1500</td>
 <td>0</td>
 <td>0</td>
-<td>5941.14</td>
-<td>1,500</td>
-<td>4</td>
-<td>Barabasi-Albert</td>
+<td>5941.14</td><td>1,500</td><td>Barabasi-Albert</td><td>affinity m = 4</td><td>7.98</td>
+
+
+
 <td>Branching, LNS [Gasse19,Gupta20,Wu21]; Backdoor [Cai25]</td>
 </tr>
 <tr>
@@ -86,10 +90,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>6000</td>
 <td>0</td>
 <td>0</td>
-<td>23994.82</td>
-<td>6,000</td>
-<td>4</td>
-<td>Erdos-Renyi</td>
+<td>23994.82</td><td>6,000</td><td>Erdos-Renyi</td><td>p = 8/(n-1) (about 0.00133)</td><td>8 (expected)</td>
+
+
+
 <td>LNS[Huang23]</td>
 </tr>
 <tr>
@@ -98,10 +102,10 @@ The graph \(G\) is typically a Erdos-Renyi or a Barabasi-Albert random graph.
 <td>12000</td>
 <td>0</td>
 <td>0</td>
-<td>48009.62</td>
-<td>12,000</td>
-<td>4</td>
-<td>Erdos-Renyi</td>
+<td>48009.62</td><td>12,000</td><td>Erdos-Renyi</td><td>p = 8/(n-1) (about 0.00067)</td><td>8 (expected)</td>
+
+
+
 <td>LNS[Huang23]</td>
 </tr>
 </tbody>
