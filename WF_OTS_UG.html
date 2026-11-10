@@ -67,7 +67,7 @@
 \end{align}
 <p>Each daily block is the DC optimal transmission switching model of WF_OTS ([Pollack25] Eq. (1)) with its own copy of the operating variables. The undergrounding variables \(y_\ell\) link the days. A high-risk line must be either undergrounded or de-energized (\(z=y\)). A medium-risk line cannot be both undergrounded and de-energized (\(y\le z\), i.e., \((1-z)+y\le1\)). The daily risk budget counts only energized overhead lines (in the sum, \(y_\ell\equiv0\) for \(\ell\notin\mathcal{L}^{H}\), and constant terms are moved to the right-hand side). The undergrounding budget limits total investment. The objective is the total load shed. It is equivalent to the fraction of load shed \(S\) used in [Pollack25], because total demand is a constant. The instance files also contain an unused auxiliary variable <em>aux_max</em> \(\ge0\), left over from the equity (min-max) variants, with objective coefficient 0. Each instance has \(|\mathcal{L}^{H}|+\sum_d|\mathcal{L}^{s}_d|\) binary variables, \(|\mathcal{D}|(2|\mathcal{N}|+|\mathcal{L}|+|\mathcal{G}|)+1\) continuous variables and \(\sum_d\big(3|\mathcal{N}|+3|\mathcal{L}|+4|\mathcal{L}^{s}_d|+2\big)+2\) constraints (the load-shed bounds are written as rows).</p></div>
 <h2 id="h.m3msfrk5fg3v">Instances Distribution</h2>
-<p>We compile four sets of WF_OTS_UG instances with different difficulty levels, which correspond to instances created from different network sizes and number of days in the simulation. See the table below for details.</p>
+<p>We compile three sets of WF_OTS_UG instances with different difficulty levels, which correspond to instances created from different network sizes and number of days in the simulation. See the table below for details.</p>
 <div class="embed"><div class="table-wrap"><table>
 <thead>
 <tr>
@@ -99,16 +99,6 @@
 <td>0</td>
 <td>33202</td>
 <td>92992</td><td>Small</td><td>WECC 240-bus (pglib_opf_case240_pserc)</td><td>240</td><td>448</td><td>31</td>
-
-
-</tr>
-<tr>
-<td><a href="https://drive.google.com/file/d/1mvERiCGpiFu5BItdswD6PjajbkyypuC9/view?usp=sharing">Hard</a></td>
-<td>New</td>
-<td>3982</td>
-<td>0</td>
-<td>23212</td>
-<td>55539</td><td>Large</td><td>Texas7k</td><td>6,717</td><td>9,140</td><td>1</td>
 
 
 </tr>
