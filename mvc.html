@@ -121,6 +121,18 @@
 
 <td>LNS    [Huang23]</td>
 </tr>
+<tr>
+<td><a href="https://drive.google.com/file/d/1Y_d9Z3WhPlD6i0hXkkOkLID89ePf-tKZ/view?usp=drive_link">Very hard 3</a></td>
+<td>[Huang24]</td>
+<td>9000</td>
+<td>0</td>
+<td>0</td>
+<td>44975</td><td>9,000</td><td>Barabasi-Albert</td><td>affinity m = 5</td><td>9.99</td>
+
+
+
+<td>PaS [Huang24, Cai25]; LNS [Huang23b]</td>
+</tr>
 </tbody>
 </table></div></div>
 <h2 id="h.na5amu4fxzmq">Generator</h2>
@@ -129,9 +141,11 @@
 <p>The MVC instances data in Distributional MIPLIB is licensed under a <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0 license</a> .</p>
 <h2 id="h.mh9ubcze0usj">Related literature</h2>
 <h3 id="h.dr64jjwlhdqh">Large Neighborhood Search</h3>
-<p>For large neighborhood search, Huang et al. [Huang23] use Barabasi-Albert graphs with 1,000 and 2,000 nodes and affinity set to 70. The set of instances with 1000 nodes was used for training. The set of instances with 2000 nodes was used as an out-of-distribution test set. MVC has been used in [Song20, Huang23, Huang23b].  In addition to the distributions complied in Distributional MIPLIB shown in the table above, Song et al. [Song20] use both Erdos-Renyi and Barabasi-Albert graphs with 1,000 nodes and affinity set to 4.  Huang et al. [Huang23b] use Barabasi-Albert graphs with 9,000 nodes and affinity set to 5 to test a heuristic.</p>
+<p>For large neighborhood search, Huang et al. [Huang23] use Barabasi-Albert graphs with 1,000 and 2,000 nodes and affinity set to 70. The set of instances with 1000 nodes was used for training. The set of instances with 2000 nodes was used as an out-of-distribution test set. MVC has been used in [Song20, Huang23, Huang23b].  In addition to the distributions complied in Distributional MIPLIB shown in the table above, Song et al. [Song20] use both Erdos-Renyi and Barabasi-Albert graphs with 1,000 nodes and affinity set to 4. Huang et al. [Huang23b] use the Very hard 3 distribution (Barabasi-Albert graphs with 9,000 nodes and affinity set to 5) to test a heuristic.</p>
 <h3 id="backdoor">Backdoor</h3>
 <p>For learning backdoors, MVC has been used as a benchmark in [Cai25], which trains on Barabasi-Albert graphs with 1,500 nodes and affinity set to 5, and tests on graphs of the same size as well as on larger graphs with 2,000 nodes and affinity set to 5 (the Medium distribution in Distributional MIPLIB).</p>
+<h3 id="pas">Predict-and-Search</h3>
+<p>For predict-and-search, MVC has been used as a benchmark in [Huang24] and [Cai25], which train on Barabasi-Albert graphs with 6,000 nodes and affinity set to 5, and test on graphs of the same size as well as on larger graphs with 9,000 nodes and affinity set to 5 (the Very hard 3 distribution in Distributional MIPLIB).</p>
 <h2 id="h.upctdfwi135x">Citation</h2>
 <p>Any work that uses any of the above instances should cite the papers below:</p>
 <h3 id="h.si88gbraciy6">Distributional MIPLIB</h3>
@@ -150,6 +164,7 @@
 <p class="ref" id="ref-Huang23"><span class="ref-key">[Huang23]</span> Huang, Taoan, et al. "Searching large neighborhoods for integer linear programs with contrastive learning." In <em>International Conference on Machine Learning (ICML)</em>, PMLR vol. 202, pp. 13869–13890, 2023. [<a href="https://arxiv.org/abs/2302.01578">paper</a>]</p>
 <p class="ref" id="ref-Huang23b"><span class="ref-key">[Huang23b]</span> Huang, Taoan, et al. "Local branching relaxation heuristics for integer linear programs." In <em>International Conference on Integration of Constraint Programming, Artificial Intelligence, and Operations Research (CPAIOR)</em>, pp. 96–113, 2023. [<a href="https://link.springer.com/chapter/10.1007/978-3-031-33271-5_7">paper</a>]</p>
 <p class="ref" id="ref-Cai25"><span class="ref-key">[Cai25]</span> Cai, Junyang, Taoan Huang, and Bistra Dilkina. "Multi-task representation learning for mixed integer linear programming." In <em>International Conference on Integration of Constraint Programming, Artificial Intelligence, and Operations Research (CPAIOR)</em>, pp. 134–151, 2025. [<a href="https://doi.org/10.1007/978-3-031-95973-8_9">paper</a>]</p>
+<p class="ref" id="ref-Huang24"><span class="ref-key">[Huang24]</span> Huang, Taoan, et al. "Contrastive predict-and-search for mixed integer linear programs." In <em>International Conference on Machine Learning (ICML)</em>, PMLR vol. 235, pp. 19757–19771, 2024. [<a href="https://proceedings.mlr.press/v235/huang24f.html">paper</a>]</p>
 </main>
 <footer class="site-footer"><div class="wrap">Distributional MIPLIB · <a href="https://www.arxiv.org/abs/2406.06954">arXiv</a> · <a href="https://huggingface.co/datasets/weiminhu/D-MIPLIB">Hugging Face</a> · Contact: <a href="mailto:dilkina@usc.edu">dilkina@usc.edu</a></div></footer>
 <script src="assets/site.js"></script>
