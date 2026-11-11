@@ -36,11 +36,11 @@
 <ul>
 <li>\(\mathcal{I}\): input pixels (784); \(\mathcal{H}_1,\mathcal{H}_2,\mathcal{H}_3\): neurons of the two convolutional layers and the dense hidden layer; \(\mathcal{C}=\{0,\dots,9\}\): output classes; \(W^{(k)},b^{(k)}\): weights and biases of layer \(k\) (layer 4 is the output layer).</li>
 <li>For each hidden neuron \(i\) with pre-activation bounds \([l_i,u_i]\): \(i\) is <em>stably inactive</em> if \(u_i\le 0\) (its ReLU output is 0 and it is dropped), <em>stably active</em> if \(l_i\ge 0\) (its ReLU output equals the pre-activation), and <em>unstable</em> otherwise; \(\mathcal{U}_k\subseteq\mathcal{H}_k\) denotes the unstable neurons of layer \(k\).</li>
-<li>\(\mathcal{K}\subseteq\mathcal{C}\setminus\{y\}\): candidate adversarial classes (in the instances inspected, \(|\mathcal{K}|=3\); the remaining classes were removed when the instance was generated); \([L_c,U_c]\): bounds on the margin of class \(c\).</li>
-<li>Variables: \(x_j\) input pixels; \(\hat z^{(k)}_i\) (free) pre-activations of layer \(k=1,\dots,4\); \(z^{(k)}_i\ge 0\) and \(\delta^{(k)}_i\in\{0,1\}\) for unstable neurons (\(\delta=1\) means the ReLU is active); \(\mu_c\) margin of class \(c\in\mathcal{K}\); \(m_1,\dots,m_{|\mathcal{K}|-1}\) running maxima with binaries \(\beta_1,\dots,\beta_{|\mathcal{K}|-1}\).</li>
+<li>\(\mathcal{K}\subseteq\mathcal{C}\setminus\{y\}\): candidate adversarial classes (\(|\mathcal{K}|\) varies by instance, from 1 to 8 in the instances inspected and about 3 on average; the remaining classes were removed when the instance was generated); \([L_c,U_c]\): bounds on the margin of class \(c\).</li>
+<li>Variables: \(x_j\) input pixels; \(\hat z^{(k)}_i\) (free) pre-activations of layer \(k=1,\dots,4\); \(z^{(k)}_i\ge 0\) and \(\delta^{(k)}_i\in\{0,1\}\) for unstable neurons (\(\delta=1\) means the ReLU is active); \(\mu_c\) margin of class \(c\in\mathcal{K}\); \(m_1,\dots,m_{|\mathcal{K}|-1}\) pairwise maxima with binaries \(\beta_1,\dots,\beta_{|\mathcal{K}|-1}\).</li>
 <li>The input to layer \(k+1\) from neuron \(i\) of layer \(k\) is \(a^{(k)}_i=\hat z^{(k)}_i\) if \(i\) is stably active, \(a^{(k)}_i=z^{(k)}_i\) if \(i\in\mathcal{U}_k\), and \(a^{(k)}_i=0\) if \(i\) is stably inactive; \(a^{(0)}=x\).</li>
 </ul>
-<p><strong>Formulation.</strong> Let \(\mathcal{K}=\{c_1,\dots,c_K\}\), \(m_0:=\mu_{c_1}\), and let \(m_{K-1}\) be the final maximum.</p>
+<p><strong>Formulation.</strong> Let \(K=|\mathcal{K}|\). The maximum of the margins is built from \(K-1\) pairwise maxima \(m_r=\max(A_r,B_r)\) arranged in a balanced binary tree: the leaves are the margins \(\mu_c\), \(c\in\mathcal{K}\), each node's arguments \(A_r,B_r\) are two margins or two lower nodes, and the root \(m_{K-1}\) is the final maximum (for example, for \(\mathcal{K}=\{1,3,4,5,6,7,8,9\}\) the root is \(\max(\max(\max(\mu_1,\mu_3),\max(\mu_4,\mu_5)),\max(\max(\mu_6,\mu_7),\max(\mu_8,\mu_9)))\)). When \(K=1\) the objective is just \(\mu_{c}\) and there are no \(m_r\) or \(\beta_r\).</p>
 \begin{align}
 \max\ & m_{K-1}\\
 \text{s.t. } & \max(0,x^0_j-\epsilon)\le x_j\le \min(1,x^0_j+\epsilon), && \forall j\in\mathcal{I}\\
@@ -48,11 +48,11 @@
 & \hat z^{(4)}_c=\sum_{j} W^{(4)}_{cj}\,a^{(3)}_j+b^{(4)}_c, && \forall c\in\mathcal{C}\\
 & z^{(k)}_i\ge \hat z^{(k)}_i,\quad z^{(k)}_i\le \hat z^{(k)}_i-l_i\big(1-\delta^{(k)}_i\big),\quad z^{(k)}_i\le u_i\,\delta^{(k)}_i,\quad z^{(k)}_i\ge 0, && \forall k\in\{1,2,3\},\ i\in\mathcal{U}_k\\
 & \mu_c=\hat z^{(4)}_c-\hat z^{(4)}_y,\quad L_c\le\mu_c\le U_c, && \forall c\in\mathcal{K}\\
-& m_r\ge m_{r-1},\quad m_r\ge \mu_{c_{r+1}}, && r=1,\dots,K-1\\
-& m_r\le \mu_{c_{r+1}}+\big(U(m_{r-1})-L_{c_{r+1}}\big)\beta_r,\quad m_r\le m_{r-1}+\big(U_{c_{r+1}}-L(m_{r-1})\big)(1-\beta_r), && r=1,\dots,K-1\\
+& m_r\ge A_r,\quad m_r\ge B_r, && r=1,\dots,K-1\\
+& m_r\le B_r+\big(U(A_r)-L(B_r)\big)\beta_r,\quad m_r\le A_r+\big(U(B_r)-L(A_r)\big)(1-\beta_r), && r=1,\dots,K-1\\
 & \delta^{(k)}_i\in\{0,1\},\quad \beta_r\in\{0,1\},
 \end{align}
-<p>where \([L(m_r),U(m_r)]\) are the bounds of \(m_r\) (the maxima of the bounds of its two arguments). The constraints for \(m_r\) encode \(m_r=\max(m_{r-1},\mu_{c_{r+1}})\), so \(m_{K-1}=\max_{c\in\mathcal{K}}\big(\hat z^{(4)}_c-\hat z^{(4)}_y\big)\). The ReLU constraints are the big-M encoding of [Tjeng19]: \(\delta=0\) forces \(z=0\) and \(\hat z\le 0\), and \(\delta=1\) forces \(z=\hat z\ge 0\).</p>
+<p>where \([L(\cdot),U(\cdot)]\) are the bounds of a margin or node (for \(\mu_c\), \([L_c,U_c]\); for \(m_r\), the maxima of the bounds of its two arguments). The constraints for \(m_r\) encode \(m_r=\max(A_r,B_r)\), so \(m_{K-1}=\max_{c\in\mathcal{K}}\big(\hat z^{(4)}_c-\hat z^{(4)}_y\big)\). The ReLU constraints are the big-M encoding of [Tjeng19]: \(\delta=0\) forces \(z=0\) and \(\hat z\le 0\), and \(\delta=1\) forces \(z=\hat z\ge 0\).</p>
 <p>The number of binary variables equals the number of unstable ReLUs plus \(K-1\) (about 171 on average), which varies across examples; all pre-activation variables of the 6014 neurons and 784 inputs are present in every instance.</p></div>
 <h2 id="h.w17kfuk3rj4d">Instance distributions</h2>
 <div class="embed"><div class="table-wrap"><table>

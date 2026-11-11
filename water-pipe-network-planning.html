@@ -32,12 +32,12 @@
 <p>Formally, we are given:</p>
 <ul>
 <li>an undirected graph \(G=(V,E)\), where the edges \(E\) are the (threatened) pipes and the nodes \(V\) are pipe junctions;</li>
-<li>a replacement cost \(c_{ij}\gt 0\) for every pipe \(\{i,j\}\in E\);</li>
+<li>a replacement cost \(c_{ij}\geq 0\) for every pipe \(\{i,j\}\in E\) (positive for almost all pipes; a few pipes in some Hard instances have cost 0);</li>
 <li>a set of water sources \(T\subseteq V\) (e.g., pumps, storages, trunk pipes);</li>
-<li>a set of critical customers (Steiner nodes) \(C\subseteq V\setminus T\), each mapped to its closest junction;</li>
-<li>a set of housing areas \(R\), and for each \(r\in R\) the set \(S(r)\subseteq E\) of pipes close enough to serve \(r\).</li>
+<li>a set of critical customers (Steiner nodes) \(C\subseteq V\), each mapped to its closest junction;</li>
+<li>a set of housing areas \(R\), and for each \(r\in R\) the set \(S(r)\subseteq E\) of pipes close enough to serve \(r\) (in a few Hard instances \(S(r)\) lists a pipe twice, which gives it coefficient 2 in constraint (3) and does not change the model).</li>
 </ul>
-<p>We want to find a set of pipes \(E'\subseteq E\) with minimum cost \(\sum_{e\in E'}c_e\) such that every critical customer \(u\in C\) is connected to some source in \(T\) in the subgraph induced by \(E'\), and every housing area \(r\in R\) is covered, i.e., some pipe of \(E'\cap S(r)\) is connected to a source in \(T\). W.l.o.g., \(T\cap C=\emptyset\) and no endpoint of a pipe in any \(S(r)\) is a source.</p>
+<p>We want to find a set of pipes \(E'\subseteq E\) with minimum cost \(\sum_{e\in E'}c_e\) such that every critical customer \(u\in C\) is connected to some source in \(T\) in the subgraph induced by \(E'\), and every housing area \(r\in R\) is covered, i.e., some pipe of \(E'\cap S(r)\) is connected to a source in \(T\). In the instances, a source can also be a critical customer (it then receives its unit of flow from the super source), and pipes in \(S(r)\) can be incident to a source.</p>
 <p>The flow-based MILP (FB-MILP) of [Huang20] works on a directed graph \(\hat G=(V\cup\{0\},\hat E\cup\{(0,t):t\in T\})\). Each undirected pipe \(\{i,j\}\in E\) becomes two arcs \((i,j),(j,i)\in\hat E\), and an artificial super source \(0\) is linked to every source \(t\in T\). \(\delta^+(v)\) and \(\delta^-(v)\) denote the outgoing and incoming arcs of \(v\) in \(\hat G\), and \(M=|\hat E|+|V|\) is the total amount of flow available. Variables:</p>
 <ul>
 <li>\(x_{ij}\in\{0,1\}\) for each arc \((i,j)\in\hat E\): 1 if pipe \(\{i,j\}\) is upgraded and used in direction \(i\to j\);</li>
