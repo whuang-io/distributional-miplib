@@ -99,7 +99,7 @@ tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--surface); }
 td:first-child a { font-weight: 700; }
 /* Domain-grouped tables (home page): one merged domain cell, a strong rule between domains */
-tr.domain-start > td { border-top: 2px solid var(--muted); }
+tr.domain-start > td { border-top: 2px solid var(--border); }
 tbody tr.domain-start:first-child > td { border-top: none; }
 td.domain { background: var(--surface); vertical-align: middle; border-right: 1px solid var(--border); }
 td.domain a { font-weight: 700; }
