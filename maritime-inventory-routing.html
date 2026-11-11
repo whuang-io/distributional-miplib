@@ -36,9 +36,10 @@
 <li><strong>(B) Jiang&ndash;Grossmann discrete-time model</strong> (42 instances; 9 in test) [Jiang15] (MIRPLib files <em>Maritime_Jiang_Grossmann_Group{1,2,3,5,6}_D-*</em>).</li>
 <li><strong>(C) Jiang&ndash;Grossmann continuous-time model with port event points</strong> (43 instances; 7 in test) [Jiang15] (MIRPLib files <em>Maritime_Jiang_Grossmann_Group{1,2,3,5,6}_E-*</em>).</li>
 </ul>
-<p>Hence the distribution is a mixture of formulations; all three are given below. Models (B) and (C) contain no general integer variables; model (A) contains binaries and general integers (the &ldquo;# Var I&rdquo; column of the table counts binaries and general integers together).</p>
+<p>Hence the distribution is a mixture of formulations. Models (B) and (C) contain no general integer variables; model (A) contains binaries and general integers. The full formulations are given below; click a model to expand it.</p>
 
-<p><strong>(A) MIRPLib Group 2 model (vessel-class arc-flow formulation).</strong> Each port forms its own region; all instances have a single loading port. Vessels travel full from the loading port to a discharging port and empty back (only out-and-back trips), so loaded/discharged quantities are implied by the arcs used.</p>
+<details class="formulation"><summary>(A) MIRPLib Group 2 model: vessel-class arc-flow formulation [Papageorgiou14]</summary>
+<p>Each port forms its own region; all instances have a single loading port. Vessels travel full from the loading port to a discharging port and empty back (only out-and-back trips), so loaded/discharged quantities are implied by the arcs used.</p>
 <p><em>Sets and parameters.</em></p>
 <ul>
 <li>\(\mathcal{T}=\{0,\dots,T-1\}\): time periods (days), \(T\in\{120,180,360\}\).</li>
@@ -62,8 +63,9 @@
 & x^{vc}_a\in\{0,1\}\ \text{(travel arcs)},\quad x^{vc}_a\in\{0,\dots,|\mathcal{V}_{vc}|\}\ \text{(waiting and sink arcs)}.
 \end{align}
 <p>The model has \(|\mathcal{J}|\,T\,|\mathcal{VC}|\) flow-balance rows, \(|\mathcal{J}|\,T\) inventory rows and \(|\mathcal{J}|\,T\) berth rows (the source-arc fixings are variable bounds).</p>
-
-<p><strong>(B) Jiang&ndash;Grossmann discrete-time model</strong> [Jiang15]. In the Jiang&ndash;Grossmann instances, the sequence of ports visited by each ship is an input (parameter \(x_{v,n,m}=1\) if ship \(v\) sails directly from port \(n\) to port \(m\)); the model decides when ships wait, prepare, load/discharge and sail, so as to keep port inventories within bounds at minimum cost.</p>
+</details>
+<details class="formulation"><summary>(B) Jiang&ndash;Grossmann discrete-time model [Jiang15]</summary>
+<p>In the Jiang&ndash;Grossmann instances, the sequence of ports visited by each ship is an input (parameter \(x_{v,n,m}=1\) if ship \(v\) sails directly from port \(n\) to port \(m\)); the model decides when ships wait, prepare, load/discharge and sail, so as to keep port inventories within bounds at minimum cost.</p>
 <p><em>Sets and parameters.</em></p>
 <ul>
 <li>\(\mathcal{N}=\mathcal{P}\cup\mathcal{D}\cup\{o,e\}\): production ports \(\mathcal{P}\), consumption ports \(\mathcal{D}\), and a virtual origin \(o\) and virtual destination \(e\) of all ships; \(\mathcal{V}\): ships; \(\mathcal{T}=\{1,\dots,|\mathcal{T}|\}\): time periods (the horizon \(H\) divided into \(|\mathcal{T}|=2H\) periods).</li>
@@ -95,8 +97,9 @@
 & st_{n,1}=S^0_n,\ \ la_{v,1}=0;\qquad op,of,wa,sa\in\{0,1\};\quad st,la,\lambda^1,\lambda^2\ge 0.
 \end{align}
 <p>(Terms with a time index outside \(\mathcal{T}\) are omitted. Variables and constraints are generated for all index combinations, so most \(sa\) variables are forced to 0 by the first constraint.)</p>
-
-<p><strong>(C) Jiang&ndash;Grossmann continuous-time model with port event points</strong> [Jiang15]. Same data as (B), but time is continuous on \([0,H]\) (distances \(\mathrm{dist}_{nm}\), preparation time \(t^f_{v,n}\) and handling time per unit \(t^v_{v,n}\) in time units; \(R_p,R_d\) are rates per time unit). Each port \(n\) has event points \(l\in\mathcal{L}_n=\{1,\dots,E_n\}\), with \(E_n=3\times\)(number of ship visits to \(n\)) (\(E_o=3|\mathcal{V}|\)). Let \(k_{v,n}=\sum_m x_{v,m,n}\in\{0,1\}\) indicate that ship \(v\) visits \(n\).</p>
+</details>
+<details class="formulation"><summary>(C) Jiang&ndash;Grossmann continuous-time model with port event points [Jiang15]</summary>
+<p>Same data as (B), but time is continuous on \([0,H]\) (distances \(\mathrm{dist}_{nm}\), preparation time \(t^f_{v,n}\) and handling time per unit \(t^v_{v,n}\) in time units; \(R_p,R_d\) are rates per time unit). Each port \(n\) has event points \(l\in\mathcal{L}_n=\{1,\dots,E_n\}\), with \(E_n=3\times\)(number of ship visits to \(n\)) (\(E_o=3|\mathcal{V}|\)). Let \(k_{v,n}=\sum_m x_{v,m,n}\in\{0,1\}\) indicate that ship \(v\) visits \(n\).</p>
 <p><em>Variables.</em> Binary: \(y^s_{v,n,l}\), \(y^f_{v,n,l}\), \(y^e_{v,n,l}\) (ship \(v\) starts operation / finishes preparation / ends operation at event point \(l\) of port \(n\)). Continuous, nonnegative: event times \(T_{n,l}\); times \(t^a_{v,n}\) (arrival), \(t^o_{v,n}\) (start of operation), \(t^{fi}_{v,n}\) (end of preparation), \(t^l_{v,n}\) (departure), waiting time \(t^w_{v,n}\); amounts \(q_{v,p}\), \(r_{v,d}\) loaded/discharged; stock \(st_{n,l}\); ship load before/after operation \(la^1_{v,n},la^2_{v,n}\); linearization variables \(\phi^{f}_{v,n,l,l'}=y^f_{v,n,l}T_{n,l'}\), \(\phi^{e}_{v,n,l,l'}=y^e_{v,n,l}T_{n,l'}\), \(\psi^q_{v,p,l}=y^f_{v,p,l}q_{v,p}\), \(\psi^r_{v,d,l}=y^f_{v,d,l}r_{v,d}\) and their complements \(\bar\phi^{f},\bar\phi^{e},\bar\psi^q,\bar\psi^r\).</p>
 \begin{align}
 \min\ & \sum_v\Big[\sum_{n,m}x_{v,n,m}\,\mathrm{dist}_{nm}\big(c^{sf}_v+c^{sv}_v\,la^2_{v,n}\big)+\sum_n c^w_{v,n}\,t^w_{v,n}+\sum_{n\in\bar{\mathcal{N}}}c^o_{v,n}\big(t^l_{v,n}-t^o_{v,n}\big)\Big]\\
@@ -117,7 +120,9 @@
 & \psi^q_{v,p,l}\le L_v y^f_{v,p,l},\ \ \bar\psi^q_{v,p,l}\le L_v(1-y^f_{v,p,l}),\ \ \psi^q_{v,p,l}+\bar\psi^q_{v,p,l}=q_{v,p}\ \ (\text{same for }\psi^r\text{ with }r_{v,d}), && \forall v,p,d,l\\
 & la^1_{v,o}=la^2_{v,o}=0;\qquad y^s,y^f,y^e\in\{0,1\};\quad \text{all other variables}\ \ge 0.
 \end{align}
-<p>In both Jiang&ndash;Grossmann models the objective is written in the instance files through a free variable equal to the total cost, which is minimized.</p></div>
+<p>In both Jiang&ndash;Grossmann models the objective is written in the instance files through a free variable equal to the total cost, which is minimized.</p>
+</details>
+</div>
 <h2 id="h.em082qwol1rq">Instance distributions</h2>
 <p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>
 <div class="embed"><div class="table-wrap"><table>
