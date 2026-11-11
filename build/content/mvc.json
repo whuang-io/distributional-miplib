@@ -1,0 +1,63 @@
+{
+ "slug": "mvc",
+ "description_html": "<p>In a minimum vertex cover (MVC) problem, an undirected graph \\(G=(V,E)\\) is given, with a nonnegative weight on each node. The goal is to select a subset of nodes of minimum total weight such that at least one end point of every edge in the graph is selected.</p>\n<p>All levels are generated on Barabási-Albert random graphs with the generator of [Huang23] (based on the generator of [Song20]; the easy, medium and hard levels are new and use the same code with different parameters). A graph with \\(|V|\\) nodes and affinity \\(m_{BA}\\) (each new node attaches to \\(m_{BA}\\) existing nodes) has exactly \\(m_{BA}(|V|-m_{BA})\\) edges. Node weights are drawn independently and uniformly from \\([0,1]\\), so the instances are weighted vertex cover problems.</p>\n<p><strong>Notation.</strong></p>\n<ul>\n<li>\\(G=(V,E)\\): undirected Barabási-Albert graph.</li>\n<li>\\(w_v\\sim U[0,1]\\): weight of node \\(v\\in V\\).</li>\n<li>\\(x_v\\in\\{0,1\\}\\): 1 if node \\(v\\) is in the cover.</li>\n</ul>\n<p><strong>Formulation.</strong></p>\n\\begin{align}\n\\min\\ & \\sum_{v\\in V} w_v x_v \\\\\n\\textrm{s.t.}\\ & x_u+x_v\\geq 1, && \\forall (u,v)\\in E, \\\\\n& x_v\\in\\{0,1\\}, && \\forall v\\in V.\n\\end{align}\n<p>There is one constraint per edge, so the number of constraints is \\(|E|=m_{BA}(|V|-m_{BA})\\).</p>",
+ "table_columns": [
+  "Hardness Level",
+  "#Node",
+  "Graph Type",
+  "Graph Parameter",
+  "Avg. Degree"
+ ],
+ "table_rows": {
+  "Easy": [
+   "1,200",
+   "Barabasi-Albert",
+   "affinity m = 5",
+   "9.96"
+  ],
+  "Medium": [
+   "2,000",
+   "Barabasi-Albert",
+   "affinity m = 5",
+   "9.98"
+  ],
+  "Hard": [
+   "500",
+   "Barabasi-Albert",
+   "affinity m = 70",
+   "120.4"
+  ],
+  "Very hard": [
+   "1,000",
+   "Barabasi-Albert",
+   "affinity m = 70",
+   "130.2"
+  ],
+  "Very hard 2": [
+   "2,000",
+   "Barabasi-Albert",
+   "affinity m = 70",
+   "135.1"
+  ],
+  "Very hard 3": [
+   "9,000",
+   "Barabasi-Albert",
+   "affinity m = 5",
+   "9.99"
+  ]
+ },
+ "changes": [
+  "Objective corrected to weighted MVC: min sum w_v x_v with w_v ~ U[0,1] (all checked instances, all levels, have distinct real node weights in (0,1)); previously min sum x_v. The Huang23 paper appendix also states the unweighted form, but the instances and generator (createOptVC uses G.nodes[v]['weight']) are weighted.",
+  "'Node Degree' column replaced by 'Graph Parameter' (BA affinity m, which is what 5 and 70 were) and 'Avg. Degree' = 2m(n-m)/n.",
+  "Added generator description and edge count formula; fixed typos 'in given' and '::'. Removed the claim that the graph is 'typically Erdos-Renyi or Barabasi-Albert': all levels here are BA. Cite [Song20] for the original generator (if not already on the site: J. Song, R. Lanka, Y. Yue, B. Dilkina, A General Large Neighborhood Search Framework for Solving Integer Linear Programs, NeurIPS 2020)."
+ ],
+ "verification": [
+  "Generator: github amf272/Distributional-MIPLIB-Generators MVC/generator_MVC.py (identical gen_graph/createOptVC to local generator_MVC_MIS_CA_SC_MK.py): nx.barabasi_albert_graph(n, m=edge), node weight random.uniform(0,1), rows x_u + x_v >= 1, minimize sum weight*x.",
+  "MVC/easy test 0,1: 1200 binaries, 5975 rows = 5*(1200-5), all x_u+x_v>=1, min degree 5, objective weights in (0.0003, 0.9999).",
+  "MVC/medium test 0: 2000 binaries, 9975 rows = 5*(2000-5), min degree 5, weighted.",
+  "MVC/hard test 0,1: 500 binaries, 30,100 rows = 70*(500-70), min degree 70, weighted.",
+  "MVC/very-hard test 0,1 (MPS, present on HF though missing from hf_tree.txt): 1000 binaries, 65,100 rows = 70*(1000-70), min degree 70, weighted.",
+  "Very hard 2 not on HF: table 135,100 rows = 70*(2000-70); Huang23 Table 1 MVC-L 2,000 vars, 135,100 constraints."
+ ],
+ "open_questions": []
+}

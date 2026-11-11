@@ -1,0 +1,8 @@
+{
+ "title": "Submit Distribution",
+ "blocks": [
+  "<h1 id=\"h.mpvnzcgazdce\">Submit Distribution</h1>",
+  "<p>We encourage contributors to provide a problem-specific raw dataset with domain-related parameters documented (e.g., network and demand data in routing problems), a description of how instances from the same distribution can be generated (e.g., the range of demand in routing problems), and a generator that takes in the raw dataset and outputs MILP instances in *.lp or *.mps. If providing domain parameters is not possible due to data privacy issues, providing precompiled instances (*.lp or *.mps files) is also acceptable. Additionally, we encourage contributors to run preliminary experiments to obtain the performance metrics and problem instances statistics discussed in Section 3.2 in <a href=\"https://www.arxiv.org/abs/2406.06954\">[arXiv Preprint]</a> to evaluate the hardness levels of the provided distributions.</p>",
+  "<p>Please feel free to email us at <a href=\"mailto:dilkina@usc.edu\">dilkina@usc.edu</a> if you have more questions!</p>"
+ ]
+}

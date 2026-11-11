@@ -1,0 +1,87 @@
+{
+  "slug": "middle-mile-consolidation-network-design",
+  "description_html": "<p>The Middle-Mile Consolidation Network (MMCN) design problem [Greening23] considers a shipper that must move a set of commodities \\(\\mathcal{K}\\) from known origins to known destinations. Let \\((\\mathcal{N},\\mathcal{L})\\) be the shipper's service network. The node set \\(\\mathcal{N}\\) holds the facilities: vendors (VND), fulfillment centers (FCs), and last-mile delivery (LMD) centers. Vendors and FCs are origins and LMDs are destinations. FCs also serve as cross-docks where shipments are transferred and consolidated. The directed leg set \\(\\mathcal{L}\\) holds the potential freight transportation legs between locations: vendor-to-LMD (\"directs\"), vendor-to-FC, FC-to-FC, and FC-to-LMD.</p>\n<p>The problem finds a minimum-cost allocation of transportation capacity to legs that makes a shipment consolidation plan feasible. This includes deciding whether to ship each commodity through the consolidation network (using FCs as cross-docks) or directly from vendor to LMD. The model is path-based and uses a flat (not time-expanded) network. Capacity is modeled as load dispatch frequencies per week on each leg, and demand is modeled as a constant rate per week (pounds per week). Many shipments of one commodity (origin-destination pair) \\(k\\in\\mathcal{K}\\) may move over time, but all of them follow the same route chosen by the plan.</p>\n<p>Notation (shared by both variants):</p>\n<ul>\n<li>\\(\\mathcal{R}_k\\): candidate routes of commodity \\(k\\). A route is a sequence of 1 to 4 legs from \\(o_k\\) to \\(d_k\\) through FCs. \\(\\mathcal{R}=\\cup_k\\mathcal{R}_k\\), and \\(l\\in r\\) means route \\(r\\) uses leg \\(l\\).</li>\n<li>\\(V_k\\): weekly volume (lbs) of commodity \\(k\\). \\(C_r\\): fixed cost of selecting route \\(r\\) (transfer handling cost plus any costs of pre-processed direct legs).</li>\n<li>Transportation modes \\(m\\): truckload (TL), with load capacity 12,000 lbs and cost \\(A^{TL}_l=750+1.27d_l\\) per load for a leg of length \\(d_l\\) miles, and three less-than-truckload weight buckets LTL1/LTL2/LTL3 for loads in \\((0,2000]\\), \\((2000,2700]\\), and \\((2700,4000]\\) lbs. Each lane \\((l,m)\\) has a per-load cost \\(A_{lm}\\), a per-pound cost \\(B_{lm}\\), and load-size bounds \\(Q^{\\min}_{lm}\\), \\(Q^{\\max}_{lm}\\), as in Table 2 of [Greening23].</li>\n</ul>\n<p>The distributions come in two variants. The variant is shown by the suffix of the hardness level (BI = binary + general integer variables, BC = binary + continuous variables) and by the <em>Model</em> column (SM/MM). Click a variant to expand its formulation.</p>\n<details class=\"formulation\"><summary>SM (single-mode) variant: \"-BI\" levels</summary>\n<p>This is the base model MMC of [Greening23] with only the truckload mode. Lead-time requirements are handled by the route sets, which contain only lead-time-feasible routes. Variables: \\(x_r\\in\\{0,1\\}\\) selects route \\(r\\), and \\(f_l\\in\\mathbb{Z}_{\\geq 0}\\) is the number of truckloads dispatched per week on leg \\(l\\in\\mathcal{L}\\), where \\(\\mathcal{L}\\) holds the vendor-to-FC, FC-to-FC, and FC-to-LMD legs. The leg volume \\(v_l\\) is substituted out and the truckload lower bound is 0, so the model is</p>\n\\begin{align}\n&\\min\\;\\sum_{r\\in\\mathcal{R}}C_r x_r+\\sum_{l\\in\\mathcal{L}}A^{TL}_l f_l&\\nonumber\\\\\n&\\sum_{r\\in\\mathcal{R}_k}x_r=1&\\forall k\\in\\mathcal{K}\\\\\n&\\sum_{k\\in\\mathcal{K}}\\sum_{r\\in\\mathcal{R}_k:\\,l\\in r}V_k\\,x_r\\leq 12000\\,f_l&\\forall l\\in\\mathcal{L}\\\\\n&x_r\\in\\{0,1\\}\\ \\forall r\\in\\mathcal{R},\\qquad f_l\\in\\mathbb{Z}_{\\geq 0}\\ \\forall l\\in\\mathcal{L}&\n\\end{align}\n<p>In these instances every candidate route uses at least one leg of \\(\\mathcal{L}\\), so there is no direct vendor-to-LMD option. The single-leg FC-to-LMD routes of FC-origin commodities have \\(C_r=0\\). An instance has \\(|\\mathcal{R}|\\) binaries, \\(|\\mathcal{L}|\\) general integers, and \\(|\\mathcal{K}|+|\\mathcal{L}|\\) constraints.</p>\n</details>\n<details class=\"formulation\"><summary>MM (multi-mode) variant: \"-BC\" levels</summary>\n<p>This is the middle-mile consolidation with waiting times model MMCW of [Greening23]. Vendor-to-FC and FC-to-FC legs use TL only. FC-to-LMD legs may use TL or one of the three LTL buckets (mode set \\(\\mathcal{M}_l\\)). The dispatch frequency of lane \\((l,m)\\) is chosen from \\(\\mathcal{F}_{lm}=\\{1,\\dots,14\\}\\) for TL and \\(\\{1,\\dots,5\\}\\) for LTL; in the Very hard-BC and Very hard-BC4 instances, a few high-volume legs (mostly FC-to-FC) allow more TL dispatches, up to 40 per week. Lead times include the waiting delay between dispatches and must be met in expectation (conservatism level \\(\\rho_r\\)). Direct vendor-to-LMD routes are pre-processed: their cost is included in \\(C_r\\) and they use no leg of \\(\\mathcal{L}\\). Every other physical path usually appears as two route variables, one shipping its final FC-to-LMD leg by TL and one by LTL (a few paths have only the TL variant). \\(\\bar{\\mathcal{R}}\\) denotes the non-direct routes, \\(l_r\\) the final FC-to-LMD leg of \\(r\\), and \\(\\mathcal{M}_r\\) the modes allowed on \\(l_r\\) for route \\(r\\) (\\(\\{TL\\}\\) with \\(\\omega\\in\\{1,\\dots,14\\}\\), or \\(\\{LTL1,LTL2,LTL3\\}\\) with \\(\\omega\\in\\{1,\\dots,4\\}\\)). Each non-direct route has a lead-time parameter \\(\\tau_r=\\hat W_r/\\rho_r\\), where \\(\\hat W_r\\) is the allowable waiting delay (in days) and \\(|r|\\) is the number of legs of \\(r\\). Variables: \\(x_r\\in\\{0,1\\}\\) selects route \\(r\\), \\(z_{lm\\omega}\\in\\{0,1\\}\\) means lane \\((l,m)\\) dispatches \\(\\omega\\) loads per week, and \\(v_{lm}\\geq 0\\) is the volume on lane \\((l,m)\\).</p>\n\\begin{align}\n&\\min\\;\\sum_{r\\in\\mathcal{R}}C_r x_r+\\sum_{l\\in\\mathcal{L}}\\sum_{m\\in\\mathcal{M}_l}\\Big(A_{lm}\\sum_{\\omega\\in\\mathcal{F}_{lm}}\\omega\\,z_{lm\\omega}+B_{lm}v_{lm}\\Big)&\\nonumber\\\\\n&\\sum_{r\\in\\mathcal{R}_k}x_r=1&\\forall k\\in\\mathcal{K}\\\\\n&\\sum_{m\\in\\mathcal{M}_l}v_{lm}=\\sum_{k\\in\\mathcal{K}}\\sum_{r\\in\\mathcal{R}_k:\\,l\\in r}V_k\\,x_r&\\forall l\\in\\mathcal{L}\\\\\n&v_{lm}\\leq Q^{\\max}_{lm}\\sum_{\\omega\\in\\mathcal{F}_{lm}}\\omega\\,z_{lm\\omega}&\\forall l\\in\\mathcal{L},m\\in\\mathcal{M}_l\\\\\n&v_{lm}\\geq Q^{\\min}_{lm}\\sum_{\\omega\\in\\mathcal{F}_{lm}}\\omega\\,z_{lm\\omega}&\\forall l\\in\\mathcal{L},m\\in\\mathcal{M}_l\\\\\n&\\sum_{m\\in\\mathcal{M}_l}\\sum_{\\omega\\in\\mathcal{F}_{lm}}z_{lm\\omega}\\leq 1&\\forall l\\in\\mathcal{L}\\\\\n&\\sum_{l\\in r}\\sum_{m\\in\\mathcal{M}_l}\\sum_{\\omega\\in\\mathcal{F}_{lm}}\\frac{1}{\\min(\\omega,14)}z_{lm\\omega}\\leq \\tau_r\\,x_r+|r|(1-x_r)&\\forall r\\in\\bar{\\mathcal{R}}\\\\\n&x_r\\leq\\sum_{m\\in\\mathcal{M}_r}\\sum_{\\omega}z_{l_r m\\omega}&\\forall r\\in\\bar{\\mathcal{R}}\\\\\n&x_r\\in\\{0,1\\},\\quad z_{lm\\omega}\\in\\{0,1\\},\\quad v_{lm}\\geq 0&\n\\end{align}\n<p>Constraint (4) selects one route per commodity. (5) computes the volume on each leg and splits it among its modes. (6) and (7) set the dispatch frequency from the load-size bounds (\\(Q^{\\max}=12000,2000,2700,4000\\) and \\(Q^{\\min}=0.1,0.1,2000,2700\\) lbs for TL, LTL1, LTL2, LTL3). (8) lets each leg use at most one mode and one frequency. (9) is the linearized lead-time chance constraint \\(\\rho_r\\sum_{l\\in r}1/f_l\\leq\\hat W_r\\) divided by \\(\\rho_r\\): the waiting delay on a leg with \\(\\omega\\) weekly dispatches is uniform on \\([0,1/\\omega]\\); in the instances its coefficient is capped at \\(1/14\\) week, so frequencies above 14 per week do not shorten the counted delay further. (10) ties a route variant to the mode used on its final leg. With \\(|\\mathcal{L}|\\) legs, \\(\\sum_l|\\mathcal{M}_l|\\) lanes, and \\(|\\bar{\\mathcal{R}}|\\) non-direct routes, an instance has \\(|\\mathcal{R}|+\\sum_{l,m}|\\mathcal{F}_{lm}|\\) binaries, \\(\\sum_l|\\mathcal{M}_l|\\) continuous variables, and \\(|\\mathcal{K}|+2|\\mathcal{L}|+2\\sum_l|\\mathcal{M}_l|+2|\\bar{\\mathcal{R}}|\\) constraints.</p>\n</details>\n<p>The instances are synthetic and follow the generator of [Greening23], which was based on data from a large U.S. e-commerce retailer. They differ in the number of vendors, FCs, and LMDs (the network size group, see the table) and in the randomly sampled locations, commodities, and lead times.</p>",
+  "table_columns": [
+    "Hardness Level",
+    "Model (modes)",
+    "Network size group",
+    "# Vendors / FCs / LMDs"
+  ],
+  "table_rows": {
+    "Very easy-BI": [
+      "SM (truckload only)",
+      "1",
+      "12 / 8 / 7"
+    ],
+    "Medium-BI": [
+      "SM (truckload only)",
+      "1.5 (1h)",
+      "17 / 8 / 12"
+    ],
+    "Medium-BC": [
+      "MM (truckload + 3 LTL)",
+      "1",
+      "12 / 8 / 7"
+    ],
+    "Medium-BC2": [
+      "MM (truckload + 3 LTL)",
+      "0",
+      "12 / 4 / 7"
+    ],
+    "Hard-BI": [
+      "SM (truckload only)",
+      "2",
+      "22 / 8 / 17"
+    ],
+    "Very hard-BI": [
+      "SM (truckload only)",
+      "4",
+      "80 / 8 / 55"
+    ],
+    "Very hard-BC": [
+      "MM (truckload + 3 LTL)",
+      "4",
+      "80 / 8 / 55"
+    ],
+    "Very hard-BC2": [
+      "MM (truckload + 3 LTL)",
+      "1.5 (1h)",
+      "17 / 8 / 12"
+    ],
+    "Very hard-BC3": [
+      "MM (truckload + 3 LTL)",
+      "2",
+      "22 / 8 / 17"
+    ],
+    "Very hard-BC4": [
+      "MM (truckload + 3 LTL)",
+      "3",
+      "40 / 8 / 35"
+    ],
+    "Very hard-BI2": [
+      "SM (truckload only)",
+      "3",
+      "40 / 8 / 35"
+    ]
+  },
+  "changes": [
+    "Replaced the dead 'formulation' link with full formulations of both variants, written from the LP files and matched to Greening23 (TR-B 174, 102782; preprint optimization-online 2021/11/8688): SM/BI = model MMC (1) with only the truckload mode; MM/BC = model MMCW (9) plus a route-mode linking constraint (10) that the paper does not have.",
+    "Explained BI/BC (variable types: binary + general integer vs binary + continuous). They coincide with SM/MM: the LP model names are 'singleMode' for BI and 'Paper_MMCW' for BC, and the source dirs are mmtcInst_lp/sm* and mmtc*.",
+    "Renamed 'Transit mode' to 'Model (modes)': SM = single (truckload) mode, MM = multi-mode (TL + 3 LTL weight buckets on FC-to-LMD legs).",
+    "Renamed 'Network group size' to 'Network size group' and added '# Vendors / FCs / LMDs'. Groups 1-4 are the instance groups of Greening23 Table 1 (group 1: 12 VND / 8 FC / 7 LMD; 2: 22/8/17; 3: 40/8/35; 4: 80/8/55). '1h' is an intermediate group 1.5 (17/8/12) and '0' is group 1 with only 4 FCs (12/4/7). Neither is in the paper. Values come from the instance file names in the Google Drive zips (e.g. 3reg_8fc_17vnd_13s..._12lmd_8s_3m_1l_...), and the HF instances confirm them for the counts of V*/F*/L* names.",
+    "Description prose: 'arc set A' changed to 'leg set L' to match the paper's notation and the formulation."
+  ],
+  "verification": [
+    "MMCN/medium-BI test 0 (model singleMode): 1164 x_r binaries + 259 integer y_<leg> (= f_l; 122 V-F, 51 F-F, 86 F-L), 446 rows = 187 route-choice rows (=1) + 259 capacity rows sum V_k x_r - 12000 f_l <= 0. 17 VND / 8 FC / 12 LMD. Every x appears in 1-4 capacity rows (route length 1-4), and the 60 zero-cost x are the 1-leg FC-to-LMD routes.",
+    "MMCN/hard-BI test 0: 2108 vars = 1767 routes + 341 legs, 604 rows = 263 + 341, 22/8/17 (group 2). MMCN/very-hard-BI test 0: 24573 = 23439 + 1134, 4423 = 3289 + 1134, 80/8/55 (group 4; |K| = 3289 vs about 3,278 in the paper's Table 1).",
+    "MMCN/medium-BC test 0 (model Paper_MMCW): 4217 binaries (1118 x + 1120 z V-F (80 legs x 14) + 616 z F-F (44 x 14) + 1363 z F-L (47 x (14+5+5+5))) and 312 continuous v (80 + 44 + 47*4). 3183 rows = 89 (4) + 171 (5) + 312 (6) + 312 (7) + 171 (8) + 1064 (9) + 1064 (10). 54 direct routes appear only in (4). Coefficients: TL Qmax 12000, Qmin 0.1; LTL1 2000/0.1; LTL2 2700/2000; LTL3 4000/2700. (9) has coefficients -1/omega on z, (tau_r - |r|) on x, and RHS -|r|. Rows where tau_r = |r| appear without x. (10) uses omega 1..14 for TL and 1..4 (not 5) for the LTL variant. Objective: z cost = omega * A_lm (TL A = 2416.31 on a sample leg, LTL1 = 0.05 A_TL, LTL3 fixed cost 0), v cost B_lm only for LTL1 and LTL3, matching Greening23 Table 2.",
+    "Downloaded the Drive zips MMCN-very-easy (group 1, 8 FCs) and MMCN-medium-BC2 (4 FCs). Read the zip central directories of all other MMCN zips by HTTP range request to get file names: medium-BI and very-hard-BC2 are 17vnd/12lmd, hard-BI and BC3 are 22vnd/17lmd, BI2 and BC4 are 40vnd/35lmd, very-hard-BI and BC are 80vnd/55lmd, all 8fc."
+  ],
+  "open_questions": [
+    "Other generator parameters in the file names (3reg, vendor/LMD size-class spreads 0.55/0.6/0.65sp, 0.5minP, 1.2oor, 4arcPaths, wgtRed 1.0 vs 1.25) are not documented. Probably: 3 regions, minimum on-time probability or rho 0.5, out-of-route factor 1.2, routes of at most 4 legs. wgtRed is unknown. I did not list them as table columns.",
+    "Route sets have up to about 55 routes per commodity (counting the TL/LTL duplicates in BC), more than the paper's at most 5. The route-generation rule therefore differs from the paper's experiments.",
+    "In SM instances there is no direct vendor-to-LMD route. It is unclear whether this is intended (the paper always includes the direct route).",
+    "The LTL side of the route-mode linking constraint (10) sums omega only up to 4 while F_LTL = {1..5}. This looks like a generator off-by-one but is what the instances contain.",
+    "Lead times are encoded only through tau_r = What_r/rho_r. What_r and rho_r cannot be separated from the instances."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+ "slug": "set-covering",
+ "description_html": "<p>In a set covering (SC) instance, we are given \\(m\\) elements and a collection \\(S\\) of \\(n\\) sets whose union is the set of all elements, each set having a cost. The goal is to select a minimum-cost subcollection of \\(S\\) whose union is still the set of all elements.</p>\n<p>All levels are generated with the generator of [Gasse19] (the very hard levels of [Huang23], which follow [Wu21], use the same generator), which follows Balas and Ho (1980): the element-set incidence matrix has a fixed density of 0.05 (exactly \\(\\lfloor 0.05\\,mn\\rfloor\\) nonzeros), every element belongs to at least one set, every set contains at least 2 elements, and the set costs are integers drawn uniformly from \\(\\{1,\\dots,100\\}\\).</p>\n<p><strong>Notation.</strong></p>\n<ul>\n<li>\\(U=\\{1,\\dots,m\\}\\): elements; \\(S\\): collection of \\(n\\) sets, each \\(s\\in S\\) a subset of \\(U\\).</li>\n<li>\\(c_s\\in\\{1,\\dots,100\\}\\): cost of set \\(s\\in S\\).</li>\n<li>\\(x_s\\in\\{0,1\\}\\): 1 if set \\(s\\) is selected.</li>\n</ul>\n<p><strong>Formulation.</strong></p>\n\\begin{align}\n\\min\\ & \\sum_{s\\in S} c_s x_s \\\\\n\\textrm{s.t.}\\ & \\sum_{s\\in S:\\, i\\in s} x_s \\geq 1, && \\forall i\\in U, \\\\\n& x_s\\in\\{0,1\\}, && \\forall s\\in S.\n\\end{align}\n<p>There is one covering constraint per element (\\(m\\) constraints) and one binary variable per set (\\(n\\) variables).</p>",
+ "table_columns": [
+  "Hardness Level",
+  "#Element",
+  "#Set",
+  "Density",
+  "Set Cost"
+ ],
+ "table_rows": {
+  "Easy": [
+   "500",
+   "1,000",
+   "0.05",
+   "U{1,...,100}"
+  ],
+  "Medium": [
+   "1,000",
+   "1,000",
+   "0.05",
+   "U{1,...,100}"
+  ],
+  "Hard": [
+   "2,000",
+   "1,000",
+   "0.05",
+   "U{1,...,100}"
+  ],
+  "Very hard": [
+   "5,000",
+   "4,000",
+   "0.05",
+   "U{1,...,100}"
+  ],
+  "Very hard 2": [
+   "5,000",
+   "8,000",
+   "0.05",
+   "U{1,...,100}"
+  ]
+ },
+ "changes": [
+  "Objective corrected from 'minimum number of sets' (sum x_s) to weighted cost sum c_s x_s with integer costs uniform in {1,...,100}: all checked instances have such costs.",
+  "Added generator description (Balas & Ho 1980 scheme via Gasse19 generator, density 0.05, each element covered by >=1 set, each set has >=2 elements). New reference if wanted: E. Balas and A. Ho, Set covering algorithms using cutting planes, heuristics, and subgradient optimization: a computational study, Mathematical Programming Study 12 (1980) 37-60.",
+  "Added Density column (0.05 for all levels) and Set Cost column. #Element/#Set values are correct (Medium really is 1,000 elements x 1,000 sets; Very hard 2 is 5,000 x 8,000)."
+ ],
+ "verification": [
+  "Generator: learn2branch generate_setcover(nrows, ncols, density=0.05, max_coef=100): 500r/1000c train, 1000r and 2000r transfer. Local generator_MVC_MIS_CA_SC_MK.py has the identical function (used for the setcover_%d_%d very-hard sets).",
+  "SC/easy test 0,1: 1000 binaries, 500 rows '>= 1', 25,000 nonzeros (density 0.0500), costs integer 1..100, every set covers 10-42 elements.",
+  "SC/medium test 0,1: 1000 x 1000 rows, 50,000 nnz (0.05), costs 1..100.",
+  "SC/hard test 0,1: 1000 vars, 2000 rows, 100,000 nnz (0.05), costs 1..100.",
+  "SC/very-hard test 0,1 (present on HF although hf_tree.txt listed no files): 4000 vars, 5000 rows, 1,000,000 nnz (0.05), costs 1..100.",
+  "Very hard 2 not on HF: local table_raw.csv lists SetCovering_CL-LNS_LB-RELAX/5000_8000 with 8000 binaries, 5000 constraints; Huang23 Table 1 SC-L 8,000 vars, 5,000 constraints."
+ ],
+ "open_questions": [
+  "Very hard 2 density/costs not checked on an instance (not on HF); assumed the same generator as Very hard (same source directory family SetCovering_CL-LNS_LB-RELAX)."
+ ]
+}

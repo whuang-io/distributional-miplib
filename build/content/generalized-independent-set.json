@@ -1,0 +1,72 @@
+{
+ "slug": "generalized-independent-set",
+ "description_html": "<p>The Generalized Independent Set Problem (GISP) is a graph optimization problem proposed for forestry management [Hochbaum97,Colombi17]. The input consists of a graph, a subset of removable edges with a removal cost, and a revenue for each vertex. The goal is to select a set of vertices and remove a subset of the removable edges so as to maximize the total revenue of the selected vertices minus the total cost of the removed edges, such that the selected vertices are independent in the graph after edge removal.</p>\n<p><strong>Notation</strong></p>\n<ul>\n<li>\\(G=(V,E)\\): undirected graph with vertex set \\(V\\) and edge set \\(E\\).</li>\n<li>\\(E' \\subseteq E\\): the set of removable edges. In the generator, each edge of \\(E\\) is made removable independently with probability \\(\\alpha\\) (the removal probability).</li>\n<li>\\(r_v\\): revenue of selecting vertex \\(v\\) (\\(r_v = 100\\) for all \\(v\\) in all distributions).</li>\n<li>\\(c_e\\): cost of removing edge \\(e \\in E'\\) (\\(c_e = 1\\) for all \\(e\\) in all distributions).</li>\n<li>\\(x_v \\in \\{0,1\\}\\): 1 if vertex \\(v\\) is selected.</li>\n<li>\\(y_e \\in \\{0,1\\}\\): 1 if removable edge \\(e\\) is removed.</li>\n</ul>\n<p><strong>MILP formulation</strong> [Colombi17]</p>\n\\begin{align}\n\\max_{x,y} \\quad & \\sum_{v \\in V} r_v\\, x_v - \\sum_{e \\in E'} c_e\\, y_e \\\\\n\\text{s.t.} \\quad & x_u + x_v \\leq 1 && \\forall \\{u,v\\} \\in E \\setminus E' \\\\\n& x_u + x_v - y_{uv} \\leq 1 && \\forall \\{u,v\\} \\in E' \\\\\n& x_v \\in \\{0,1\\} && \\forall v \\in V \\\\\n& y_e \\in \\{0,1\\} && \\forall e \\in E'\n\\end{align}\n<p>The instance files state the equivalent minimization problem \\(\\min \\sum_{e \\in E'} c_e y_e - \\sum_{v \\in V} r_v x_v\\). An instance has \\(|V| + |E'|\\) binary variables and \\(|E|\\) constraints (one per edge). The Erdős–Rényi distributions draw \\(G\\) from \\(G(n,p)\\); the Ext hard distribution uses fixed graphs from the DIMACS 1993 clique benchmark, following [Khalil17].</p>",
+ "table_columns": [
+  "Hardness Level",
+  "Graphs",
+  "Edge Cost",
+  "Node Reward",
+  "Removal Probability"
+ ],
+ "table_rows": {
+  "Easy": [
+   "Erdős–Rényi(n=115, p=0.3)",
+   "1",
+   "100",
+   "0.25"
+  ],
+  "Medium": [
+   "Erdős–Rényi(n=150, p=0.3)",
+   "1",
+   "100",
+   "0.25"
+  ],
+  "Hard": [
+   "Erdős–Rényi(n=175, p=0.3)",
+   "1",
+   "100",
+   "0.25"
+  ],
+  "Very hard": [
+   "Erdős–Rényi(n=150, p=0.7)",
+   "1",
+   "100",
+   "0.75"
+  ],
+  "Very hard 2": [
+   "Erdős–Rényi(n=175, p=0.7)",
+   "1",
+   "100",
+   "0.75"
+  ],
+  "Ext hard": [
+   "DIMACS 1993 (train/val: C125.9, brock200_2, gen200_p0.9_55, hamming8-4, keller4, p_hat300-1; test: C250.9, MANN_a27, brock400_2, gen400_p0.9_75, p_hat300-2, p_hat300-3)",
+   "1",
+   "100",
+   "0.75"
+  ]
+ },
+ "changes": [
+  "Formulation kept (it matches the instances) but notation made explicit (r_v, c_e, alpha), stated that each edge is removable with probability alpha, that instances are stored as the equivalent minimization, and the size formulas (#vars = |V|+|E'|, #constraints = |E|).",
+  "Medium and Hard: Removal Probability 0.75 -> 0.25 (measured |E'|/|E| = 0.250 and 0.249 averaged over 60 test instances each).",
+  "Very hard: Graphs Erdős–Rényi(n=150, p=0.3) -> Erdős–Rényi(n=150, p=0.7) and Removal Probability 0.25 -> 0.75 (all 100 test instances: n=150, mean density 0.70, |E'|/|E| = 0.750; mean #vars 6017.95 matches the table's 6017).",
+  "Very hard 2: Graphs p=0.3 -> p=0.7 and Removal Probability 0.25 -> 0.75 (from local gisp-l instances, n=175, density 0.695-0.707, |E'|/|E| ~ 0.75; also consistent with table averages: 10656.52/C(175,2)=0.70 and (8168.35-175)/10656.52=0.75).",
+  "Ext hard: kept 'DIMACS 1993', 0.75; listed the specific DIMACS graphs from amf272/Distributional-MIPLIB-Generators/GISP/DIMACS_1993 (train/test split); test instances confirmed to be C250.9, MANN_a27, brock400_2, gen400_p0.9_75, p_hat300-2, p_hat300-3 by (n,|E|). The editor may shorten the cell to 'DIMACS 1993 clique graphs (125-400 nodes)'.",
+  "New reference used in prose: [Hochbaum97] D. S. Hochbaum and A. Pathria, Forest harvesting and minimum cuts: a new approach to handling spatial constraints, Forest Science 43(4):544-554, 1997 (already cited on the current page)."
+ ],
+ "verification": [
+  "Generator: https://github.com/amf272/Distributional-MIPLIB-Generators/tree/main/GISP (gisp.py, generate_erdos_renyi.py, generate_dimacs.py; README credits Ferber22). Rows: x_u + x_v <= 1 for E\\E', x_u + x_v - y_e <= 1 for E'; objective min -node_weight*x + edge_cost*y. Matches instances exactly.",
+  "Easy (60 test rows): n=115, mean density 0.300, alpha 0.250, mean |E| 1968 (table 1967.05), mean #vars 607 (table 605.81).",
+  "Medium (60 test rows): n=150, density 0.299, alpha 0.250, |E| 3345 (table 3353), #vars 987 (table 988.81).",
+  "Hard (60 test rows): n=175, density 0.299, alpha 0.249, |E| 4557 (table 4567.83), #vars 1311 (table 1317.03).",
+  "Very hard (all 100 test rows): n=150, alpha 0.750, |E| 7824 (table 7821.87), #vars 6017.95 (table 6017). Node obj -100, edge obj +1, all RHS 1.",
+  "Very hard 2: not on Hugging Face (GISP has only easy/medium/hard/very-hard/ext-hard folders); checked local /Users/weimin/Documents/phd_proj/distrib-miplip/gisp-l (n=175, density ~0.70, alpha ~0.75). gisp-s matches Very hard (n=150, p 0.70, alpha 0.75).",
+  "Ext hard (first 40 test rows): graphs (n,|E|) = (250,27984) C250.9, (378,70551) MANN_a27, (400,59786) brock400_2, (400,71820) gen400_p0.9_75, (300,21928) p_hat300-2, (300,33390) p_hat300-3; alpha 0.752-0.754; costs 1/100."
+ ],
+ "open_questions": [
+  "Ext hard: generate_dimacs.py draws partition_seed ONCE outside the loop, so all 20 instances generated from the same DIMACS graph are identical. Confirmed: test rows 1, 2, 5 (MANN_a27) are byte-identical from ROWS on, as are rows 3, 6, 7 (gen400_p0.9_75). The Ext hard distribution thus has only 6 distinct test (and presumably 6 distinct train) instances. Worth noting on the page or regenerating.",
+  "Ext hard # Var B (12675.83) / # Constr (16515.44) in the table do not match the test split (40 test rows: mean 39297 vars, 51794 constraints); they may have been computed on the train graphs or a different mix. Not changed (outside my columns).",
+  "Very hard 2 instances are not on Hugging Face (only the Google Drive link); the download link/HF folder should be checked.",
+  "Dist Source for Very hard / Very hard 2 is [Cai24]; Cai24's exact settings were not checked against the paper, only against the instances."
+ ]
+}

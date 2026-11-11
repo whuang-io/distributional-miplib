@@ -1,0 +1,37 @@
+{
+ "slug": "capacitated-facility-location",
+ "description_html": "<p>The Capacitated Facility Location Problem (CFLP) considers satisfying customer demands from a set of candidate facilities. Each facility has a fixed opening cost and a capacity; once opened, it can serve customers, incurring a transportation cost that depends on the customer's demand and the distance between them. The goal is to decide which facilities to open and how to split every customer's demand among the open facilities so that the total opening and transportation cost is minimized. The instances follow the generator of [Gasse19], which in turn follows [Cornuéjols91].</p>\n<p><strong>Notation</strong></p>\n<ul>\n<li>\\(C\\): the set of customers, indexed by \\(i\\); \\(F\\): the set of candidate facilities, indexed by \\(j\\).</li>\n<li>\\(d_i\\): demand of customer \\(i\\) (integer, uniform in \\(\\{5,\\dots,35\\}\\)).</li>\n<li>\\(s_j\\): capacity of facility \\(j\\). Raw capacities are drawn uniformly from \\(\\{10,\\dots,160\\}\\) and rescaled so that the total capacity is \\(\\rho = 5\\) times the total demand (rounded down to integers).</li>\n<li>\\(f_j\\): fixed cost of opening facility \\(j\\), \\(f_j = \\lfloor u_j\\sqrt{\\tilde s_j} + v_j \\rfloor\\) with \\(u_j\\) uniform in \\(\\{100,\\dots,110\\}\\), \\(v_j\\) uniform in \\(\\{0,\\dots,90\\}\\), and \\(\\tilde s_j\\) the raw (unscaled) capacity.</li>\n<li>\\(c_{ij}\\): cost of serving all of customer \\(i\\)'s demand from facility \\(j\\), \\(c_{ij} = 10\\, d_i\\, \\lVert p_i - q_j \\rVert_2\\), where customer locations \\(p_i\\) and facility locations \\(q_j\\) are uniform in the unit square.</li>\n<li>\\(y_j \\in \\{0,1\\}\\): 1 if facility \\(j\\) is opened.</li>\n<li>\\(x_{ij} \\in [0,1]\\): fraction of customer \\(i\\)'s demand served by facility \\(j\\).</li>\n</ul>\n<p><strong>MILP formulation</strong></p>\n\\begin{align}\n\\min_{x,y} \\quad & \\sum_{i \\in C}\\sum_{j \\in F} c_{ij}\\, x_{ij} + \\sum_{j \\in F} f_j\\, y_j \\\\\n\\text{s.t.} \\quad & \\sum_{j \\in F} x_{ij} \\geq 1 && \\forall i \\in C \\quad \\text{(demand)} \\\\\n& \\sum_{i \\in C} d_i\\, x_{ij} \\leq s_j\\, y_j && \\forall j \\in F \\quad \\text{(capacity)} \\\\\n& \\sum_{j \\in F} s_j\\, y_j \\geq \\sum_{i \\in C} d_i && \\text{(total capacity)} \\\\\n& x_{ij} \\leq y_j && \\forall i \\in C,\\ \\forall j \\in F \\quad \\text{(only open facilities serve)} \\\\\n& 0 \\leq x_{ij} \\leq 1 && \\forall i \\in C,\\ \\forall j \\in F \\\\\n& y_j \\in \\{0,1\\} && \\forall j \\in F\n\\end{align}\n<p>The total-capacity constraint and the \\(x_{ij} \\leq y_j\\) constraints are implied by the others for integer \\(y\\), but they are included in the instances to tighten the LP relaxation [Gasse19]. An instance therefore has \\(|F|\\) binary variables, \\(|C||F|\\) continuous variables, and \\(|C| + |F| + 1 + |C||F|\\) constraints.</p>",
+ "table_columns": [
+  "Hardness Level",
+  "# Facilities",
+  "# Customers",
+  "Capacity / Demand Ratio"
+ ],
+ "table_rows": {
+  "Easy": [
+   "100",
+   "100",
+   "5"
+  ],
+  "Medium": [
+   "200",
+   "100",
+   "5"
+  ]
+ },
+ "changes": [
+  "Formulation rewritten to match the instances (learn2branch generator, generate_capacited_facility_location): transport variables are fractions x_ij in [0,1] of customer demand (not absolute amounts), the demand constraint is sum_j x_ij >= 1 (not = d_c), the capacity constraint is sum_i d_i x_ij <= s_j y_j.",
+  "Added the two tightening families present in every instance: one aggregate constraint sum_j s_j y_j >= sum_i d_i, and |C||F| constraints x_ij <= y_j. With these, the constraint count |C|+|F|+1+|C||F| reproduces 10201 (100x100) and 20301 (100 customers x 200 facilities).",
+  "Fixed notation: old page indexed the startup cost as c^s_{c,f} and listed d_c/b_f with inconsistent roles; now f_j (fixed cost), s_j (capacity), d_i (demand), c_ij (transport cost of serving all of i's demand from j). Added the generator's parameter distributions.",
+  "Medium row: # Facilities and # Customers were swapped. The Medium instances have 200 facilities (200 binaries y_1..y_200) and 100 customers (100 demand rows), so the table now says 200 / 100. Note that this is NOT Gasse19's 'medium transfer' set (200 customers x 100 facilities, which would have 100 binaries).",
+  "Added column 'Capacity / Demand Ratio' = 5 (generator setting ratio=5 in learn2branch; measured sum s_j / sum d_i = 4.95-4.98 in instances because capacities are truncated to integers)."
+ ],
+ "verification": [
+  "CFLP/easy/test.csv rows 0,1: 100 binaries y_j, 10000 continuous x_i_j in [0,1]; constraints demand_i (100, -sum_j x_ij <= -1), capacity_j (100, sum_i d_i x_ij - s_j y_j <= 0), total_capacity (1), affectation_i_j (10000, x_ij - y_j <= 0) = 10201. Demands in [5,35] (sum 1979 / 2142 equals total_capacity RHS), capacity/demand ratio 4.97/4.98. Objective min, x costs 0.8-358 (<= 10*35*sqrt 2), y costs 357-1427 (consistent with (100..110)*sqrt(10..160)+0..90).",
+  "CFLP/medium/test.csv rows 0,1: 200 binaries, 20000 continuous, constraints 100 demand (each with 200 x terms) + 200 capacity (each with 100 x terms + y_j) + 1 total + 20000 affectation = 20301. So 100 customers x 200 facilities. Ratio 4.95.",
+  "Generator code checked: https://github.com/ds4dm/learn2branch/blob/master/01_generate_instances.py (generate_capacited_facility_location); row names, coefficients and senses match exactly."
+ ],
+ "open_questions": [
+  "Who generated the Medium (100 customers x 200 facilities) set is not documented; Gasse19's own transfer sets vary the number of customers (100/200/400) with 100 facilities. The 'Dist Source' column says [Gasse19] for Medium; the instances use the Gasse19 generator but with n_facilities=200, n_customers=100 (likely Ferber22's setting, not verified)."
+ ]
+}

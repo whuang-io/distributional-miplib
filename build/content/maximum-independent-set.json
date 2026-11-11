@@ -1,0 +1,53 @@
+{
+ "slug": "maximum-independent-set",
+ "description_html": "<p>In a maximum independent set (MIS) problem, an undirected graph \\(G=(V,E)\\) is given. The goal is to select the largest subset of nodes such that no two selected nodes are connected by an edge in \\(G\\).</p>\n<p>The easy and medium levels are generated with the generator of [Gasse19] on Barabási-Albert graphs with affinity \\(m_{BA}=4\\) (each new node attaches to 4 existing nodes, so \\(|E|=4(|V|-4)\\)). This generator does not write one constraint per edge: it first computes a greedy clique partition of \\(V\\) and replaces the edges inside each clique by a single clique inequality; all remaining edges keep an edge inequality. The very hard levels of [Huang23] are generated on Erdős-Rényi graphs \\(G(|V|,p)\\) with \\(p=8/(|V|-1)\\) (expected average degree 8, i.e. about \\(4|V|\\) edges) and use one edge inequality per edge. All instances are unweighted.</p>\n<p><strong>Notation.</strong></p>\n<ul>\n<li>\\(G=(V,E)\\): undirected graph; \\(x_v\\in\\{0,1\\}\\): 1 if node \\(v\\in V\\) is in the independent set.</li>\n<li>\\(\\mathcal{Q}\\): a collection of cliques of \\(G\\) (each with at least 2 nodes) such that every edge of \\(E\\) is contained in exactly one \\(Q\\in\\mathcal{Q}\\). For the easy and medium levels, \\(\\mathcal{Q}\\) consists of the cliques of size at least 2 of the greedy clique partition plus every edge not inside one of these cliques; for the very hard levels, \\(\\mathcal{Q}=E\\) (every edge is its own 2-clique).</li>\n</ul>\n<p><strong>Formulation.</strong></p>\n\\begin{align}\n\\max\\ & \\sum_{v\\in V} x_v \\\\\n\\textrm{s.t.}\\ & \\sum_{v\\in Q} x_v \\leq 1, && \\forall Q\\in\\mathcal{Q}, \\\\\n& x_v\\in\\{0,1\\}, && \\forall v\\in V.\n\\end{align}\n<p>With \\(\\mathcal{Q}=E\\) this is the edge formulation \\(x_u+x_v\\le 1,\\ \\forall (u,v)\\in E\\). Since each edge lies in exactly one \\(Q\\in\\mathcal{Q}\\), both forms have the same feasible integer solutions; the clique form has slightly fewer rows (e.g. about 3,950 instead of 3,984 for 1,000 nodes) and a tighter LP relaxation.</p>",
+ "table_columns": [
+  "Hardness Level",
+  "#Node",
+  "Graph Type",
+  "Graph Parameter",
+  "Avg. Degree"
+ ],
+ "table_rows": {
+  "Easy": [
+   "1,000",
+   "Barabasi-Albert",
+   "affinity m = 4",
+   "7.97"
+  ],
+  "Medium": [
+   "1,500",
+   "Barabasi-Albert",
+   "affinity m = 4",
+   "7.98"
+  ],
+  "Very hard": [
+   "6,000",
+   "Erdos-Renyi",
+   "p = 8/(n-1) (about 0.00133)",
+   "8 (expected)"
+  ],
+  "Very hard 2": [
+   "12,000",
+   "Erdos-Renyi",
+   "p = 8/(n-1) (about 0.00067)",
+   "8 (expected)"
+  ]
+ },
+ "changes": [
+  "Formulation generalized to clique inequalities over an edge-clique partition Q: easy/medium instances (learn2branch generate_indset) use greedy clique-partition rows, very hard instances use plain edge rows.",
+  "'Node Degree' column replaced by 'Graph Parameter' (BA affinity m=4; ER edge probability p=8/(n-1), generator parameter edge=4 with p = 2*edge/(n-1)) and 'Avg. Degree' (2|E|/|V|): the old value '4' was the BA affinity for BA levels and the generator's 'edge' argument (half the expected degree) for ER levels, not a node degree.",
+  "Fixed typo 'in given' -> 'is given'; noted that all instances are unweighted.",
+  "Huang23 text says ER 'average degree 5'; the instances (and Huang23 Table 1 constraint counts 23,977 / 48,027) correspond to about 4|V| edges, i.e. average degree 8. The table follows the instances."
+ ],
+ "verification": [
+  "MIS/easy test 0,1: 1000 binaries, 3951 / 3945 rows '<= 1', unit coefficients and objective. Pairs implied by rows = 3984 = 4*(1000-4) BA edges, each edge in exactly one row, min degree 4 (consistent with learn2branch's star-initialized BA). Row sizes: 3938 edges + 12 triangles + 1 5-clique (3984 - 12*2 - 9 = 3951).",
+  "MIS/medium test 0,1: 1500 binaries, 5946 / 5938 rows; implied edges 5984 = 4*(1500-4); row sizes 2-4.",
+  "MIS/very-hard test 0,1 (MPS from SCIP): 6000 binaries, 24,225 / 23,956 rows, all of length 2 (pure edge rows), no edge repeated, degree 0..22 with 2 isolated nodes, avg degree 8.08 / 7.99, consistent with ER p=8/5999 (expected 23,996 edges; table avg 23,994.82).",
+  "Generators: learn2branch 01_generate_instances.py (Graph.barabasi_albert(n, affinity=4), generate_indset with greedy_clique_partition; 1000 and 1500 are its transfer sizes). Very hard: local generator_MVC_MIS_CA_SC_MK.py gen_graph('erdos_renyi', edge=4) -> nx.erdos_renyi_graph(n, p=edge*2/(n-1)), createOptINDSET (edge rows, unit objective); facebookresearch/CL-LNS ships instances named INDSET_ER_6000/instance_ER4_*.cip, matching this naming.",
+  "Very hard 2 (12,000 nodes) not on HF: table avg 48,009.62 rows = about 4n, consistent with the same p = 8/(n-1)."
+ ],
+ "open_questions": [
+  "learn2branch also adds singleton rows x_v <= 1 for any of nodes 0-9 that appear in no constraint; this never happens for BA graphs (min degree 4) and none were found, so the formulation omits it."
+ ]
+}

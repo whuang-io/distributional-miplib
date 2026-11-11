@@ -1,0 +1,26 @@
+{
+ "title": "Maritime Inventory Routing",
+ "blocks": [
+  "<h1 id=\"h.6dmsgrftg8j4\">Maritime Inventory Routing</h1>",
+  "<h2 id=\"h.x72el2ve0awn\">Problem Description</h2>",
+  "<p>The Maritime Inventory Routing Problem (MIRP) arises from global bulk shipping and involves both ship routing and inventory management. The problem not only determines routes from production ports to consumption ports to minimize transportation costs but also manages the inventory at these ports [Papageorgiou14].\u00a0 [Papageorgiou14] introduced a mixed-integer programming model of this problem class and developed a library of publicly available test instances (MIRPLib).</p>",
+  "<h2 id=\"h.em082qwol1rq\">Instance distributions</h2>",
+  "<p>The table below summarizes the distributions that have been used in previous works, along with download links.</p>",
+  "<div class=\"embed\"><div class=\"table-wrap\"><table>\n<thead>\n<tr>\n<th>Hardness Level</th>\n<th>Distribution Source <br/>(ML4MILPs)</th>\n<th># Var B</th>\n<th># Var I</th>\n<th># Var C</th>\n<th># Constr</th>\n<th>Related Literature</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><a href=\"https://drive.google.com/file/d/1aC-ADvSIIWnJJEODX28_6CaBWTrEVF7B/view?usp=drive_link\">Medium</a></td>\n<td>[Gasse22]</td>\n<td>0</td>\n<td>15080.57</td>\n<td>19576.15</td>\n<td>44429.7</td>\n<td>ML4CO [Gasse22]</td>\n</tr>\n</tbody>\n</table></div></div>",
+  "<h2 id=\"h.vfxzdi3uqnxy\">License</h2>",
+  "<p>The MIRP in Distributional MIPLIB was downloaded from the Github repository of <a href=\"https://github.com/ds4dm/ml4co-competition/tree/main\">ML4CO</a>. ML4CO is licensed under the BSD-3-Clause license. See <a href=\"https://github.com/ds4dm/ml4co-competition/tree/main?tab=BSD-3-Clause-1-ov-file\">ML4CO License</a> for details about the license and the copyright notice from CERC Data Science For Decision Making.</p>",
+  "<h2 id=\"h.ypff2kvr39zt\">Related Literature</h2>",
+  "<p>A curated set of MIRP instances have been used as a hidden test set in the Machine Learning for Combinatorial Optimization Competition (ML4CO) [Gasse22].\u00a0 \u00a0We included this benchmark in Distributional MIPLIB and provide the statistics. We adhered to the train, validation, and test split established in ML4CO.\u00a0 A larger set of MIRP instances is also available at the MIRPLIB [Papageorgiou14] (<a href=\"https://mirplib.scl.gatech.edu/\">link</a>).</p>",
+  "<h2 id=\"h.tk5jojnt8y26\">Citations</h2>",
+  "<p>Any work that uses any of the above instances should cite the papers below:</p>",
+  "<h3 id=\"h.inxxkc2htn4e\">Distributional MIPLIB</h3>",
+  "<div class=\"embed\"><pre><code>@misc{huang2024distributional,\n      title={Distributional MIPLIB: a Multi-Domain Library for Advancing ML-Guided MILP Methods}, \n      author={Weimin Huang and Taoan Huang and Aaron M Ferber and Bistra Dilkina},\n      year={2024},\n      eprint={2406.06954},\n      archivePrefix={arXiv},\n      primaryClass={cs.LG}\n}\n</code></pre>\n</div>",
+  "<h3 id=\"h.p1wnjg107pdt\">Original Formulation &amp; Generator</h3>",
+  "<div class=\"embed\"><pre><code>@article{papageorgiou2014mirplib,\n  title={MIRPLib--A library of maritime inventory routing problem instances: Survey, core model, and benchmark results},\n  author={Papageorgiou, Dimitri J and Nemhauser, George L and Sokol, Joel and Cheon, Myun-Seok and Keha, Ahmet B},\n  journal={European Journal of Operational Research},\n  volume={235},\n  number={2},\n  pages={350--366},\n  year={2014},\n  publisher={Elsevier}\n}\n</code></pre>\n</div>",
+  "<h3 id=\"h.38mi2gopf547\">ML4CO</h3>",
+  "<div class=\"embed\"><pre><code>@inproceedings{gasse2022machine,\n  title={The machine learning for combinatorial optimization competition (ml4co): Results and insights},\n  author={Gasse, Maxime and Bowly, Simon and Cappart, Quentin and Charfreitag, Jonas and Charlin, Laurent and Ch{\\'e}telat, Didier and Chmiela, Antonia and Dumouchelle, Justin and Gleixner, Ambros and Kazachkov, Aleksandr M and others},\n  booktitle={NeurIPS 2021 competitions and demonstrations track},\n  pages={220--231},\n  year={2022},\n  organization={PMLR}\n}\n</code></pre>\n</div>",
+  "<h2 id=\"h.tav1fd4w50o7\">Reference</h2>",
+  "<p>[Gasse22] Gasse, M., Bowly, S., Cappart, Q., Charfreitag, J., Charlin, L., Ch.telat, D., Chmiela, A., Dumouchelle, J., Gleixner, A., Kazachkov, A. M., et al. (2022). The machine learning for combinatorial optimization competition (ml4co): Results and insights. In NeurIPS 2021 competitions and demonstrations track, pages 220\u2013231. PMLR. [<a href=\"https://proceedings.mlr.press/v176/gasse22a/gasse22a.pdf\">paper</a>]</p>",
+  "<p>[Papageorgiou14] Papageorgiou, D. J., Nemhauser, G. L., Sokol, J., Cheon, M.-S., and Keha, A. B. (2014). Mirplib\u2013a library of maritime inventory routing problem instances: Survey, core model, and benchmark results. European Journal of Operational Research, 235(2):350\u2013366. [<a href=\"https://www.sciencedirect.com/science/article/abs/pii/S0377221713009880\">paper</a>]</p>"
+ ]
+}
