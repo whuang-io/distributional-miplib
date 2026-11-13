@@ -179,6 +179,8 @@ RENAMES = {
     "license": [(r"\b(?:CES|COURSE)\b", "EXAM")],
     # MIS Very hard was regenerated (the previous set had duplicate instances); average over all 1000.
     "maximum-independent-set": [(r"23994\.82", "23996.57")],
+    # CA Very hard 2 was regenerated (the previous set had duplicate instances).
+    "combinatorial-auctions": [(r"5354\.08", "5351.95")],
     # Very hard 3: the 9,000-node test set of [Huang24], added to the library.
     "mvc": [(r"(?s)(Very hard 2</a></td>.*?</tr>)",
              r"""\1
@@ -204,7 +206,7 @@ RENAMES = {
              (r"12675\.83", "12608.59"), (r"<td>0</td>(\s*)<td>15080\.57</td>", r"<td>13532.91</td>\1<td>1547.66</td>"), (r"<td>32456</td>", "<td>32455</td>"),
              (r"11485\.33", "11147.68"), (r"22430\.84", "21779.18"), (r"3016\.42", "3157.65"), (r"5917\.27", "6192.59"),
              (r"SRPN contains 22 and 20 test instances", "SRPN contains 22 and 19 test instances"),
-             (r"23994\.82", "23996.57"),
+             (r"23994\.82", "23996.57"), (r"5354\.08", "5351.95"),
              (r"(?s)(<td>very hard2</td>\s*<td>\[Huang23\]</td>\s*<td>2000</td>.*?</tr>)",
               r"""\1
 <tr>
