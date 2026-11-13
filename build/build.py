@@ -166,9 +166,21 @@ RENAMES = {
     "WF_OTS_UG": [(r"1kF3MrVBeO1DvzWseDIPFVVzJn9VzFoCU", "13uN6QBVqwmOgUD85QkXys9a-BahTa_7V"),
                   # the one-day Texas7k distribution (Hard) was withdrawn; its zip stays on Drive
                   (r"(?s)<tr>\s*<td><a href=\"[^\"]*1mvERiCGpiFu5BItdswD6PjajbkyypuC9[^\"]*\">Hard</a></td>.*?</tr>\s*", ""),
-                  (r"We compile four sets", "We compile three sets"),
                   # with the one-day set gone, the two-day Texas7k set is the Hard distribution
-                  (r"(13uN6QBVqwmOgUD85QkXys9a-BahTa_7V/view\?usp=drive_link\">)Hard2<", r"\1Hard<")],
+                  (r"(13uN6QBVqwmOgUD85QkXys9a-BahTa_7V/view\?usp=drive_link\">)Hard2<", r"\1Hard<"),
+                  # five-day Texas7k set added as Very hard (instances to be uploaded; no download link yet)
+                  (r"(?s)(<tr>\s*<td><a href=\"[^\"]*13uN6QBVqwmOgUD85QkXys9a-BahTa_7V[^\"]*\">Hard</a></td>.*?</tr>)",
+                   r"""\1
+<tr>
+<td>Very hard</td>
+<td>New</td>
+<td>11624</td>
+<td>0</td>
+<td>116056</td>
+<td>271619</td>
+<td>Large</td>
+<td>5</td>
+</tr>""")],
     # SRPN statistics recomputed over the full instance set (train+val+test) after removing duplicate
     # instances (Easy 219 -> 171, Hard 206 -> 161).
     "water-pipe-network-planning": [(r"11485\.33", "11147.68"), (r"22430\.84", "21779.18"),
@@ -207,6 +219,22 @@ RENAMES = {
              (r"11485\.33", "11147.68"), (r"22430\.84", "21779.18"), (r"3016\.42", "3157.65"), (r"5917\.27", "6192.59"),
              (r"SRPN contains 22 and 20 test instances", "SRPN contains 22 and 19 test instances"),
              (r"23994\.82", "23996.57"), (r"5354\.08", "5351.95"),
+             # WF_OTS_UG: five-day Texas7k distribution (Very hard) after the two-day one
+             (r"(?s)(<td>Hard2</td>\s*<td>New</td>\s*<td>6546</td>.*?</tr>)",
+              r"""\1
+<tr>
+<td></td>
+<td>Very hard</td>
+<td>New</td>
+<td>11624</td>
+<td>0</td>
+<td>116056</td>
+<td>271619</td>
+<td>0</td>
+<td></td>
+<td>0.69</td>
+<td>2800.73</td>
+</tr>"""),
              (r"(?s)(<td>very hard2</td>\s*<td>\[Huang23\]</td>\s*<td>2000</td>.*?</tr>)",
               r"""\1
 <tr>
