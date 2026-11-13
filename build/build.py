@@ -168,11 +168,11 @@ RENAMES = {
                   (r"(?s)<tr>\s*<td><a href=\"[^\"]*1mvERiCGpiFu5BItdswD6PjajbkyypuC9[^\"]*\">Hard</a></td>.*?</tr>\s*", ""),
                   # with the one-day set gone, the two-day Texas7k set is the Hard distribution
                   (r"(13uN6QBVqwmOgUD85QkXys9a-BahTa_7V/view\?usp=drive_link\">)Hard2<", r"\1Hard<"),
-                  # five-day Texas7k set added as Very hard (instances to be uploaded; no download link yet)
+                  # five-day Texas7k set added as Very hard
                   (r"(?s)(<tr>\s*<td><a href=\"[^\"]*13uN6QBVqwmOgUD85QkXys9a-BahTa_7V[^\"]*\">Hard</a></td>.*?</tr>)",
                    r"""\1
 <tr>
-<td>Very hard</td>
+<td><a href="https://drive.google.com/file/d/1JCYcJofgkfd1WVO7_h3y8P2nhiUss6Fe/view?usp=drive_link">Very hard</a></td>
 <td>New</td>
 <td>11624</td>
 <td>0</td>
